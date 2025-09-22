@@ -1,0 +1,16 @@
+int main(){
+    printf("22377311\n");
+    int a = 1;
+    int b = a*a;
+    static int c = 1;
+    printf("%d\n",a);
+    printf("1 1\n");
+    printf("%d\n",b);
+    printf("1 1\n");
+    printf("%d\n",c);
+    printf("1 1\n");
+    printf("1\n");
+    printf("1 1\n");
+    printf("end");    
+    return 0;
+}

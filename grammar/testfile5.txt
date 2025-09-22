@@ -1,0 +1,17 @@
+int main(){
+    printf("22377311\n");
+    int a = 1;
+    static int b = 2;
+    int c = a+2*a;
+    int z = 0;
+    printf("%d\n",a);
+    printf("%d\n",b);
+    printf("%d\n",+a);
+    printf("%d\n",-a);
+    printf("%d\n",z);
+    printf("%d\n",c%b);
+    printf("%d\n",c/a);
+    printf("%d\n",c*a);
+    printf("%d",c-a);    
+    return 0;
+}

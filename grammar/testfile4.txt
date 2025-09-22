@@ -1,0 +1,59 @@
+const int a = 0;
+const int b = -1, c=0+1*2,d= -1+1*-2;
+
+int e = 4;
+int f, g=5,h = a+b,i,j;
+
+void empty() {
+}
+
+void foo() {
+    int i = 0;
+    return;
+}
+
+int mul(int x,int y) {
+    return x*y;
+}
+
+int selff(int x){
+    return x;
+}
+int main() {
+    printf("22377311\n");
+    empty();
+    j = selff(a);
+    printf("%d\n",j);
+    if(d!=0)    printf("%d\n",d);
+    {
+        printf("%d\n",e);
+        h = mul(a,b);
+        printf("%d\n",h);
+    }
+    f = 6;
+    ;
+    3*4;
+    if(f>g) {
+        printf("f>g\n");
+    } else {
+        printf("f<=g\n");
+    }
+    if(f==6) {
+        printf("f==6\n");   //7
+    }
+    for(i=0;i<3;i=i+1) {
+        f=f+1;
+    }
+    printf("%d\n",f);//8
+    for(i=1,j=0;i<=3;i=i+1) {
+        g=g+1;
+        break;
+    }
+    printf("%d\n",g);   //9
+    for(i=2;i>=0;i=i-1) {
+        continue;
+        g=g+1;
+    }
+    printf("%d",g);
+    return 0;
+}
