@@ -1,0 +1,30 @@
+const int a[5] = {0,1,2,3,4};
+int b[5];
+int c[5] = {0,1};
+
+
+int get4(int a[]) {
+    return a[4];
+}
+
+int geto(int x){
+    return x;
+}
+
+int main() {
+    printf("22377311\n");
+    printf("%d\n", a[3]);
+    printf("%d\n", b[3]);
+    printf("%d\n", c[3]);
+
+    printf("%d\n", get4(a));
+    printf("%d\n", get4(b));
+    printf("%d\n", get4(c));
+
+    int x = geto(a[1]);
+    int y = b[1];
+    printf("%d\n",x);
+    printf("%d\n",y);
+    printf("%d\n",c[1]);
+    return 0;
+}

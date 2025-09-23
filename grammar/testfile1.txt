@@ -1,0 +1,32 @@
+int global_var = 0;
+
+int func() {
+    global_var = global_var + 1;
+    return 1;
+}
+
+int main() {
+    printf("22377311\n");
+    int i,j;
+    for(i=1,j=2;i<=3 && j<=4;i=i+1,j=j*2) {
+        printf("666\n");
+    }
+    for(i=1,j=2;i<=3 || j<=3;) {
+        printf("888\n");
+        i=i+1;j=j*2;
+    }
+
+    printf("%d\n",global_var); // 输出 0
+    if(0&&func());
+    printf("%d\n",global_var); // 输出 0
+    if (1 || func()) {
+        ;
+    }
+    printf("%d\n",global_var); // 输出 0
+    i=1;
+    j=2;
+    int k = (i+j)/j;
+    if(!0)
+    printf("end");
+    return 0;
+}

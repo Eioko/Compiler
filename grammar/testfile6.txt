@@ -3,6 +3,7 @@ int main(){
     int a = 1;
     int b = a*a;
     static int c = 1;
+    static int d = 2,e=3;
     printf("%d\n",a);
     printf("1 1\n");
     printf("%d\n",b);

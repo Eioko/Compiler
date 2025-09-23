@@ -1,7 +1,7 @@
 const int a = 0;
 const int b = -1, c=0+1*2,d= -1+1*-2;
 
-int e = 4;
+int e;
 int f, g=5,h = a+b,i,j;
 
 void empty() {
@@ -20,6 +20,7 @@ int selff(int x){
     return x;
 }
 int main() {
+    e = getint();
     printf("22377311\n");
     empty();
     j = selff(a);
