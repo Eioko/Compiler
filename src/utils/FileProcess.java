@@ -1,6 +1,7 @@
 package utils;
 
 import frontend.lexer.Token;
+import myError.SysyError;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,12 +17,15 @@ import java.util.ArrayList;
 public class FileProcess {
     private static final String inputFile = "input.txt";
     private static final String tokenOutputFile = "lexer.txt";
+    private static final String errorFile = "error.txt";
 
     private static final Path inputPath = Path.of(inputFile);
     private static final Path tokenOutputPath = Path.of(tokenOutputFile);
+    private static final Path errorPath = Path.of(errorFile);
 
     private static BufferedWriter tokenWriter;
     private static BufferedReader reader;
+    private static BufferedWriter errorWriter;
 
     private FileProcess() {}
 
@@ -61,6 +65,16 @@ public class FileProcess {
                 e.printStackTrace();
             }
 
+        }
+    }
+    public static void printErrors(ArrayList<SysyError> errors){
+        for(SysyError error : errors){
+            try{
+                errorWriter.write(error.toString());
+                errorWriter.newLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-# Compiler
+# SysyCompiler
 
 ## 参考编译器介绍
 
@@ -6,9 +6,9 @@
 
 **总体结构**：编译器首先分为三部分：`src/`为源码部分，`test/`为测试部分，`tools/`为编译器开发和测试的辅助工具。
 
-`src/`中`Compiler`为主类，在这里调用了词法分析、语法分析、生成中间代码与优化，最后输出结果。`front/`中包含了词法分析`lexer/`，语法分析`parser/`与`ast/`，前端于是可以完成词法分析语法分析，生成抽象语法树。`midend/`中完成了对于中间代码的生成。`backend/`中把中间代码翻译为目标mips代码。`error/`处理了各个阶段的错误，定义了所有的错误类型。`optimize/`中实现了各阶段需要的优化。`utils/`中有处理IO的和计算竞速复杂度的类。
+`src/`中`SysyCompiler`为主类，在这里调用了词法分析、语法分析、生成中间代码与优化，最后输出结果。`front/`中包含了词法分析`lexer/`，语法分析`parser/`与`ast/`，前端于是可以完成词法分析语法分析，生成抽象语法树。`midend/`中完成了对于中间代码的生成。`backend/`中把中间代码翻译为目标mips代码。`error/`处理了各个阶段的错误，定义了所有的错误类型。`optimize/`中实现了各阶段需要的优化。`utils/`中有处理IO的和计算竞速复杂度的类。
 
-**接口设计**：`Compiler`主类串联了各个阶段
+**接口设计**：`SysyCompiler`主类串联了各个阶段
 
 `Frontend`:
 
@@ -60,7 +60,7 @@
 
 `utils`: ` IOhandler.java`（输入输出）、`Setting.java`（配置）、`HandleComplexity.java`（复杂度分析）
 
-`Compiler.java`:编译器主控类，包含主方法，负责串联各模块。
+`SysyCompiler.java`:编译器主控类，包含主方法，负责串联各模块。
 
 ## 编译器总体设计
 
@@ -94,7 +94,7 @@
 
 `utils`: ` IOhandler.java`（输入输出处理程序）、`Setting.java`（配置）、`HandleComplexity.java`（复杂度分析）
 
-`Compiler.java`:编译器主控类，包含主方法，串联各模块。
+`SysyCompiler.java`:编译器主控类，包含主方法，串联各模块。
 
 ## 词法分析设计
 

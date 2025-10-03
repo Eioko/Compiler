@@ -3,7 +3,7 @@ package frontend.lexer;
 public enum TokenType {
     IDENFR,
     INTCON,
-    SRTCON,
+    STRCON,
     CONSTTK,
     INTTK,
     STATICTK,
@@ -33,7 +33,7 @@ public enum TokenType {
     SEMICN,
     COMMA,
     LPARENT,
-    PRARENT,
+    RPARENT,
     LBRACK,
     RBRACK,
     LBRACE,
