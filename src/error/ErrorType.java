@@ -1,4 +1,4 @@
-package myError;
+package error;
 
 public enum ErrorType {
     ILLEGAL_SYMBOL("a"),                  // a 非法符号

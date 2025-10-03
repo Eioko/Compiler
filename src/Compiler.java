@@ -1,4 +1,4 @@
-import myError.SysyError;
+import error.SysyError;
 import frontend.lexer.Lexer;
 import frontend.lexer.Token;
 import utils.FileProcess;
@@ -17,5 +17,6 @@ public class Compiler {
         }else{
             FileProcess.printErrors(errors);
         }
+        FileProcess.closeAll();
     }
 }

@@ -1,4 +1,4 @@
-package myError;
+package error;
 
 public class SysyError {
     private ErrorType errorType;

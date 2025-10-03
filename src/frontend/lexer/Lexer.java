@@ -1,9 +1,8 @@
 package frontend.lexer;
 
-import myError.ErrorType;
-import myError.SysyError;
+import error.ErrorType;
+import error.SysyError;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -51,89 +50,71 @@ public class Lexer {
             }else if(c=='!'){
                 if(d == '='){
                     tokens.add(new Token("!=", TokenType.NEQ, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }else{
                     tokens.add(new Token("!", TokenType.NOT, lineNum));
-                    readIndex++;
                 }
             }else if(c=='&'){
                 if(d != '&'){
                     errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
-                    readIndex++;
                 }else{
                     tokens.add(new Token("&&", TokenType.AND, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }
             }else if(c=='|'){
                 if(d != '|'){
                     errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
-                    readIndex++;
                 }else{
                     tokens.add(new Token("||", TokenType.OR, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }
             }else if(c=='+'){
                 tokens.add(new Token("+", TokenType.PLUS, lineNum));
-                readIndex++;
             }else if(c=='-'){
                 tokens.add(new Token("-", TokenType.MINU, lineNum));
-                readIndex++;
             }else if(c=='*'){
                 tokens.add(new Token("*", TokenType.MULT, lineNum));
-                readIndex++;
             }else if(c=='/'){
-                handleNoteOrDiv(source, lineNum);
+                handleNoteOrDiv(source, codeLen);
             }else if(c=='%'){
                 tokens.add(new Token("%", TokenType.MOD, lineNum));
-                readIndex++;
             }else if(c=='<'){
                 if(d == '='){
                     tokens.add(new Token("<=", TokenType.LEQ, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }else{
                     tokens.add(new Token("<", TokenType.LSS, lineNum));
-                    readIndex++;
                 }
             }else if(c=='>'){
                 if(d == '='){
                     tokens.add(new Token(">=", TokenType.GEQ, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }else{
                     tokens.add(new Token(">", TokenType.GRE, lineNum));
-                    readIndex++;
                 }
             }else if(c=='='){
                 if(d == '='){
                     tokens.add(new Token("==", TokenType.EQL, lineNum));
-                    readIndex+=2;
+                    readIndex++;
                 }else{
                     tokens.add(new Token("=", TokenType.ASSIGN, lineNum));
-                    readIndex++;
                 }
             }else if(c==';'){
                 tokens.add(new Token(";",TokenType.SEMICN, lineNum));
-                readIndex++;
             }else if(c==',') {
                 tokens.add(new Token(",", TokenType.COMMA, lineNum));
-                readIndex++;
             }else if(c=='('){
-                tokens.add(new Token("(",TokenType.LPARENT, lineNum));
-                readIndex++;
+                tokens.add(new Token("(", TokenType.LPARENT, lineNum));
             }else if(c==')'){
                 tokens.add(new Token(")", TokenType.RPARENT, lineNum));
-                readIndex++;
             }else if(c=='['){
                 tokens.add(new Token("[", TokenType.LBRACK, lineNum));
-                readIndex++;
             }else if(c==']'){
                 tokens.add(new Token("]", TokenType.RBRACK, lineNum));
-                readIndex++;
             }else if(c=='{'){
-                tokens.add(new Token("{", TokenType.LBRACK, lineNum));
-                readIndex++;
+                tokens.add(new Token("{", TokenType.LBRACE, lineNum));
             }else if(c=='}'){
-                tokens.add(new Token("}", TokenType.RBRACK, lineNum));
-                readIndex++;
+                tokens.add(new Token("}", TokenType.RBRACE, lineNum));
             }
         }
         return tokens;
@@ -143,7 +124,7 @@ public class Lexer {
         for(int j = readIndex+1; j < codeLen; j++) {
             char d = source.charAt(j);
             if(!(Character.isLetterOrDigit(d)||d=='_')){
-                readIndex = j;
+                readIndex = j-1;
                 break;
             }
             ident.append(d);
@@ -158,7 +139,7 @@ public class Lexer {
         for(int j = readIndex+1; j < codeLen; j++) {
             char d = source.charAt(j);
             if(!(Character.isDigit(d))){
-                readIndex = j;
+                readIndex = j-1;
                 break;
             }
             ident.append(d);
@@ -172,7 +153,7 @@ public class Lexer {
         for(int j = readIndex+1; j < codeLen; j++) {
             char d = source.charAt(j);
             if(d =='"'){
-                readIndex = j+1;
+                readIndex = j;
                 ident.append(d);
                 break;
             }
@@ -183,20 +164,14 @@ public class Lexer {
         tokens.add(new Token(identStr, type, lineNum));
     }
     private void handleNoteOrDiv(String source, int codeLen) {
-        StringBuilder ident  = new StringBuilder();
-        ident.append("/");
         readIndex++;
 
         if(readIndex<codeLen && source.charAt(readIndex)=='/'){
             readIndex++;
-            ident.append("/");
             while(readIndex<codeLen && source.charAt(readIndex)!='\n'){
-                char d = source.charAt(readIndex);
-                ident.append(d);
                 readIndex++;
             }
             if(readIndex<codeLen){
-                readIndex++;
                 lineNum++;
             }
         }else if(readIndex<codeLen && source.charAt(readIndex)=='*'){
@@ -204,19 +179,21 @@ public class Lexer {
             while(readIndex<codeLen){
                 while(readIndex<codeLen && source.charAt(readIndex)!='*'){
                     char d = source.charAt(readIndex);
-                    if(d == '\n') lineNum++;
+                    if(d == '\n') {
+                        lineNum++;
+                    }
                     readIndex++;
                 }
                 while(readIndex<codeLen && source.charAt(readIndex)=='*'){
                     readIndex++;
                 }
                 if(readIndex<codeLen && source.charAt(readIndex)=='/'){
-                    readIndex++;
                     return;
                 }
             }
         }else{
             tokens.add(new Token("/", TokenType.DIV, lineNum));
+            readIndex--;
         }
     }
 }

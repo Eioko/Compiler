@@ -1,7 +1,7 @@
 package utils;
 
 import frontend.lexer.Token;
-import myError.SysyError;
+import error.SysyError;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -69,8 +69,8 @@ public class FileProcess {
             }catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
+        flushQuietly(tokenWriter);
     }
     public static void printErrors(ArrayList<SysyError> errors){
         for(SysyError error : errors){
@@ -80,6 +80,22 @@ public class FileProcess {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        flushQuietly(errorWriter);
+    }
+    public static void closeAll() {
+        closeQuietly(tokenWriter);
+        closeQuietly(errorWriter);
+        closeQuietly(reader);
+    }
+    private static void flushQuietly(BufferedWriter w) {
+        if (w != null) {
+            try { w.flush(); } catch (IOException ignored) {}
+        }
+    }
+    private static void closeQuietly(Closeable c) {
+        if (c != null) {
+            try { c.close(); } catch (IOException ignored) {}
         }
     }
 }
