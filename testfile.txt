@@ -1,0 +1,6 @@
+int main(){
+    if(1 & 2){
+        printf("2025 Compiler\n");
+    }
+    return 0;
+}

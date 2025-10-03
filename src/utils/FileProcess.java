@@ -15,7 +15,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 public class FileProcess {
-    private static final String inputFile = "input.txt";
+    private static final String inputFile = "testfile.txt";
     private static final String tokenOutputFile = "lexer.txt";
     private static final String errorFile = "error.txt";
 
@@ -42,6 +42,11 @@ public class FileProcess {
         try{
             tokenWriter = Files.newBufferedWriter(
                     tokenOutputPath,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+            errorWriter = Files.newBufferedWriter(
+                    errorPath,
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);

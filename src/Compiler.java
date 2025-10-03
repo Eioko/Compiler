@@ -5,7 +5,7 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
-public class SysyCompiler {
+public class Compiler {
     public static ArrayList<SysyError> errors = new ArrayList<SysyError>();
     public static void main(String[] args) {
         FileProcess.initOutput();
