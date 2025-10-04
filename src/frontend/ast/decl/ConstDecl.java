@@ -4,7 +4,9 @@ import frontend.ast.Node;
 import frontend.lexer.Token;
 
 import java.util.ArrayList;
-
+/*
+ConstDecl → 'const' BType ConstDef { ',' ConstDef } ';'
+ */
 public class ConstDecl extends Node {
     private Token constToken;
     private Token intToken;

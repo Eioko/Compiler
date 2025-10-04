@@ -1,6 +1,17 @@
 package frontend.ast.exp;
 
-import frontend.ast.Node;
+/**
+ * ConstExp -> AddExp
+ * 语义检查时验证内部使用的标识符为常量。
+ */
+public class ConstExp extends ComptueExp {
+    private AddExp addExp;
 
-public class ConstExp extends Node {
+    public ConstExp(AddExp addExp) {
+        this.addExp = addExp;
+    }
+
+    public AddExp getAddExp() {
+        return addExp;
+    }
 }

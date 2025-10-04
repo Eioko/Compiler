@@ -3,7 +3,9 @@ package frontend.ast.decl;
 import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.lexer.Token;
-
+/*
+ ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal
+ */
 public class ConstDef extends Node {
     private Token ident;
     private Token lbrack = null;

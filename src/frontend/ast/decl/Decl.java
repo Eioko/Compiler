@@ -1,5 +1,7 @@
 package frontend.ast.decl;
-
+/*
+Decl → ConstDecl | VarDecl
+ */
 public class Decl {
     private ConstDecl constDecl;
     private VarDecl varDecl;

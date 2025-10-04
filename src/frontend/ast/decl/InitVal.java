@@ -5,7 +5,10 @@ import frontend.ast.exp.Exp;
 import frontend.lexer.Token;
 
 import java.util.ArrayList;
-
+/*
+ InitVal → Exp |
+            '{' [ Exp { ',' Exp } ] '}'
+ */
 public class InitVal extends Node {
     private Exp exp0;
 
