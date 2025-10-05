@@ -27,17 +27,14 @@ import frontend.lexer.Token;
 import frontend.lexer.TokenStream;
 import frontend.lexer.TokenType;
 
-import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class Parser {
     private final TokenStream tokenStream;
-    private final ArrayList<Token> tokens;
     private final ArrayList<SysyError> errors;
 
     public Parser(ArrayList<Token> tokens, ArrayList<SysyError> errors) {
-        this.tokens = tokens;
         this.tokenStream = new TokenStream(tokens);
         this.errors = errors;
     }
@@ -110,7 +107,7 @@ public class Parser {
         return t0==TokenType.INTTK && t1==TokenType.MAINTK && t2==TokenType.LPARENT;
     }
 
-    private CompUnit parseCompUnit() {
+    public CompUnit parseCompUnit() {
         ArrayList<Decl> decls = new ArrayList<>();
         ArrayList<FuncDef> funcDefs = new ArrayList<>();
         MainFuncDef mainFuncDef;

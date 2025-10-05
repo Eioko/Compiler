@@ -1,6 +1,8 @@
 import error.SysyError;
+import frontend.ast.CompUnit;
 import frontend.lexer.Lexer;
 import frontend.lexer.Token;
+import frontend.parser.Parser;
 import utils.FileProcess;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public class Compiler {
         }else{
             FileProcess.printErrors(errors);
         }
+        Parser parser = new Parser(tokens, errors);
+        CompUnit compUnit = parser.parseCompUnit();
         FileProcess.closeAll();
     }
 }
