@@ -1,8 +1,11 @@
 package frontend.ast.decl;
+
+import frontend.ast.Node;
+
 /*
 Decl → ConstDecl | VarDecl
  */
-public class Decl {
+public class Decl extends Node {
     private ConstDecl constDecl;
     private VarDecl varDecl;
 

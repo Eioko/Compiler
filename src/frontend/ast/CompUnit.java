@@ -6,7 +6,9 @@ import frontend.ast.func.FuncDef;
 import frontend.ast.func.MainFuncDef;
 
 import java.util.ArrayList;
-
+/*
+ CompUnit → {Decl} {FuncDef} MainFuncDef
+ */
 public class CompUnit extends Node{
     private ArrayList<Decl> decls;
     private ArrayList<FuncDef> funcDefs;

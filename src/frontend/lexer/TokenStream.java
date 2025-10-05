@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 public class TokenStream {
     private final ArrayList<Token> tokens;
-    private int index = 0;
+    private int index;
 
     public TokenStream(ArrayList<Token> tokens) {
         this.tokens = tokens;
-    }
-    public ArrayList<Token> getTokens() {
-        return tokens;
+        index = 0;
     }
     public Token getToken(int index) {
         if(index < 0 || index >= tokens.size()){
@@ -37,6 +35,10 @@ public class TokenStream {
         if(index + steps >= tokens.size()){
             return null;
         }
-        return tokens.get(index);
+        return tokens.get(index+steps);
+    }
+
+    public boolean isParseEnd(){
+        return index >= tokens.size();
     }
 }
