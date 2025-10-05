@@ -14,13 +14,9 @@ public class Compiler {
         String source = FileProcess.readFile();
         Lexer lexer = Lexer.getInstance();
         ArrayList<Token> tokens = lexer.lexerAnalyze(source,errors);
-        if(errors.isEmpty()){
-            FileProcess.printToken(tokens);
-        }else{
-            FileProcess.printErrors(errors);
-        }
         Parser parser = new Parser(tokens, errors);
         CompUnit compUnit = parser.parseCompUnit();
+        FileProcess.flushAll(errors);
         FileProcess.closeAll();
     }
 }
