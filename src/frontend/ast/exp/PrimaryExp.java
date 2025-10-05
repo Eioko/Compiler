@@ -16,8 +16,6 @@ public class PrimaryExp extends ComptueExp {
 
     private int utype;
 
-    private PrimaryExp() {}
-
     public PrimaryExp(Token lp, Exp exp, Token rp) {
         this.lparenToken = lp;
         this.exp = exp;

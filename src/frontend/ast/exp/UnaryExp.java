@@ -42,6 +42,7 @@ public class UnaryExp extends ComptueExp {
     public UnaryExp(UnaryOp unaryOp, UnaryExp inner) {
         this.unaryOp = unaryOp;
         this.unaryExp = inner;
+        utype = 2;
     }
 
 
