@@ -17,7 +17,7 @@ public class TokenStream {
         return tokens.get(index);
     }
 
-    public Token getNextToken() {
+    public Token getCurTokenAndGo() {
         if(index >= tokens.size()){
             return null;
         }
