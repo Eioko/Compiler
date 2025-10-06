@@ -38,6 +38,13 @@ public class TokenStream {
         return tokens.get(index+steps);
     }
 
+    public Token previous(){
+        if(index > 0){
+            return tokens.get(index-1);
+        }
+        return null;
+    }
+
     public boolean isParseEnd(){
         return index >= tokens.size();
     }

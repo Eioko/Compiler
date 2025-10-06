@@ -57,6 +57,7 @@ public class Lexer {
             }else if(c=='&'){
                 if(d != '&'){
                     errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
+                    tokens.add(new Token("&&", TokenType.AND, lineNum));
                 }else{
                     tokens.add(new Token("&&", TokenType.AND, lineNum));
                     readIndex++;
@@ -64,6 +65,7 @@ public class Lexer {
             }else if(c=='|'){
                 if(d != '|'){
                     errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
+                    tokens.add(new Token("||", TokenType.OR, lineNum));
                 }else{
                     tokens.add(new Token("||", TokenType.OR, lineNum));
                     readIndex++;

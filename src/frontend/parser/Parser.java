@@ -61,7 +61,7 @@ public class Parser {
         }
         ErrorType errorType = parserErrorMap.get(expected);
         if(errorType != null) {
-            int lineNum = rtnToken.getLineNum();
+            int lineNum = tokenStream.previous().getLineNum();
             errors.add(new SysyError(errorType, lineNum));
             if(expected == TokenType.SEMICN) {
                 return new Token(";",expected,lineNum);
@@ -70,10 +70,10 @@ public class Parser {
             }else if(expected == TokenType.RBRACK) {
                 return new Token("]",expected,lineNum);
             }else{
-                throw new RuntimeException("Unexpected token type: " + expected);
+                throw new RuntimeException("Unexpected token type: " + rtnToken.getTokenType());
             }
         }
-        throw new RuntimeException("Unexpected token type: " + expected);
+        throw new RuntimeException("Unexpected token type: " + rtnToken.getTokenType());
     }
 
     /*
@@ -311,7 +311,7 @@ public class Parser {
         funcType = parseFuncType();
         ident = expect(TokenType.IDENFR);
         lparent = expect(TokenType.LPARENT);
-        if(tokenStream.getCurrentToken().getTokenType()!=TokenType.RPARENT){
+        if(tokenStream.getCurrentToken().getTokenType()==TokenType.INTTK){
             funcFParams = parseFuncFParams();
         }
 
@@ -416,7 +416,7 @@ public class Parser {
         Token currentToken = tokenStream.getCurrentToken();
         TokenType currentType = currentToken.getTokenType();
         if(currentType == TokenType.LBRACE) {
-            Block block = parseBlock();
+            Block block =   parseBlock();
             return finish("Stmt", new Stmt(block));
         }else if(currentType == TokenType.IFTK) {
             Token ifToken = expect(TokenType.IFTK);
@@ -445,7 +445,7 @@ public class Parser {
                 cond = parseCond();
             }
             Token secondSemicn = expect(TokenType.SEMICN);
-            if(tokenStream.getCurrentToken().getTokenType()!=TokenType.RPARENT) {
+            if(tokenStream.getCurrentToken().getTokenType()==TokenType.IDENFR) {
                 stepStmt = parseForStmt();
             }
             Token rparen = expect(TokenType.RPARENT);
@@ -462,7 +462,9 @@ public class Parser {
         }else if(currentType == TokenType.RETURNTK) {
             Token returnToken = expect(TokenType.RETURNTK);
             Exp exp = null;
-            if(tokenStream.getCurrentToken().getTokenType()!=TokenType.SEMICN) {
+            TokenType type = tokenStream.getCurrentToken().getTokenType();
+            if(type == TokenType.IDENFR || type==TokenType.PLUS||type==TokenType.MINU||type==TokenType.NOT
+                    ||type==TokenType.LPARENT||type==TokenType.INTCON) {
                 exp = parseExp();
             }
             Token semicn = expect(TokenType.SEMICN);
@@ -483,11 +485,18 @@ public class Parser {
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt(printfToken, lparen, stringConst, commaTokens, exps, rparen, semicn));
         }else if(tokenStream.getCurrentToken().getTokenType()==TokenType.IDENFR){
-            LVal lVal = parseLVal();
-            Token assignToken = expect(TokenType.ASSIGN);
-            Exp exp = parseExp();
-            Token semicToken = expect(TokenType.SEMICN);
-            return finish("Stmt", new Stmt(lVal, assignToken, exp, semicToken));
+            if(tokenStream.peek(1).getTokenType()==TokenType.LBRACK||
+            tokenStream.peek(1).getTokenType()==TokenType.ASSIGN) {
+                LVal lVal = parseLVal();
+                Token assignToken = expect(TokenType.ASSIGN);
+                Exp exp = parseExp();
+                Token semicToken = expect(TokenType.SEMICN);
+                return finish("Stmt", new Stmt(lVal, assignToken, exp, semicToken));
+            }else{
+                Exp exp1 = parseExp();
+                Token semicn = expect(TokenType.SEMICN);
+                return finish("Stmt", new Stmt(exp1, semicn));
+            }
         }else{
             Exp exp1 = null;
             if(currentType == TokenType.SEMICN) {
@@ -595,7 +604,9 @@ public class Parser {
                 Token identToken = expect(TokenType.IDENFR);
                 Token lparen = expect(TokenType.LPARENT);
                 FuncRParams funcRParams = null;
-                if(tokenStream.getCurrentToken().getTokenType()!=TokenType.RPARENT) {
+                TokenType type = tokenStream.getCurrentToken().getTokenType();
+                if(type == TokenType.IDENFR || type==TokenType.PLUS||type==TokenType.MINU||type==TokenType.NOT
+                        ||type==TokenType.LPARENT||type==TokenType.INTCON) {
                     funcRParams = parseFuncRParams();
                 }
                 Token rparen = expect(TokenType.RPARENT);
@@ -647,6 +658,7 @@ public class Parser {
      */
     private MulExp parseMulExp() {
         UnaryExp firstUnary = parseUnaryExp();
+        finish("MulExp", new MulExp(firstUnary, new ArrayList<>(), new ArrayList<>()));
         ArrayList<Token> opTokens = new ArrayList<>();
         ArrayList<UnaryExp> otherUnaries = new ArrayList<>();
 
@@ -657,8 +669,10 @@ public class Parser {
             opTokens.add(opToken);
             UnaryExp unaryExp = parseUnaryExp();
             otherUnaries.add(unaryExp);
+
+            finish("MulExp", new MulExp(firstUnary, opTokens, otherUnaries));
         }
-        return finish("MulExp", new MulExp(firstUnary, opTokens, otherUnaries));
+        return new MulExp(firstUnary, opTokens, otherUnaries);
     }  
     /*
      *  AddExp → MulExp | AddExp ('+' | '−') MulExp
@@ -668,14 +682,18 @@ public class Parser {
         ArrayList<Token> opTokens = new ArrayList<>();
         ArrayList<MulExp> otherMuls = new ArrayList<>();
 
+        finish("AddExp", new AddExp(firstMul, opTokens, otherMuls));
+
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.PLUS
                 || tokenStream.getCurrentToken().getTokenType()==TokenType.MINU) {
             Token opToken = consume();
             opTokens.add(opToken);
             MulExp mulExp = parseMulExp();
             otherMuls.add(mulExp);
+
+            finish("AddExp", new AddExp(firstMul, opTokens, otherMuls));
         }
-        return finish("AddExp", new AddExp(firstMul, opTokens, otherMuls));
+        return new AddExp(firstMul, opTokens, otherMuls);
     }
     /*
      * RelExp → AddExp | RelExp ('<' | '>' | '<=' | '>=') AddExp
@@ -684,6 +702,7 @@ public class Parser {
         AddExp firstAdd = parseAddExp();
         ArrayList<Token> opTokens = new ArrayList<>();
         ArrayList<AddExp> otherAdds = new ArrayList<>();
+        finish("RelExp", new RelExp(firstAdd, opTokens, otherAdds));
 
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.LSS
                 || tokenStream.getCurrentToken().getTokenType()==TokenType.GRE
@@ -693,8 +712,10 @@ public class Parser {
             opTokens.add(opToken);
             AddExp addExp = parseAddExp();
             otherAdds.add(addExp);
+
+            finish("RelExp", new RelExp(firstAdd, opTokens, otherAdds));
         }
-        return finish("RelExp", new RelExp(firstAdd, opTokens, otherAdds));
+        return new RelExp(firstAdd, opTokens, otherAdds);
     }
     /*
      *  EqExp → RelExp | EqExp ('==' | '!=') RelExp
@@ -704,14 +725,17 @@ public class Parser {
         ArrayList<Token> opTokens = new ArrayList<>();
         ArrayList<RelExp> otherRels = new ArrayList<>();
 
+        finish("EqExp", new EqExp(firstRel, opTokens, otherRels));
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.EQL
                 || tokenStream.getCurrentToken().getTokenType()==TokenType.NEQ) {
             Token opToken = consume();
             opTokens.add(opToken);
             RelExp relExp = parseRelExp();
             otherRels.add(relExp);
+
+            finish("EqExp", new EqExp(firstRel, opTokens, otherRels));
         }
-        return finish("EqExp", new EqExp(firstRel, opTokens, otherRels));
+        return new EqExp(firstRel, opTokens, otherRels);
     }
     /*
      *  LAndExp → EqExp | LAndExp '&&' EqExp
@@ -721,13 +745,16 @@ public class Parser {
         ArrayList<Token> andTokens = new ArrayList<>();
         ArrayList<EqExp> otherEqs = new ArrayList<>();
 
+        finish("LAndExp", new LAndExp(firstEq, andTokens, otherEqs));
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.AND) {
             Token andToken = expect(TokenType.AND);
             andTokens.add(andToken);
             EqExp eqExp = parseEqExp();
             otherEqs.add(eqExp);
+
+            finish("LAndExp", new LAndExp(firstEq, andTokens, otherEqs));
         }
-        return finish("LAndExp", new LAndExp(firstEq, andTokens, otherEqs));
+        return new LAndExp(firstEq, andTokens, otherEqs);
     }
     /*
      *  LOrExp → LAndExp | LOrExp '||' LAndExp 
@@ -737,13 +764,16 @@ public class Parser {
         ArrayList<Token> orTokens = new ArrayList<>();
         ArrayList<LAndExp> otherLAnds = new ArrayList<>();
 
+        finish("LOrExp", new LOrExp(firstLAnd, orTokens, otherLAnds));
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.OR) {
             Token orToken = expect(TokenType.OR);
             orTokens.add(orToken);
             LAndExp landExp = parseLAndExp();
             otherLAnds.add(landExp);
+
+            finish("LOrExp", new LOrExp(firstLAnd, orTokens, otherLAnds));
         }
-        return finish("LOrExp", new LOrExp(firstLAnd, orTokens, otherLAnds));
+        return new LOrExp(firstLAnd, orTokens, otherLAnds);
     }
     /*
      *  ConstExp → AddExp

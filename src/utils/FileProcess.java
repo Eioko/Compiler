@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -34,15 +36,15 @@ public class FileProcess {
 
     private FileProcess() {}
 
-    private void initInput() throws IOException {
+    private static void ensureInputExistsAndReadable() {
         if (!Files.exists(inputPath)) {
-            throw new NoSuchFileException("输入文件不存在: " + inputPath.toAbsolutePath());
+            throw new RuntimeException(new NoSuchFileException("输入文件不存在: " + inputPath.toAbsolutePath()));
         }
         if (!Files.isReadable(inputPath)) {
-            throw new IOException("没有读取权限: " +inputPath.toAbsolutePath());
+            throw new RuntimeException("没有读取权限: " + inputPath.toAbsolutePath());
         }
-        reader = Files.newBufferedReader(inputPath, StandardCharsets.UTF_8);
     }
+
     public static void initOutput() {
         try{
             tokenWriter = Files.newBufferedWriter(
@@ -65,10 +67,22 @@ public class FileProcess {
         }
     }
     public static String readFile(){
-        try{
-            return Files.readString(inputPath);
-        }catch(Exception e){
-            throw new RuntimeException("读取 testfile.txt 失败: " + inputPath.toAbsolutePath(), e);
+        ensureInputExistsAndReadable();
+        try {
+            return Files.readString(inputPath, StandardCharsets.UTF_8);
+        } catch (MalformedInputException mie) {
+            // UTF-8 失败，尝试 GB18030
+            try {
+                byte[] raw = Files.readAllBytes(inputPath);
+                String gb18030 = new String(raw, Charset.forName("GB18030"));
+                return gb18030;
+            } catch (Exception inner) {
+                throw new RuntimeException(
+                        "文件不是 UTF-8，且使用 GB18030 仍无法正确解码，请将 " +
+                                inputPath.toAbsolutePath() + " 转换为 UTF-8 后重试。", inner);
+            }
+        } catch (IOException ioe) {
+            throw new RuntimeException("读取失败: " + inputPath.toAbsolutePath(), ioe);
         }
     }
     private static final ArrayList<String> tokenAndGrammarBuffer = new ArrayList<>();
@@ -98,7 +112,7 @@ public class FileProcess {
                 // 有错误
                 java.util.List<SysyError> sorted = new ArrayList<>(errors);
                 sorted.sort(java.util.Comparator.comparingInt(SysyError::getLineNum));
-                for (SysyError err : errors) {
+                for (SysyError err : sorted) {
                     errorWriter.write(err.toString());
                     errorWriter.newLine();
                 }
@@ -121,17 +135,6 @@ public class FileProcess {
             }
         }
         flushQuietly(tokenWriter);
-    }
-    public static void printErrors(ArrayList<SysyError> errors){
-        for(SysyError error : errors){
-            try{
-                errorWriter.write(error.toString());
-                errorWriter.newLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        flushQuietly(errorWriter);
     }
     public static void closeAll() {
         closeQuietly(tokenWriter);
