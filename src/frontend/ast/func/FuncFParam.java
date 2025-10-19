@@ -2,6 +2,8 @@ package frontend.ast.func;
 
 import frontend.ast.Node;
 import frontend.lexer.Token;
+import midend.symbol.SymbolType;
+import midend.symbol.ValSymbol;
 
 /**
  * FuncFParam -> BType Ident ['[' ']']
@@ -36,5 +38,14 @@ public class FuncFParam extends Node {
 
     public Token getRbrackToken() {
         return rbrackToken;
+    }
+    public ValSymbol check(){
+        SymbolType symbolType;
+        if(lbrackToken!=null && rbrackToken!=null){
+            symbolType = SymbolType.INTARRAY;
+        }else{
+            symbolType = SymbolType.INT;
+        }
+        return new ValSymbol(identToken.getTokenContent(), symbolType);
     }
 }

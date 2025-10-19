@@ -19,4 +19,11 @@ public class Decl extends Node {
         this.varDecl = varDecl;
         utype = 1;
     }
+    public void check(){
+        if(utype == 0){
+            constDecl.check();
+        }else{
+            varDecl.check();
+        }
+    }
 }

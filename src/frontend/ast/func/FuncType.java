@@ -2,6 +2,7 @@ package frontend.ast.func;
 
 import frontend.ast.Node;
 import frontend.lexer.Token;
+import frontend.lexer.TokenType;
 
 /**
  * FuncType -> 'void' | 'int'
@@ -13,7 +14,7 @@ public class FuncType extends Node {
         this.typeToken = typeToken;
     }
 
-    public Token getTypeToken() {
-        return typeToken;
+    public TokenType getTokenType() {
+        return typeToken.getTokenType();
     }
 }

@@ -2,6 +2,7 @@ package frontend.ast.func;
 
 import frontend.ast.Node;
 import frontend.lexer.Token;
+import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
 
@@ -36,5 +37,15 @@ public class FuncFParams extends Node {
 
     public int size() {
         return 1 + (otherParams == null ? 0 : otherParams.size());
+    }
+    public ArrayList<ValSymbol> check(){
+        ArrayList<ValSymbol> res = new ArrayList<>();
+        res.add(firstParam.check());
+        if(!otherParams.isEmpty()) {
+            for(FuncFParam param : otherParams) {
+                res.add(param.check());
+            }
+        }
+        return res;
     }
 }

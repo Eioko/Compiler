@@ -4,6 +4,8 @@ import frontend.ast.decl.Decl;
 import frontend.ast.decl.VarDecl;
 import frontend.ast.func.FuncDef;
 import frontend.ast.func.MainFuncDef;
+import midend.symbol.SymbolTable;
+import midend.symbol.SymbolTableManager;
 
 import java.util.ArrayList;
 /*
@@ -19,5 +21,16 @@ public class CompUnit extends Node{
         this.decls = decls;
         this.funcDefs = funcDefs;
         this.mainFuncDef = mainFuncDef;
+    }
+
+    public void check(){
+        SymbolTableManager.init();
+        for(Decl decl : decls){
+            decl.check();
+        }
+        for(FuncDef funcDef : funcDefs){
+            funcDef.check();
+        }
+        mainFuncDef.check();
     }
 }
