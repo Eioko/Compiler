@@ -1,5 +1,10 @@
 package midend.symbol;
 
+import error.SysyError;
+
+import static error.ErrorManager.errors;
+import static error.ErrorType.UNDEFINED_IDENTIFIER;
+
 public class SymbolTableManager {
     public static SymbolTable rootTable;
     public static SymbolTable currentTable;
@@ -13,13 +18,17 @@ public class SymbolTableManager {
     public static void createSonTable(){
         depth++;
         SymbolTable table = new SymbolTable(depth, currentTable);
-        currentTable.AddSonTable(table);
+        currentTable.addSonTable(table);
         currentTable = table;
     }
-    public static void addSymbol(Symbol s, int line){
-        currentTable.AddSymbol(s, line);
+    public static void addSymbol(Symbol s){
+        currentTable.addSymbol(s);
     }
     public static void gotoFatherTable(){
-        currentTable = currentTable.GetFatherTable();
+        currentTable = currentTable.getFatherTable();
+    }
+    public static Symbol getSymbol(String name, int line){
+        Symbol s = currentTable.getSymbol(name);
+        return s;
     }
 }

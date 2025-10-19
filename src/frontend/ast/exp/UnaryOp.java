@@ -3,7 +3,7 @@ package frontend.ast.exp;
 import frontend.ast.Node;
 import frontend.lexer.Token;
 
-/*
+/**
  UnaryOp → '+' | '−' | '!'
  */
 public class UnaryOp extends Node {

@@ -1,15 +1,16 @@
 package frontend.ast.block;
 
 import frontend.ast.Node;
+import frontend.ast.decl.Decl;
+import frontend.ast.func.FuncType;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
+import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
 /**
  * Block -> '{' { Decl | Stmt } '}'
- * items 中元素顺序即源代码顺序。
- * 每个元素要么是某个声明节点(如 ConstDecl / VarDecl)，要么是 Stmt (或其子类)。
  */
 public class Block extends Node {
     private Token lbraceToken;            // '{'
@@ -40,18 +41,27 @@ public class Block extends Node {
         return items == null || items.isEmpty();
     }
 
-    /**
-     * 工具方法：判断第 idx 个是不是语句
-     */
     public boolean isStmt(int idx) {
         return items.get(idx) instanceof Stmt;
     }
 
-    /**
-     * 工具方法：判断第 idx 个是不是声明
-     */
     public boolean isDecl(int idx) {
         Node n = items.get(idx);
         return !(n instanceof Stmt);
+    }
+
+    public Node getLast() {
+        return items.get(items.size() - 1);
+    }
+    public void check(boolean inFunc, SymbolType funcType){
+        for (Node n : items) {
+            if (n instanceof Stmt) {
+                Stmt stmt = (Stmt) n;
+                stmt.check();
+            }else{
+                Decl decl = (Decl) n;
+                decl.check();
+            }
+        }
     }
 }

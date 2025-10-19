@@ -1,6 +1,7 @@
 package frontend.ast.decl;
 
 import frontend.ast.Node;
+import frontend.ast.exp.ConstExp;
 import frontend.ast.exp.Exp;
 import frontend.lexer.Token;
 
@@ -37,4 +38,14 @@ public class InitVal extends Node {
         utype = 1;
     }
 
+    public void check(){
+        if(utype == 0){
+            exp0.check();
+        }else{
+            exp1.check();
+            for(Exp c : exps) {
+                c.check();
+            }
+        }
+    }
 }

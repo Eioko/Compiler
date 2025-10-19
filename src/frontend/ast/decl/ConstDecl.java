@@ -29,4 +29,12 @@ public class ConstDecl extends Node {
         this.semicnToken = semicnToken;
     }
 
+    public void check(){
+        constDef.check();
+        if(!constDefs.isEmpty()){
+            for(ConstDef def : constDefs){
+                def.check();
+            }
+        }
+    }
 }

@@ -2,12 +2,12 @@ package midend.symbol;
 
 public class ValSymbol extends Symbol {
     private int size;
-    public ValSymbol(String symbolName, SymbolType symbolType, int size) {
-        super(symbolName, symbolType);
+    public ValSymbol(String symbolName, SymbolType symbolType, int line,int size) {
+        super(symbolName, symbolType, line);
         this.size = size;
     }
-    public ValSymbol(String symbolName, SymbolType symbolType) {
+    public ValSymbol(String symbolName, SymbolType symbolType, int line) {
         //这里也可以是数组（函数形参）
-        super(symbolName, symbolType);
+        super(symbolName, symbolType, line);
     }
 }

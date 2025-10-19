@@ -1,7 +1,10 @@
 package frontend.ast.func;
 
+import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.block.Block;
+import frontend.ast.decl.Decl;
+import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
 import midend.symbol.FuncSymbol;
@@ -10,6 +13,9 @@ import midend.symbol.SymbolType;
 import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
+
+import static error.ErrorManager.errors;
+import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
 /**
  * FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
@@ -60,6 +66,7 @@ public class FuncDef extends Node {
     public Token getRparenToken() {
         return rparenToken;
     }
+
     public void check(){
         String name = identToken.getTokenContent();
         int line = identToken.getLineNum();
@@ -73,12 +80,35 @@ public class FuncDef extends Node {
         if(funcFParams!=null){
             params = funcFParams.check();
         }
-        FuncSymbol funcSymbol = new FuncSymbol(name,symbolType, params);
-        SymbolTableManager.addSymbol(funcSymbol, line);
+        FuncSymbol funcSymbol = new FuncSymbol(name, symbolType, line, params);
+        SymbolTableManager.addSymbol(funcSymbol);
 
-        //这里再次把参数加到下一个作用域，上面虽然已经处理过，但是Symbol本身没有层次属性
+        //这里再次把参数加到下一个作用域，上面虽然已经处理过，但是Symbol本身没有depth属性
         SymbolTableManager.createSonTable();
-
+        if(params!=null){
+            for(ValSymbol param : params){
+                SymbolTableManager.addSymbol(param);
+            }
+        }
+        //有返回值的函数缺少return语句（g错误）
+        if(symbolType == SymbolType.INTFUNC){
+            missReturn();
+        }
+        boolean inFunc = true;
+        this.block.check(inFunc, symbolType);
         SymbolTableManager.gotoFatherTable();
+    }
+
+    //有返回值的函数缺少return语句（g错误）
+    public void missReturn(){
+        Node a = block.getLast();
+        int lineNum = this.block.getRbraceToken().getLineNum();
+        if(a instanceof Decl){
+            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+        }
+        Stmt b = (Stmt) a;
+        if(!b.isReturn()){
+            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+        }
     }
 }

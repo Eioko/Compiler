@@ -46,6 +46,6 @@ public class FuncFParam extends Node {
         }else{
             symbolType = SymbolType.INT;
         }
-        return new ValSymbol(identToken.getTokenContent(), symbolType);
+        return new ValSymbol(identToken.getTokenContent(), symbolType, identToken.getLineNum());
     }
 }

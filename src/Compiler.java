@@ -1,4 +1,3 @@
-import error.SysyError;
 import frontend.ast.CompUnit;
 import frontend.lexer.Lexer;
 import frontend.lexer.Token;

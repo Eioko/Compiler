@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class FuncSymbol extends Symbol {
     private final ArrayList<ValSymbol> params;
 
-    public FuncSymbol(String funcName, SymbolType symbolType, ArrayList<ValSymbol> params) {
-        super(funcName, symbolType);
+    public FuncSymbol(String funcName, SymbolType symbolType, int line,ArrayList<ValSymbol> params) {
+        super(funcName, symbolType, line);
         this.params = params;
     }
 }

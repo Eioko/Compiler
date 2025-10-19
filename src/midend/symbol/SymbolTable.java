@@ -25,7 +25,7 @@ public class SymbolTable {
         this.symbolList = new ArrayList<>();
         this.sonTables = new ArrayList<>();
     }
-    public void AddSonTable(SymbolTable symbolTable) {
+    public void addSonTable(SymbolTable symbolTable) {
         this.sonTables.add(symbolTable);
     }
 
@@ -33,32 +33,32 @@ public class SymbolTable {
         return this.sonTables.get(++index);
     }
 
-    public void AddSymbol(Symbol symbol, int line) {
+    public void addSymbol(Symbol symbol) {
         String symbolName = symbol.getSymbolName();
         if (!this.symbolTable.containsKey(symbolName)) {
             this.symbolList.add(symbol);
             this.symbolTable.put(symbolName, symbol);
         } else {  // 当前层有相同名，重定义
-            SysyError e =  new SysyError(ErrorType.REDEFINED_IDENTIFIER, line);
+            SysyError e =  new SysyError(ErrorType.REDEFINED_IDENTIFIER, symbol.getLineNum());
             errors.add(e);
         }
     }
 
-    public SymbolTable GetFatherTable() {
+    public SymbolTable getFatherTable() {
         return this.fatherTable;
     }
 
     private Symbol findInCurrentTable(String name) {
         return this.symbolTable.get(name);
     }
-    public Symbol GetSymbol(String name) {
+    public Symbol getSymbol(String name) {
         SymbolTable table = this;
         while (table != null) {
             Symbol symbol = table.findInCurrentTable(name);
             if (symbol != null) {
                 return symbol;
             }
-            table = table.GetFatherTable();
+            table = table.getFatherTable();
         }
         return null;
     }

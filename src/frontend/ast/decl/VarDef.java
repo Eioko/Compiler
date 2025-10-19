@@ -3,6 +3,10 @@ package frontend.ast.decl;
 import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.lexer.Token;
+import midend.symbol.SymbolTableManager;
+import midend.symbol.SymbolType;
+import midend.symbol.ValSymbol;
+
 /*
      VarDef → Ident [ '[' ConstExp ']' ]
             | Ident [ '[' ConstExp ']' ] '=' InitVal
@@ -43,5 +47,31 @@ public class VarDef extends Node {
         this.initVal = initVal;
 
         this.utype = 1;
+    }
+    public void check(boolean isStatic){
+        String name = ident.getTokenContent();
+        SymbolType symbolType;
+        int line = ident.getLineNum();
+        if(lbrack!=null){
+            if(isStatic){
+                symbolType = SymbolType.STATICINTARRAY;
+            }else{
+                symbolType = SymbolType.INTARRAY;
+            }
+        }else{
+            if(isStatic){
+                symbolType = SymbolType.STATICINT;
+            }else{
+                symbolType = SymbolType.INT;
+            }
+        }
+        ValSymbol valSymbol = new ValSymbol(name, symbolType, line);
+        SymbolTableManager.addSymbol(valSymbol);
+        if(constExp != null){
+            constExp.check();
+        }
+        if(utype==1){
+            initVal.check();
+        }
     }
 }

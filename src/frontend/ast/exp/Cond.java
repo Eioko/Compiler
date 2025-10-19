@@ -13,4 +13,7 @@ public class Cond extends ComptueExp {
     public LOrExp getLOrExp() {
         return lOrExp;
     }
+    public void check(){
+        lOrExp.check();
+    }
 }

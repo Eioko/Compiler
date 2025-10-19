@@ -38,4 +38,14 @@ public class ConstInitVal extends Node {
         this.rbrace = rbrace;
         this.utype = 1;
     }
+    public void check(){
+        if(utype == 0){
+            constExp0.check();
+        }else{
+            constExp1.check();
+            for(ConstExp c : constExps){
+                c.check();
+            }
+        }
+    }
 }

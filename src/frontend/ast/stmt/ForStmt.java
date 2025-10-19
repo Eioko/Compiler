@@ -30,5 +30,7 @@ public class ForStmt extends Node {
         this.assignmentTokens = assignmentTokens;
         this.exps = exps;
     }
+    public void check(){
 
+    }
 }

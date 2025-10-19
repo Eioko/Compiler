@@ -15,4 +15,7 @@ public class Exp extends Node {
     public AddExp getAddExp() {
         return addExp;
     }
+    public void check(){
+        addExp.check();
+    }
 }

@@ -1,8 +1,17 @@
 package frontend.ast.func;
 
+import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.block.Block;
+import frontend.ast.decl.Decl;
+import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
+import frontend.lexer.TokenType;
+import midend.symbol.SymbolTableManager;
+import midend.symbol.SymbolType;
+
+import static error.ErrorManager.errors;
+import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
 /**
  * MainFuncDef -> 'int' 'main' '(' ')' Block
@@ -36,5 +45,24 @@ public class MainFuncDef extends Node {
 
     public Block getBlock() {
         return block;
+    }
+    public void check(){
+        SymbolTableManager.createSonTable();
+        missReturn();
+        boolean inFunc = true;
+        SymbolType symbolType = SymbolType.INTFUNC;
+        this.block.check(inFunc, symbolType);
+        SymbolTableManager.gotoFatherTable();
+    }
+    public void missReturn(){
+        Node a = block.getLast();
+        int lineNum = this.block.getRbraceToken().getLineNum();
+        if(a instanceof Decl){
+            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+        }
+        Stmt b = (Stmt) a;
+        if(!b.isReturn()){
+            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+        }
     }
 }

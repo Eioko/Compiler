@@ -14,4 +14,7 @@ public class ConstExp extends ComptueExp {
     public AddExp getAddExp() {
         return addExp;
     }
+    public void check(){
+        addExp.check();
+    }
 }

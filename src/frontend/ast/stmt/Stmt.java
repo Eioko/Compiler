@@ -1,5 +1,8 @@
 package frontend.ast.stmt;
 
+import error.ErrorManager;
+import error.ErrorType;
+import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.block.Block;
 import frontend.ast.exp.Cond;
@@ -7,8 +10,13 @@ import frontend.ast.exp.Exp;
 import frontend.ast.exp.LVal;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.symbol.Symbol;
+import midend.symbol.SymbolTableManager;
 
 import java.util.ArrayList;
+
+import static error.ErrorManager.errors;
+import static error.ErrorType.UNDEFINED_IDENTIFIER;
 
 /**
  * 语句统一节点，分支：
@@ -46,20 +54,20 @@ public class Stmt extends Node {
 
     private int utype;
 
-    // (1) 赋值
+    // (0) 赋值
     private LVal assignLVal;
     private Token assignToken;
     private Exp assignExp;
     private Token assignSemicn;
 
-    // (2) [Exp] ';'
+    // (1) [Exp] ';'
     private Exp exprStmtExp;      // 可为 null
     private Token exprStmtSemicn;
 
-    // (3) Block
+    // (2) Block
     private Block block;
 
-    // (4) if
+    // (3) if
     private Token ifToken;
     private Token ifLparen;
     private Cond ifCond;
@@ -68,7 +76,7 @@ public class Stmt extends Node {
     private Token elseToken;  // 可为 null
     private Stmt elseStmt;    // 可为 null
 
-    // (5) for
+    // (4) for
     private Token forToken;
     private Token forLparen;
     private ForStmt forInit;     // 可为 null
@@ -79,20 +87,20 @@ public class Stmt extends Node {
     private Token forRparen;
     private Stmt forBody;
 
-    // (6) break
+    // (5) break
     private Token breakToken;
     private Token breakSemicn;
 
-    // (7) continue
+    // (6) continue
     private Token continueToken;
     private Token continueSemicn;
 
-    // (8) return
+    // (7) return
     private Token returnToken;
     private Exp returnExp;       // 可为 null
     private Token returnSemicn;
 
-    // (9) printf
+    // (8) printf
     private Token printfToken;
     private Token printfLparen;
     private Token stringConstToken;
@@ -101,7 +109,7 @@ public class Stmt extends Node {
     private Token printfRparen;
     private Token printfSemicn;
 
-    // 1) 赋值语句
+    // 0) 赋值语句
     public Stmt(LVal lVal, Token assignToken, Exp exp, Token semicn) {
         this.utype = ASSIGN;
         this.assignLVal = lVal;
@@ -110,20 +118,20 @@ public class Stmt extends Node {
         this.assignSemicn = semicn;
     }
 
-    // 2) [Exp] ';'  (exp 可为 null 表示空语句)
+    // 1) [Exp] ';'  (exp 可为 null 表示空语句)
     public Stmt(Exp exp, Token semicn) {
         this.utype = EXP_OR_EMPTY;
         this.exprStmtExp = exp;
         this.exprStmtSemicn = semicn;
     }
 
-    // 3) Block
+    // 2) Block
     public Stmt(Block block) {
         this.utype = BLOCK_TYPE;
         this.block = block;
     }
 
-    // 4) if (...) stmt [else stmt]
+    // 3) if (...) stmt [else stmt]
     public Stmt(Token ifToken,
                 Token lparen,
                 Cond cond,
@@ -141,7 +149,7 @@ public class Stmt extends Node {
         this.elseStmt = elseStmt;
     }
 
-    // 5) for '(' [init] ';' [cond] ';' [update] ')' body
+    // 4) for '(' [init] ';' [cond] ';' [update] ')' body
     public Stmt(Token forToken,
                 Token lparen,
                 ForStmt init,
@@ -163,7 +171,7 @@ public class Stmt extends Node {
         this.forBody = body;
     }
 
-    // 6 or 7) break continue;
+    // 5 or 6) break continue;
     public Stmt(Token Token, Token Semicn) {
         if(Token.getTokenType() == TokenType.BREAKTK){
             this.utype = BREAK;
@@ -178,7 +186,7 @@ public class Stmt extends Node {
     }
 
 
-    // 8) return [exp] ;
+    // 7) return [exp] ;
     public Stmt(Token returnToken, Exp returnExp, Token returnSemicn) {
         this.utype = RETURN;
         this.returnToken = returnToken;
@@ -186,7 +194,7 @@ public class Stmt extends Node {
         this.returnSemicn = returnSemicn;
     }
 
-    // 9) printf '(' StringConst {',' Exp} ')' ';'
+    // 8) printf '(' StringConst {',' Exp} ')' ';'
     public Stmt(Token printfToken,
                 Token lparen,
                 Token stringConstToken,
@@ -202,6 +210,50 @@ public class Stmt extends Node {
         this.printfArgs = args;
         this.printfRparen = rparen;
         this.printfSemicn = semicn;
+    }
+
+    public void check(){
+        if(isAssign()){
+            String name = assignLVal.getIdentToken().getTokenContent();
+            int line = assignLVal.getIdentToken().getLineNum();
+            Symbol symbol = SymbolTableManager.getSymbol(name, line);
+
+            if(symbol != null){
+                //这里不处理未定义错误，防止重复记录一个错误
+                if(symbol.isConst()){
+                    errors.add(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
+                    return;
+                }
+            }
+            assignLVal.check();
+            assignExp.check();
+        }else if(isExprOrEmpty()){
+            if(exprStmtExp!=null){
+                exprStmtExp.check();
+            }
+        }else if(isBlock()){
+            SymbolTableManager.createSonTable();
+            //这里还要判断函数里面的return对不对，可能有问题
+            block.check(false, null);
+            SymbolTableManager.gotoFatherTable();
+        }else if(isIf()){
+            ifCond.check();
+            thenStmt.check();
+            if(elseStmt!=null){
+                elseStmt.check();
+            }
+        }else if(isFor()){
+            if(forInit!=null){
+                forInit.check();
+            }
+            if(forCond!=null){
+                forCond.check();
+            }
+            if(forUpdate!=null){
+                forUpdate.check();
+            }
+            forBody.check();
+        }
     }
 
     public int getUtype() { return utype; }
