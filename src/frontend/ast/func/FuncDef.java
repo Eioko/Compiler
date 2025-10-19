@@ -76,6 +76,9 @@ public class FuncDef extends Node {
         FuncSymbol funcSymbol = new FuncSymbol(name,symbolType, params);
         SymbolTableManager.addSymbol(funcSymbol, line);
 
+        //这里再次把参数加到下一个作用域，上面虽然已经处理过，但是Symbol本身没有层次属性
+        SymbolTableManager.createSonTable();
 
+        SymbolTableManager.gotoFatherTable();
     }
 }

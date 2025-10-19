@@ -13,9 +13,13 @@ public class SymbolTableManager {
     public static void createSonTable(){
         depth++;
         SymbolTable table = new SymbolTable(depth, currentTable);
-
+        currentTable.AddSonTable(table);
+        currentTable = table;
     }
     public static void addSymbol(Symbol s, int line){
         currentTable.AddSymbol(s, line);
+    }
+    public static void gotoFatherTable(){
+        currentTable = currentTable.GetFatherTable();
     }
 }

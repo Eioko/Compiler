@@ -7,8 +7,9 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.errors;
+
 public class Compiler {
-    public static ArrayList<SysyError> errors = new ArrayList<SysyError>();
     public static void main(String[] args) {
         FileProcess.initOutput();
         String source = FileProcess.readFile();

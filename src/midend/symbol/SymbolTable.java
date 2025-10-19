@@ -1,7 +1,12 @@
 package midend.symbol;
 
+import error.ErrorType;
+import error.SysyError;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import static error.ErrorManager.errors;
 
 public class SymbolTable {
     private final int depth;
@@ -34,9 +39,11 @@ public class SymbolTable {
             this.symbolList.add(symbol);
             this.symbolTable.put(symbolName, symbol);
         } else {  // 当前层有相同名，重定义
-
+            SysyError e =  new SysyError(ErrorType.REDEFINED_IDENTIFIER, line);
+            errors.add(e);
         }
     }
+
     public SymbolTable GetFatherTable() {
         return this.fatherTable;
     }
