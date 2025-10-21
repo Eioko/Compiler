@@ -31,15 +31,14 @@ import utils.FileProcess;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static error.ErrorManager.*;
 import static utils.FileProcess.finish;
 
 public class Parser {
     private final TokenStream tokenStream;
-    private final ArrayList<SysyError> errors;
 
-    public Parser(ArrayList<Token> tokens, ArrayList<SysyError> errors) {
+    public Parser(ArrayList<Token> tokens) {
         this.tokenStream = new TokenStream(tokens);
-        this.errors = errors;
     }
     private static final Map<TokenType, ErrorType> parserErrorMap = Map.of(
             TokenType.SEMICN, ErrorType.MISSING_SEMICOLON,
@@ -62,7 +61,7 @@ public class Parser {
         ErrorType errorType = parserErrorMap.get(expected);
         if(errorType != null) {
             int lineNum = tokenStream.previous().getLineNum();
-            errors.add(new SysyError(errorType, lineNum));
+            addError(new SysyError(errorType, lineNum));
             if(expected == TokenType.SEMICN) {
                 return new Token(";",expected,lineNum);
             }else if(expected == TokenType.RPARENT) {
@@ -485,25 +484,32 @@ public class Parser {
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt(printfToken, lparen, stringConst, commaTokens, exps, rparen, semicn));
         }else if(tokenStream.getCurrentToken().getTokenType()==TokenType.IDENFR){
-            if(tokenStream.peek(1).getTokenType()==TokenType.LBRACK||
-            tokenStream.peek(1).getTokenType()==TokenType.ASSIGN) {
+
+            setErrorOff();
+            int intitalIndex = tokenStream.getIndex();
+            LVal potentialLVal = parseLVal();
+            if (tokenStream.getCurrentToken().getTokenType() == TokenType.ASSIGN) {
+                tokenStream.setIndex(intitalIndex);
+                setErrorOn();
                 LVal lVal = parseLVal();
                 Token assignToken = expect(TokenType.ASSIGN);
                 Exp exp = parseExp();
                 Token semicToken = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt(lVal, assignToken, exp, semicToken));
             }else{
+                tokenStream.setIndex(intitalIndex);
+                setErrorOn();
                 Exp exp1 = parseExp();
                 Token semicn = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt(exp1, semicn));
             }
         }else{
-            Exp exp1 = null;
+
             if(currentType == TokenType.SEMICN) {
                 Token semicn = expect(TokenType.SEMICN);
-                return finish("Stmt", new Stmt(exp1, semicn));
+                return finish("Stmt", new Stmt((Exp) null, semicn));
             }
-            exp1 = parseExp();
+            Exp exp1 = parseExp();
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt(exp1, semicn));
         }
@@ -553,7 +559,7 @@ public class Parser {
      *  LVal → Ident ['[' Exp ']'] 
      */
     private LVal parseLVal() {
-        Token ident;
+        Token ident = null;
         Token lbrack = null;
         Exp exp = null;
         Token rbrack = null;

@@ -16,8 +16,8 @@ import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
-import static error.ErrorType.UNDEFINED_IDENTIFIER;
 
 /**
  * 语句统一节点，分支：
@@ -215,6 +215,7 @@ public class Stmt extends Node {
 
     public void check(){
         if(isAssign()){
+            System.out.println("Checking Stmt: utype=" + utype + ", assignLVal=" + assignLVal);
             String name = assignLVal.getIdentToken().getTokenContent();
             int line = assignLVal.getIdentToken().getLineNum();
             Symbol symbol = SymbolTableManager.getSymbol(name, line);
@@ -222,7 +223,7 @@ public class Stmt extends Node {
             if(symbol != null){
                 //这里不处理未定义错误，防止重复记录一个错误
                 if(symbol.isConst()){
-                    errors.add(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
+                    addError(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
                     return;
                 }
             }
@@ -258,17 +259,17 @@ public class Stmt extends Node {
             inLoop--;
         }else if(isBreak()){
             if(inLoop<=0){
-                errors.add(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
+                addError(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
             }
         }else if(isContinue()){
             if(inLoop<=0){
-                errors.add(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
+                addError(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
             }
         }else if(isReturn()){
             if(curFuncSymbol.getSymbolType()== SymbolType.VOIDFUNC){
                 if(returnExp!=null){
                     //这里还checkExp吗？？
-                    errors.add(new SysyError(ErrorType.INVALID_RETURN_IN_VOID_FUNCTION, returnToken.getLineNum()));
+                    addError(new SysyError(ErrorType.INVALID_RETURN_IN_VOID_FUNCTION, returnToken.getLineNum()));
                 }
             }
             if(returnExp!=null){
@@ -285,15 +286,13 @@ public class Stmt extends Node {
             }
             int real = printfArgs.size();
             if(real != format){
-                errors.add(new SysyError(ErrorType.PRINTF_FORMAT_ARG_MISMATCH, printfToken.getLineNum()));
+                addError(new SysyError(ErrorType.PRINTF_FORMAT_ARG_MISMATCH, printfToken.getLineNum()));
             }
             for(Exp exp: printfArgs){
                 exp.check();
             }
         }
     }
-
-    public int getUtype() { return utype; }
 
     public boolean isAssign()       { return utype == ASSIGN; }
     public boolean isExprOrEmpty()  { return utype == EXP_OR_EMPTY; }

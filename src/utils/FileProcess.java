@@ -114,7 +114,6 @@ public class FileProcess {
     public static void flushAll() {
         try {
             if (errors == null || errors.isEmpty()) {
-
                 symbolWriter.write(SymbolTableManager.getSymbolPrints());
                 symbolWriter.flush();
             } else {

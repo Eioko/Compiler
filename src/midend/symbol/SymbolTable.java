@@ -6,6 +6,7 @@ import error.SysyError;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
 
 public class SymbolTable {
@@ -44,7 +45,7 @@ public class SymbolTable {
             this.symbolTable.put(symbolName, symbol);
         } else {  // 当前层有相同名，重定义
             SysyError e =  new SysyError(ErrorType.REDEFINED_IDENTIFIER, symbol.getLineNum());
-            errors.add(e);
+            addError(e);
         }
     }
 

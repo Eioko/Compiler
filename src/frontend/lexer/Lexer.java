@@ -6,6 +6,8 @@ import error.SysyError;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static error.ErrorManager.addError;
+
 public class Lexer {
     private static final Lexer instance = new Lexer();
     private Lexer() {}
@@ -31,7 +33,7 @@ public class Lexer {
             Map.entry("printf",   TokenType.PRINTFTK)
     );
 
-    public ArrayList<Token> lexerAnalyze(String source, ArrayList<SysyError> errors) {
+    public ArrayList<Token> lexerAnalyze(String source) {
 
         int codeLen = source.length();
         source += "\0\0";
@@ -56,7 +58,7 @@ public class Lexer {
                 }
             }else if(c=='&'){
                 if(d != '&'){
-                    errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
+                    addError(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
                     tokens.add(new Token("&&", TokenType.AND, lineNum));
                 }else{
                     tokens.add(new Token("&&", TokenType.AND, lineNum));
@@ -64,7 +66,7 @@ public class Lexer {
                 }
             }else if(c=='|'){
                 if(d != '|'){
-                    errors.add(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
+                    addError(new SysyError(ErrorType.ILLEGAL_SYMBOL, lineNum));
                     tokens.add(new Token("||", TokenType.OR, lineNum));
                 }else{
                     tokens.add(new Token("||", TokenType.OR, lineNum));

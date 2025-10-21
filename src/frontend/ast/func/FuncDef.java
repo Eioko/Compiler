@@ -14,6 +14,7 @@ import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
 import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
@@ -105,11 +106,11 @@ public class FuncDef extends Node {
         Node a = block.getLast();
         int lineNum = this.block.getRbraceToken().getLineNum();
         if(a instanceof Decl){
-            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
         }
         Stmt b = (Stmt) a;
         if(!b.isReturn()){
-            errors.add(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
         }
     }
 }

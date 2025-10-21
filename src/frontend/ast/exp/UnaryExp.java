@@ -11,8 +11,8 @@ import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
-import static error.ErrorType.UNDEFINED_IDENTIFIER;
 
 /**
  * UnaryExp -> PrimaryExp
@@ -64,7 +64,9 @@ public class UnaryExp extends ComptueExp {
             int line = identToken.getLineNum();
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name, line);
             if(funcSymbol == null){
-                errors.add(new SysyError(UNDEFINED_IDENTIFIER, line));
+                if(!name.equals("getint")){
+                    addError(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
+                }
                 //这里要return吗？？？
             }
             if(funcRParams==null){
@@ -76,11 +78,11 @@ public class UnaryExp extends ComptueExp {
             ArrayList<ValSymbol> formatArgs = funcSymbol.getParams();
             ArrayList<Exp> realArgs = funcRParams.allArgs();
             if(realNum != formatNum){
-                errors.add(new SysyError(ErrorType.ARGUMENT_COUNT_MISMATCH, line));
+                addError(new SysyError(ErrorType.ARGUMENT_COUNT_MISMATCH, line));
             }else{
                 for(int i=0;i<formatNum;i++){
                     if(formatArgs.get(i).getSymbolType()!=realArgs.get(i).getType()){
-                        errors.add(new SysyError(ErrorType.ARGUMENT_TYPE_MISMATCH, line));
+                        addError(new SysyError(ErrorType.ARGUMENT_TYPE_MISMATCH, line));
                     }
                 }
             }

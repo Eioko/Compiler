@@ -13,8 +13,8 @@ public class Compiler {
         FileProcess.initOutput();
         String source = FileProcess.readFile();
         Lexer lexer = Lexer.getInstance();
-        ArrayList<Token> tokens = lexer.lexerAnalyze(source,errors);
-        Parser parser = new Parser(tokens, errors);
+        ArrayList<Token> tokens = lexer.lexerAnalyze(source);
+        Parser parser = new Parser(tokens);
         CompUnit compUnit = parser.parseCompUnit();
         compUnit.check();
         FileProcess.flushAll();

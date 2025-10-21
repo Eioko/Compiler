@@ -48,4 +48,11 @@ public class TokenStream {
     public boolean isParseEnd(){
         return index >= tokens.size();
     }
+    //stmt回溯用
+    public int getIndex() {
+        return this.index;
+    }
+    public void setIndex(int index) {
+        this.index = index;
+    }
 }

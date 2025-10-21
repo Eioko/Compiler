@@ -1,13 +1,14 @@
 package frontend.ast.exp;
 
+import error.ErrorType;
 import error.SysyError;
 import frontend.lexer.Token;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
-import static error.ErrorType.UNDEFINED_IDENTIFIER;
 
 /**
  * LVal -> Ident ['[' Exp ']']
@@ -52,7 +53,7 @@ public class LVal extends ComptueExp{
         int line = identToken.getLineNum();
         Symbol symbol = SymbolTableManager.getSymbol(name, line);
         if(symbol == null){
-            errors.add(new SysyError(UNDEFINED_IDENTIFIER, line));
+            addError(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
             //这里要return吗？？？
         }
         if(indexExp != null){

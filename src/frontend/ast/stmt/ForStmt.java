@@ -11,6 +11,7 @@ import midend.symbol.SymbolTableManager;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.addError;
 import static error.ErrorManager.errors;
 
 /*
@@ -59,7 +60,7 @@ public class ForStmt extends Node {
         if(symbol != null){
             //这里不处理未定义错误，防止重复记录一个错误
             if(symbol.isConst()){
-                errors.add(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
+                addError(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
             }
         }
     }
