@@ -23,4 +23,10 @@ public class LOrExp extends ComptueExp {
     public LAndExp getFirstAnd() { return firstAnd; }
     public ArrayList<Token> getOrTokens() { return orTokens; }
     public ArrayList<LAndExp> getOtherAnds() { return otherAnds; }
+    public void check() {
+        firstAnd.check();
+        for(LAndExp otherAnd : otherAnds) {
+            otherAnd.check();
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
@@ -25,4 +26,14 @@ public class MulExp extends ComptueExp {
     public ArrayList<UnaryExp> getOtherUnaries() { return otherUnaries; }
 
     public int size() { return 1 + (otherUnaries == null ? 0 : otherUnaries.size()); }
+
+    public void check(){
+        firstUnary.check();
+        for (UnaryExp unaryExp : otherUnaries) {
+            unaryExp.check();
+        }
+    }
+    public SymbolType getType() {
+        return firstUnary.getType();
+    }
 }

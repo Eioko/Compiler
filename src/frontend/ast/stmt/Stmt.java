@@ -12,6 +12,7 @@ import frontend.lexer.Token;
 import frontend.lexer.TokenType;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
+import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
@@ -221,7 +222,7 @@ public class Stmt extends Node {
             if(symbol != null){
                 //这里不处理未定义错误，防止重复记录一个错误
                 if(symbol.isConst()){
-                    errors.add(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
+                    errors.add(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
                     return;
                 }
             }
@@ -252,7 +253,43 @@ public class Stmt extends Node {
             if(forUpdate!=null){
                 forUpdate.check();
             }
+            inLoop++;
             forBody.check();
+            inLoop--;
+        }else if(isBreak()){
+            if(inLoop<=0){
+                errors.add(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
+            }
+        }else if(isContinue()){
+            if(inLoop<=0){
+                errors.add(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
+            }
+        }else if(isReturn()){
+            if(curFuncSymbol.getSymbolType()== SymbolType.VOIDFUNC){
+                if(returnExp!=null){
+                    //这里还checkExp吗？？
+                    errors.add(new SysyError(ErrorType.INVALID_RETURN_IN_VOID_FUNCTION, returnToken.getLineNum()));
+                }
+            }
+            if(returnExp!=null){
+                returnExp.check();
+            }
+
+        }else if(isPrintf()){
+            String constStr = stringConstToken.getTokenContent();
+            int format = 0;
+            for(int i=0;i<constStr.length()-1;i++){
+                if(constStr.charAt(i)=='%'&&constStr.charAt(i+1)=='d'){
+                    format++;
+                }
+            }
+            int real = printfArgs.size();
+            if(real != format){
+                errors.add(new SysyError(ErrorType.PRINTF_FORMAT_ARG_MISMATCH, printfToken.getLineNum()));
+            }
+            for(Exp exp: printfArgs){
+                exp.check();
+            }
         }
     }
 

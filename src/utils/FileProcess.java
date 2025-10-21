@@ -2,6 +2,7 @@ package utils;
 
 import frontend.lexer.Token;
 import error.SysyError;
+import midend.symbol.SymbolTableManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,21 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static error.ErrorManager.errors;
+
 public class FileProcess {
     private static final String inputFile = "testfile.txt";
     private static final String tokenOutputFile = "lexer.txt";
     private static final String errorFile = "error.txt";
     private static final String parserOutputFile = "parser.txt";
+    private static final String symbolOutputFile = "symbol.txt";
 
     private static final Path inputPath = Path.of(inputFile);
     private static final Path tokenOutputPath = Path.of(tokenOutputFile);
     private static final Path errorPath = Path.of(errorFile);
     private static final Path parserOutputPath = Path.of(parserOutputFile);
+    private static final Path symbolOutputPath = Path.of(symbolOutputFile);
 
     private static BufferedWriter tokenWriter;
     private static BufferedReader reader;
     private static BufferedWriter errorWriter;
     private static BufferedWriter parserWriter;
+    private static BufferedWriter symbolWriter;
 
     private FileProcess() {}
 
@@ -59,6 +65,11 @@ public class FileProcess {
                     StandardOpenOption.TRUNCATE_EXISTING);
             parserWriter = Files.newBufferedWriter(
                     parserOutputPath,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+            symbolWriter = Files.newBufferedWriter(
+                    symbolOutputPath,
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
@@ -100,14 +111,12 @@ public class FileProcess {
         return node;
     }
     //输出决策
-    public static void flushAll(List<SysyError> errors) {
+    public static void flushAll() {
         try {
             if (errors == null || errors.isEmpty()) {
-                for (String line : tokenAndGrammarBuffer) {
-                    parserWriter.write(line);
-                    parserWriter.newLine();
-                }
-                parserWriter.flush();
+
+                symbolWriter.write(SymbolTableManager.getSymbolPrints());
+                symbolWriter.flush();
             } else {
                 // 有错误
                 java.util.List<SysyError> sorted = new ArrayList<>(errors);
@@ -121,7 +130,7 @@ public class FileProcess {
         } catch (IOException e) {
             throw new RuntimeException("写出文件失败", e);
         } finally {
-            tokenAndGrammarBuffer.clear();
+            //tokenAndGrammarBuffer.clear();
         }
     }
 
@@ -141,6 +150,7 @@ public class FileProcess {
         closeQuietly(errorWriter);
         closeQuietly(reader);
         closeQuietly(parserWriter);
+        closeQuietly(symbolWriter);
     }
     private static void flushQuietly(BufferedWriter w) {
         if (w != null) {

@@ -1,6 +1,7 @@
 package frontend.ast.exp;
 
 import frontend.ast.Node;
+import midend.symbol.SymbolType;
 
 /**
  * Exp -> AddExp
@@ -17,5 +18,8 @@ public class Exp extends Node {
     }
     public void check(){
         addExp.check();
+    }
+    public SymbolType getType() {
+        return addExp.getType();
     }
 }

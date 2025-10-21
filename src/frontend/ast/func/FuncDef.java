@@ -81,6 +81,7 @@ public class FuncDef extends Node {
             params = funcFParams.check();
         }
         FuncSymbol funcSymbol = new FuncSymbol(name, symbolType, line, params);
+        curFuncSymbol = funcSymbol;
         SymbolTableManager.addSymbol(funcSymbol);
 
         //这里再次把参数加到下一个作用域，上面虽然已经处理过，但是Symbol本身没有depth属性

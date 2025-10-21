@@ -33,6 +33,10 @@ public class SymbolTable {
         return this.sonTables.get(++index);
     }
 
+    public ArrayList<SymbolTable> GetSonTables() {
+        return this.sonTables;
+    }
+
     public void addSymbol(Symbol symbol) {
         String symbolName = symbol.getSymbolName();
         if (!this.symbolTable.containsKey(symbolName)) {
@@ -61,6 +65,33 @@ public class SymbolTable {
             table = table.getFatherTable();
         }
         return null;
+    }
+    public ArrayList<String> printSymbolTable() {
+        ArrayList<String> list = new ArrayList<>();
+        for(Symbol symbol : this.symbolList) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(depth);
+            stringBuilder.append(" ");
+            stringBuilder.append(symbol.getSymbolName());
+            stringBuilder.append(" ");
+            stringBuilder.append(symbol.getSymbolType());
+
+            String s = stringBuilder.toString();
+            list.add(s);
+        }
+        return list;
+    }
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Symbol symbol : this.symbolList) {
+            stringBuilder.append(this.depth + " " + symbol.getSymbolName() +" "+ symbol.getSymbolType() + "\n");
+        }
+
+        for (SymbolTable sonTable : this.sonTables) {
+            stringBuilder.append(sonTable.toString());
+        }
+
+        return stringBuilder.toString();
     }
 
 }

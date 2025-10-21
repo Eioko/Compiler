@@ -9,4 +9,7 @@ public class FuncSymbol extends Symbol {
         super(funcName, symbolType, line);
         this.params = params;
     }
+    public ArrayList<ValSymbol> getParams() {
+        return params;
+    }
 }

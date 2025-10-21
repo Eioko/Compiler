@@ -1,12 +1,21 @@
 package frontend.ast.stmt;
 
+import error.ErrorType;
+import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.exp.Exp;
 import frontend.ast.exp.LVal;
 import frontend.lexer.Token;
+import midend.symbol.Symbol;
+import midend.symbol.SymbolTableManager;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.errors;
+
+/*
+ForStmt → LVal '=' Exp { ',' LVal '=' Exp }
+ */
 public class ForStmt extends Node {
     private LVal lVal;
     private Token assignToken;
@@ -31,6 +40,27 @@ public class ForStmt extends Node {
         this.exps = exps;
     }
     public void check(){
+        assignToConst(lVal);
+        for(LVal l : lvals){
+            assignToConst(l);
+        }
+        lVal.check();
+        exp.check();
+        for(int i=0;i<assignmentTokens.size();i++){
+            lvals.get(i).check();
+            exps.get(i).check();
+        }
+    }
+    public void assignToConst(LVal lVal) {
+        String name = lVal.getIdentToken().getTokenContent();
+        int line = lVal.getIdentToken().getLineNum();
+        Symbol symbol = SymbolTableManager.getSymbol(name, line);
 
+        if(symbol != null){
+            //这里不处理未定义错误，防止重复记录一个错误
+            if(symbol.isConst()){
+                errors.add(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
+            }
+        }
     }
 }

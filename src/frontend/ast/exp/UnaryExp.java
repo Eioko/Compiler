@@ -1,7 +1,18 @@
 package frontend.ast.exp;
 
+import error.ErrorType;
+import error.SysyError;
 import frontend.ast.func.FuncRParams;
 import frontend.lexer.Token;
+import midend.symbol.FuncSymbol;
+import midend.symbol.SymbolTableManager;
+import midend.symbol.SymbolType;
+import midend.symbol.ValSymbol;
+
+import java.util.ArrayList;
+
+import static error.ErrorManager.errors;
+import static error.ErrorType.UNDEFINED_IDENTIFIER;
 
 /**
  * UnaryExp -> PrimaryExp
@@ -45,7 +56,57 @@ public class UnaryExp extends ComptueExp {
         utype = 2;
     }
 
+    public void check(){
+        if(utype == 0){
+            primaryExp.check();
+        }else if(utype == 1){
+            String name = identToken.getTokenContent();
+            int line = identToken.getLineNum();
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name, line);
+            if(funcSymbol == null){
+                errors.add(new SysyError(UNDEFINED_IDENTIFIER, line));
+                //这里要return吗？？？
+            }
+            if(funcRParams==null){
+                return;
+            }
+            int formatNum = funcSymbol.getParams().size();
+            int realNum = funcRParams.getOtherExps().size()+1;
 
+            ArrayList<ValSymbol> formatArgs = funcSymbol.getParams();
+            ArrayList<Exp> realArgs = funcRParams.allArgs();
+            if(realNum != formatNum){
+                errors.add(new SysyError(ErrorType.ARGUMENT_COUNT_MISMATCH, line));
+            }else{
+                for(int i=0;i<formatNum;i++){
+                    if(formatArgs.get(i).getSymbolType()!=realArgs.get(i).getType()){
+                        errors.add(new SysyError(ErrorType.ARGUMENT_TYPE_MISMATCH, line));
+                    }
+                }
+            }
+
+            funcRParams.check();
+        }else if(utype == 2){
+            unaryOp.check();
+            unaryExp.check();
+        }
+    }
+    public SymbolType getType() {
+        if(utype == 0){
+            return primaryExp.getType();
+        }else if(utype == 1){
+            String name = identToken.getTokenContent();
+            int line = identToken.getLineNum();
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name, line);
+            if(funcSymbol != null){
+                return funcSymbol.getSymbolType();
+            }else{
+                return null;
+            }
+        }else{
+            return SymbolType.INT;
+        }
+    }
     public PrimaryExp getPrimaryExp() { return primaryExp; }
 
     public Token getIdentToken() { return identToken; }

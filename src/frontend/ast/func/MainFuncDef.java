@@ -7,8 +7,11 @@ import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.symbol.FuncSymbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
+
+import java.util.ArrayList;
 
 import static error.ErrorManager.errors;
 import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
@@ -50,6 +53,8 @@ public class MainFuncDef extends Node {
         SymbolTableManager.createSonTable();
         missReturn();
         boolean inFunc = true;
+        int line = mainToken.getLineNum();
+        curFuncSymbol = new FuncSymbol("main", SymbolType.INTFUNC, line, new ArrayList<>());
         SymbolType symbolType = SymbolType.INTFUNC;
         this.block.check(inFunc, symbolType);
         SymbolTableManager.gotoFatherTable();

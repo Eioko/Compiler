@@ -14,4 +14,5 @@ public class UnaryOp extends Node {
     public Token getOp() {
         return op;
     }
+    public void check() {}
 }

@@ -23,4 +23,11 @@ public class LAndExp extends ComptueExp {
     public EqExp getFirstEq() { return firstEq; }
     public ArrayList<Token> getAndTokens() { return andTokens; }
     public ArrayList<EqExp> getOtherEqs() { return otherEqs; }
+
+    public void check(){
+        firstEq.check();
+        for(EqExp e: otherEqs){
+            e.check();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import error.SysyError;
 import frontend.lexer.Token;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
+import midend.symbol.SymbolType;
 
 import static error.ErrorManager.errors;
 import static error.ErrorType.UNDEFINED_IDENTIFIER;
@@ -56,6 +57,24 @@ public class LVal extends ComptueExp{
         }
         if(indexExp != null){
             indexExp.check();
+        }
+    }
+    public SymbolType getType(){
+        String name = identToken.getTokenContent();
+        int line = identToken.getLineNum();
+        Symbol symbol = SymbolTableManager.getSymbol(name, line);
+        if(symbol != null){
+            SymbolType type = symbol.getSymbolType();
+            if(type == SymbolType.INT || type == SymbolType.CONSTINT || type == SymbolType.STATICINT){
+                return SymbolType.INT;
+            }else{
+                if(lbrackToken != null){
+                    return SymbolType.INT;
+                }
+                return SymbolType.INTARRAY;
+            }
+        }else{
+            return null;
         }
     }
 }

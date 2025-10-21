@@ -1,9 +1,6 @@
 package midend.symbol;
 
-import error.SysyError;
-
-import static error.ErrorManager.errors;
-import static error.ErrorType.UNDEFINED_IDENTIFIER;
+import java.util.ArrayList;
 
 public class SymbolTableManager {
     public static SymbolTable rootTable;
@@ -30,5 +27,8 @@ public class SymbolTableManager {
     public static Symbol getSymbol(String name, int line){
         Symbol s = currentTable.getSymbol(name);
         return s;
+    }
+    public static String getSymbolPrints(){
+        return rootTable.toString();
     }
 }

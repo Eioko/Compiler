@@ -23,4 +23,10 @@ public class EqExp extends ComptueExp {
     public RelExp getFirstRel() { return firstRel; }
     public ArrayList<Token> getOpTokens() { return opTokens; }
     public ArrayList<RelExp> getOtherRels() { return otherRels; }
+    public void check(){
+        firstRel.check();
+        for(RelExp otherRel: otherRels){
+            otherRel.check();
+        }
+    }
 }

@@ -16,7 +16,8 @@ public class Compiler {
         ArrayList<Token> tokens = lexer.lexerAnalyze(source,errors);
         Parser parser = new Parser(tokens, errors);
         CompUnit compUnit = parser.parseCompUnit();
-        FileProcess.flushAll(errors);
+        compUnit.check();
+        FileProcess.flushAll();
         FileProcess.closeAll();
     }
 }

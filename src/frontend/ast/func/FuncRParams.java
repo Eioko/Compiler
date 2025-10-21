@@ -37,4 +37,16 @@ public class FuncRParams extends Node {
     public int size() {
         return 1 + (otherExps == null ? 0 : otherExps.size());
     }
+    public void check(){
+        firstExp.check();
+        for(Exp exp : otherExps){
+            exp.check();
+        }
+    }
+    public ArrayList<Exp> allArgs(){
+        ArrayList<Exp> allArgs = new ArrayList<>();
+        allArgs.add(firstExp);
+        allArgs.addAll(otherExps);
+        return allArgs;
+    }
 }

@@ -23,4 +23,11 @@ public class RelExp extends ComptueExp{
     public AddExp getFirstAdd() { return firstAdd; }
     public ArrayList<Token> getOpTokens() { return opTokens; }
     public ArrayList<AddExp> getOtherAdds() { return otherAdds; }
+
+    public void check(){
+        firstAdd.check();
+        for(AddExp addExp : otherAdds){
+            addExp.check();
+        }
+    }
 }
