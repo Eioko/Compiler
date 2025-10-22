@@ -31,9 +31,9 @@ public class InitVal extends Node {
                    ArrayList<Exp> exps,
                    Token rbrace){
         this.lbrace = lbrace;
-        this.exp0 = exp;
-        this.commaTokens = commaTokens;
         this.exp1 = exp;
+        this.commaTokens = commaTokens;
+        this.exps = exps;
         this.rbrace = rbrace;
         utype = 1;
     }
@@ -42,9 +42,11 @@ public class InitVal extends Node {
         if(utype == 0){
             exp0.check();
         }else{
-            exp1.check();
-            for(Exp c : exps) {
-                c.check();
+            if(exp1!=null){
+                exp1.check();
+                for(Exp c : exps) {
+                    c.check();
+                }
             }
         }
     }

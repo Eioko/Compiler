@@ -41,11 +41,10 @@ public class FuncFParams extends Node {
     public ArrayList<ValSymbol> check(){
         ArrayList<ValSymbol> res = new ArrayList<>();
         res.add(firstParam.check());
-        if(!otherParams.isEmpty()) {
-            for(FuncFParam param : otherParams) {
-                res.add(param.check());
-            }
+        for(FuncFParam param : otherParams) {
+            res.add(param.check());
         }
+
         return res;
     }
 }

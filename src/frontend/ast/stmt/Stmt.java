@@ -178,12 +178,11 @@ public class Stmt extends Node {
             this.utype = BREAK;
             this.breakToken = Token;
             this.breakSemicn = Semicn;
-        }else if(Token.getTokenType() == TokenType.BREAKTK){
+        }else if(Token.getTokenType() == TokenType.CONTINUETK){
             this.utype = CONTINUE;
             this.continueToken = Token;
             this.continueSemicn = Semicn;
         }
-
     }
 
 
@@ -215,7 +214,6 @@ public class Stmt extends Node {
 
     public void check(){
         if(isAssign()){
-            System.out.println("Checking Stmt: utype=" + utype + ", assignLVal=" + assignLVal);
             String name = assignLVal.getIdentToken().getTokenContent();
             int line = assignLVal.getIdentToken().getLineNum();
             Symbol symbol = SymbolTableManager.getSymbol(name, line);
@@ -263,7 +261,7 @@ public class Stmt extends Node {
             }
         }else if(isContinue()){
             if(inLoop<=0){
-                addError(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, breakToken.getLineNum()));
+                addError(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, continueToken.getLineNum()));
             }
         }else if(isReturn()){
             if(curFuncSymbol.getSymbolType()== SymbolType.VOIDFUNC){
@@ -293,7 +291,9 @@ public class Stmt extends Node {
             }
         }
     }
-
+    public int getType(){
+        return utype;
+    }
     public boolean isAssign()       { return utype == ASSIGN; }
     public boolean isExprOrEmpty()  { return utype == EXP_OR_EMPTY; }
     public boolean isBlock()        { return utype == BLOCK_TYPE; }

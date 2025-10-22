@@ -279,6 +279,7 @@ public class Parser {
         ArrayList<Token> commaTokens = new ArrayList<>();
         ArrayList<Exp> exps = new ArrayList<>();
         Token rbrace;
+
         if(tokenStream.getCurrentToken().getTokenType()!=TokenType.LBRACE) {
             exp0 = parseExp();
             return finish("InitVal", new InitVal(exp0));
@@ -484,28 +485,35 @@ public class Parser {
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt(printfToken, lparen, stringConst, commaTokens, exps, rparen, semicn));
         }else if(tokenStream.getCurrentToken().getTokenType()==TokenType.IDENFR){
-
-            setErrorOff();
             int intitalIndex = tokenStream.getIndex();
-            LVal potentialLVal = parseLVal();
-            if (tokenStream.getCurrentToken().getTokenType() == TokenType.ASSIGN) {
-                tokenStream.setIndex(intitalIndex);
-                setErrorOn();
+            boolean meetAssign = false;
+            for(int i=1; i+intitalIndex<tokenStream.getLength();i++){
+                if(tokenStream.peek(i).getTokenType()==TokenType.ASSIGN) {
+
+                    meetAssign = true;
+                    break;
+                }
+                if(tokenStream.peek(i).getTokenType()==TokenType.SEMICN){
+                    break;
+                }
+            }
+            if(meetAssign){
                 LVal lVal = parseLVal();
+                if(lVal==null)
+                    System.out.println(888);
                 Token assignToken = expect(TokenType.ASSIGN);
                 Exp exp = parseExp();
                 Token semicToken = expect(TokenType.SEMICN);
-                return finish("Stmt", new Stmt(lVal, assignToken, exp, semicToken));
+                Stmt stmt= new Stmt(lVal, assignToken, exp, semicToken);
+                return finish("Stmt", stmt);
             }else{
-                tokenStream.setIndex(intitalIndex);
-                setErrorOn();
                 Exp exp1 = parseExp();
                 Token semicn = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt(exp1, semicn));
             }
         }else{
 
-            if(currentType == TokenType.SEMICN) {
+            if (currentType == TokenType.SEMICN) {
                 Token semicn = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt((Exp) null, semicn));
             }
@@ -590,6 +598,7 @@ public class Parser {
             Number number = parseNumber();
             return finish("PrimaryExp", new PrimaryExp(number));
         }
+        System.out.println(currentToken.getLineNum());
         throw new RuntimeException("PrimaryExp Unexpected token type: " + currentType);
     }
     /*

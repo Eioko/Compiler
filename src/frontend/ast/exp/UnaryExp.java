@@ -81,7 +81,15 @@ public class UnaryExp extends ComptueExp {
                 addError(new SysyError(ErrorType.ARGUMENT_COUNT_MISMATCH, line));
             }else{
                 for(int i=0;i<formatNum;i++){
-                    if(formatArgs.get(i).getSymbolType()!=realArgs.get(i).getType()){
+                    SymbolType symbolType = realArgs.get(i).getType();
+                    if(symbolType == SymbolType.INTFUNC ||
+                            symbolType == SymbolType.CONSTINT || symbolType == SymbolType.STATICINT){
+                        symbolType = SymbolType.INT;
+                    }
+                    if(symbolType == SymbolType.STATICINTARRAY || symbolType == SymbolType.CONSTINTARRAY){
+                        symbolType = SymbolType.INTARRAY;
+                    }
+                    if(formatArgs.get(i).getSymbolType()!=symbolType){
                         addError(new SysyError(ErrorType.ARGUMENT_TYPE_MISMATCH, line));
                     }
                 }
@@ -109,6 +117,7 @@ public class UnaryExp extends ComptueExp {
             return SymbolType.INT;
         }
     }
+
     public PrimaryExp getPrimaryExp() { return primaryExp; }
 
     public Token getIdentToken() { return identToken; }

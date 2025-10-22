@@ -5,7 +5,9 @@ import java.util.ArrayList;
 public class TokenStream {
     private final ArrayList<Token> tokens;
     private int index;
-
+    public int getLength(){
+        return tokens.size();
+    }
     public TokenStream(ArrayList<Token> tokens) {
         this.tokens = tokens;
         index = 0;

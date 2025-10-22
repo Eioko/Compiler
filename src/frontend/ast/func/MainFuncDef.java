@@ -63,8 +63,13 @@ public class MainFuncDef extends Node {
     public void missReturn(){
         Node a = block.getLast();
         int lineNum = this.block.getRbraceToken().getLineNum();
+        if(a == null){
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            return;
+        }
         if(a instanceof Decl){
             addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            return;
         }
         Stmt b = (Stmt) a;
         if(!b.isReturn()){

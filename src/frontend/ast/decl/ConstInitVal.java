@@ -42,9 +42,11 @@ public class ConstInitVal extends Node {
         if(utype == 0){
             constExp0.check();
         }else{
-            constExp1.check();
-            for(ConstExp c : constExps){
-                c.check();
+            if(constExp1!=null){
+                constExp1.check();
+                for(ConstExp c : constExps){
+                    c.check();
+                }
             }
         }
     }

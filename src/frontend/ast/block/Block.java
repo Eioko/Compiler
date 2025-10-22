@@ -51,6 +51,7 @@ public class Block extends Node {
     }
 
     public Node getLast() {
+        if(isEmpty()) return null;
         return items.get(items.size() - 1);
     }
     public void check(boolean inFunc, SymbolType funcType){
