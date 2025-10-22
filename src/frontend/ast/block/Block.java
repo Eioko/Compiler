@@ -54,7 +54,7 @@ public class Block extends Node {
         if(isEmpty()) return null;
         return items.get(items.size() - 1);
     }
-    public void check(boolean inFunc, SymbolType funcType){
+    public void check(){
         for (Node n : items) {
             if (n instanceof Stmt) {
                 Stmt stmt = (Stmt) n;

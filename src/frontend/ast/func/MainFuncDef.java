@@ -50,6 +50,7 @@ public class MainFuncDef extends Node {
     public Block getBlock() {
         return block;
     }
+
     public void check(){
         SymbolTableManager.createSonTable();
         missReturn();
@@ -57,7 +58,7 @@ public class MainFuncDef extends Node {
         int line = mainToken.getLineNum();
         curFuncSymbol = new FuncSymbol("main", SymbolType.INTFUNC, line, new ArrayList<>());
         SymbolType symbolType = SymbolType.INTFUNC;
-        this.block.check(inFunc, symbolType);
+        this.block.check();
         SymbolTableManager.gotoFatherTable();
     }
     public void missReturn(){

@@ -95,9 +95,8 @@ public class FuncDef extends Node {
         if(symbolType == SymbolType.INTFUNC){
             missReturn();
         }
-        boolean inFunc = true;
-        this.block.check(inFunc, symbolType);
-
+        this.block.check();
+        curFuncSymbol = null;
         SymbolTableManager.gotoFatherTable();
     }
 

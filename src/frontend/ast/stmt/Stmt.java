@@ -234,7 +234,7 @@ public class Stmt extends Node {
         }else if(isBlock()){
             SymbolTableManager.createSonTable();
             //这里还要判断函数里面的return对不对，可能有问题
-            block.check(false, null);
+            block.check();
             SymbolTableManager.gotoFatherTable();
         }else if(isIf()){
             ifCond.check();
@@ -264,10 +264,12 @@ public class Stmt extends Node {
                 addError(new SysyError(ErrorType.LOOP_CONTROL_OUTSIDE_LOOP, continueToken.getLineNum()));
             }
         }else if(isReturn()){
-            if(curFuncSymbol.getSymbolType()== SymbolType.VOIDFUNC){
-                if(returnExp!=null){
-                    //这里还checkExp吗？？
-                    addError(new SysyError(ErrorType.INVALID_RETURN_IN_VOID_FUNCTION, returnToken.getLineNum()));
+            if(curFuncSymbol!=null){
+                if(curFuncSymbol.getSymbolType()== SymbolType.VOIDFUNC){
+                    if(returnExp!=null){
+                        //这里还checkExp吗？？
+                        addError(new SysyError(ErrorType.INVALID_RETURN_IN_VOID_FUNCTION, returnToken.getLineNum()));
+                    }
                 }
             }
             if(returnExp!=null){

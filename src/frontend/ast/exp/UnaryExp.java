@@ -12,7 +12,6 @@ import midend.symbol.ValSymbol;
 import java.util.ArrayList;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 
 /**
  * UnaryExp -> PrimaryExp
@@ -67,7 +66,8 @@ public class UnaryExp extends ComptueExp {
                 if(!name.equals("getint")){
                     addError(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
                 }
-                //这里要return吗？？？
+                //这里要return吗？？？-----要！
+                return;
             }
             if(funcRParams==null){
                 return;
