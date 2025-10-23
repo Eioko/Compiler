@@ -42,31 +42,6 @@ public class FuncDef extends Node {
         this.rparenToken = rparenToken;
         this.block = block;
     }
-
-    public FuncType getFuncType() {
-        return funcType;
-    }
-
-    public Token getIdentToken() {
-        return identToken;
-    }
-
-    public FuncFParams getFuncFParams() {
-        return funcFParams;
-    }
-
-    public Block getBlock() {
-        return block;
-    }
-
-    public Token getLparenToken() {
-        return lparenToken;
-    }
-
-    public Token getRparenToken() {
-        return rparenToken;
-    }
-
     public void check(){
         String name = identToken.getTokenContent();
         int line = identToken.getLineNum();
@@ -80,7 +55,9 @@ public class FuncDef extends Node {
         if(funcFParams!=null){
             params = funcFParams.check();
         }
+
         FuncSymbol funcSymbol = new FuncSymbol(name, symbolType, line, params);
+
         curFuncSymbol = funcSymbol;
         SymbolTableManager.addSymbol(funcSymbol);
 
@@ -96,7 +73,6 @@ public class FuncDef extends Node {
             missReturn();
         }
         this.block.check();
-        curFuncSymbol = null;
         SymbolTableManager.gotoFatherTable();
     }
 

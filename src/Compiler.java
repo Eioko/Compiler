@@ -6,7 +6,6 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
-import static error.ErrorManager.errors;
 
 public class Compiler {
     public static void main(String[] args) {

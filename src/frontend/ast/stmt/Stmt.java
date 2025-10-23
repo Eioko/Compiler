@@ -1,6 +1,5 @@
 package frontend.ast.stmt;
 
-import error.ErrorManager;
 import error.ErrorType;
 import error.SysyError;
 import frontend.ast.Node;
@@ -17,7 +16,6 @@ import midend.symbol.SymbolType;
 import java.util.ArrayList;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 
 /**
  * 语句统一节点，分支：
@@ -275,7 +273,6 @@ public class Stmt extends Node {
             if(returnExp!=null){
                 returnExp.check();
             }
-
         }else if(isPrintf()){
             String constStr = stringConstToken.getTokenContent();
             int format = 0;
@@ -306,58 +303,4 @@ public class Stmt extends Node {
     public boolean isReturn()       { return utype == RETURN; }
     public boolean isPrintf()       { return utype == PRINTF; }
 
-    // 赋值
-    public LVal getAssignLVal() { return assignLVal; }
-    public Token getAssignToken() { return assignToken; }
-    public Exp getAssignExp() { return assignExp; }
-    public Token getAssignSemicn() { return assignSemicn; }
-
-    // [Exp] ';'
-    public Exp getExprStmtExp() { return exprStmtExp; }
-    public Token getExprStmtSemicn() { return exprStmtSemicn; }
-
-    // Block
-    public Block getBlock() { return block; }
-
-    // If
-    public Token getIfToken() { return ifToken; }
-    public Token getIfLparen() { return ifLparen; }
-    public Cond getIfCond() { return ifCond; }
-    public Token getIfRparen() { return ifRparen; }
-    public Stmt getThenStmt() { return thenStmt; }
-    public Token getElseToken() { return elseToken; }
-    public Stmt getElseStmt() { return elseStmt; }
-
-    // For
-    public Token getForToken() { return forToken; }
-    public Token getForLparen() { return forLparen; }
-    public ForStmt getForInit() { return forInit; }
-    public Token getForFirstSemicn() { return forFirstSemicn; }
-    public Cond getForCond() { return forCond; }
-    public Token getForSecondSemicn() { return forSecondSemicn; }
-    public ForStmt getForUpdate() { return forUpdate; }
-    public Token getForRparen() { return forRparen; }
-    public Stmt getForBody() { return forBody; }
-
-    // Break
-    public Token getBreakToken() { return breakToken; }
-    public Token getBreakSemicn() { return breakSemicn; }
-
-    // Continue
-    public Token getContinueToken() { return continueToken; }
-    public Token getContinueSemicn() { return continueSemicn; }
-
-    // Return
-    public Token getReturnToken() { return returnToken; }
-    public Exp getReturnExp() { return returnExp; }
-    public Token getReturnSemicn() { return returnSemicn; }
-
-    // Printf
-    public Token getPrintfToken() { return printfToken; }
-    public Token getPrintfLparen() { return printfLparen; }
-    public Token getStringConstToken() { return stringConstToken; }
-    public ArrayList<Token> getPrintfCommaTokens() { return printfCommaTokens; }
-    public ArrayList<Exp> getPrintfArgs() { return printfArgs; }
-    public Token getPrintfRparen() { return printfRparen; }
-    public Token getPrintfSemicn() { return printfSemicn; }
 }

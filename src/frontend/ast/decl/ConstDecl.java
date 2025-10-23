@@ -31,10 +31,8 @@ public class ConstDecl extends Node {
 
     public void check(){
         constDef.check();
-        if(!constDefs.isEmpty()){
-            for(ConstDef def : constDefs){
-                def.check();
-            }
+        for(ConstDef def : constDefs){
+            def.check();
         }
     }
 }

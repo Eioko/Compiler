@@ -591,7 +591,6 @@ public class Parser {
             Number number = parseNumber();
             return finish("PrimaryExp", new PrimaryExp(number));
         }
-        System.out.println(currentToken.getLineNum());
         throw new RuntimeException("PrimaryExp Unexpected token type: " + currentType);
     }
     /*

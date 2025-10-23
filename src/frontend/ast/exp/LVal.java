@@ -8,7 +8,6 @@ import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 
 /**
  * LVal -> Ident ['[' Exp ']']

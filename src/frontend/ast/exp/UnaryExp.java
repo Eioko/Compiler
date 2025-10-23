@@ -72,11 +72,19 @@ public class UnaryExp extends ComptueExp {
             if(funcRParams==null){
                 return;
             }
-            int formatNum = funcSymbol.getParams().size();
-            int realNum = funcRParams.getOtherExps().size()+1;
-
+            if(name.equals("getint")){
+                return;
+            }
             ArrayList<ValSymbol> formatArgs = funcSymbol.getParams();
             ArrayList<Exp> realArgs = funcRParams.allArgs();
+            int formatNum;
+            if(formatArgs==null){
+                formatNum = 0;
+            }else{
+                formatNum = formatArgs.size();
+            }
+            int realNum = realArgs.size();
+
             if(realNum != formatNum){
                 addError(new SysyError(ErrorType.ARGUMENT_COUNT_MISMATCH, line));
             }else{
