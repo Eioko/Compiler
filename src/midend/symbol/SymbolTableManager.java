@@ -1,6 +1,5 @@
 package midend.symbol;
 
-import java.util.ArrayList;
 
 public class SymbolTableManager {
     public static SymbolTable rootTable;
