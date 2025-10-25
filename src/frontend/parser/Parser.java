@@ -484,31 +484,24 @@ public class Parser {
             Token rparen = expect(TokenType.RPARENT);
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt(printfToken, lparen, stringConst, commaTokens, exps, rparen, semicn));
-        }else{
+        }else if(currentType == TokenType.SEMICN){
+            Token semicn = expect(TokenType.SEMICN);
+            return finish("Stmt", new Stmt((Exp) null, semicn));
+        } else{
+            setErrorOff();
             int intitalIndex = tokenStream.getIndex();
-            boolean meetAssign = false;
-            for(int i=0; i+intitalIndex<tokenStream.getLength();i++){
-                if(tokenStream.peek(i).getTokenType()==TokenType.ASSIGN) {
-
-                    meetAssign = true;
-                    break;
-                }
-                if(tokenStream.peek(i).getTokenType()==TokenType.SEMICN){
-                    break;
-                }
-            }
-            if(meetAssign){
+            parseExp();
+            if (tokenStream.getCurrentToken().getTokenType() == TokenType.ASSIGN) {
+                tokenStream.setIndex(intitalIndex);
+                setErrorOn();
                 LVal lVal = parseLVal();
                 Token assignToken = expect(TokenType.ASSIGN);
                 Exp exp = parseExp();
                 Token semicToken = expect(TokenType.SEMICN);
-                Stmt stmt= new Stmt(lVal, assignToken, exp, semicToken);
-                return finish("Stmt", stmt);
+                return finish("Stmt", new Stmt(lVal, assignToken, exp, semicToken));
             }else{
-                if (currentType == TokenType.SEMICN) {
-                    Token semicn = expect(TokenType.SEMICN);
-                    return finish("Stmt", new Stmt((Exp) null, semicn));
-                }
+                tokenStream.setIndex(intitalIndex);
+                setErrorOn();
                 Exp exp1 = parseExp();
                 Token semicn = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt(exp1, semicn));
