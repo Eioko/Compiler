@@ -133,8 +133,8 @@ public class FileProcess {
                 }
                 parserWriter.flush();
 
-                //symbolWriter.write(SymbolTableManager.getSymbolPrints());
-                //symbolWriter.flush();
+                symbolWriter.write(SymbolTableManager.getSymbolPrints());
+                symbolWriter.flush();
             } else {
                 // 有错误
                 java.util.List<SysyError> sorted = new ArrayList<>(errors);
