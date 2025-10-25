@@ -114,6 +114,12 @@ public class FileProcess {
     public static void flushAll() {
         try {
             if (errors == null || errors.isEmpty()) {
+                for (String line : tokenAndGrammarBuffer) {
+                    parserWriter.write(line);
+                    parserWriter.newLine();
+                }
+                parserWriter.flush();
+
                 symbolWriter.write(SymbolTableManager.getSymbolPrints());
                 symbolWriter.flush();
             } else {
@@ -129,7 +135,7 @@ public class FileProcess {
         } catch (IOException e) {
             throw new RuntimeException("写出文件失败", e);
         } finally {
-            //tokenAndGrammarBuffer.clear();
+            tokenAndGrammarBuffer.clear();
         }
     }
 

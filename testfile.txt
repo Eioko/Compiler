@@ -1,9 +1,6 @@
-void f(){
-return 1;
-}
-
 int main(){
-int x = 10;
-f(x);
-return 0;
+    int c;
+    c= getint();
+    printf("%d",c);
+    return c;
 }
