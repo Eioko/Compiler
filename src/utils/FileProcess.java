@@ -40,6 +40,7 @@ public class FileProcess {
     private static BufferedWriter parserWriter;
     private static BufferedWriter symbolWriter;
 
+    public static boolean printParser = true;
     private FileProcess() {}
 
     private static void ensureInputExistsAndReadable() {
@@ -101,12 +102,24 @@ public class FileProcess {
 
     //token输出
     public static void bufferToken(Token t) {
-        tokenAndGrammarBuffer.add(t.getTokenType() + " " + t.getTokenContent());
+        if(printParser){
+            tokenAndGrammarBuffer.add(t.getTokenType() + " " + t.getTokenContent());
+        }
+
     }
+    public static void setPrintParserOn() {
+        printParser = true;
+    }
+    public static void setPrintParserOff() {
+        printParser = false;
+    }
+
     // 非终结符结束输出
     public static <T> T finish(String name, T node) {
-        if (!SUPPRESS.contains(name)) {
-            tokenAndGrammarBuffer.add("<" + name + ">");
+        if(printParser){
+            if (!SUPPRESS.contains(name)) {
+                tokenAndGrammarBuffer.add("<" + name + ">");
+            }
         }
         return node;
     }
@@ -120,8 +133,8 @@ public class FileProcess {
                 }
                 parserWriter.flush();
 
-                symbolWriter.write(SymbolTableManager.getSymbolPrints());
-                symbolWriter.flush();
+                //symbolWriter.write(SymbolTableManager.getSymbolPrints());
+                //symbolWriter.flush();
             } else {
                 // 有错误
                 java.util.List<SysyError> sorted = new ArrayList<>(errors);

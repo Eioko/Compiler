@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static error.ErrorManager.*;
-import static utils.FileProcess.finish;
+import static utils.FileProcess.*;
 
 public class Parser {
     private final TokenStream tokenStream;
@@ -487,13 +487,15 @@ public class Parser {
         }else if(currentType == TokenType.SEMICN){
             Token semicn = expect(TokenType.SEMICN);
             return finish("Stmt", new Stmt((Exp) null, semicn));
-        } else{
+        } else {
             setErrorOff();
+            setPrintParserOff();
             int intitalIndex = tokenStream.getIndex();
             parseExp();
             if (tokenStream.getCurrentToken().getTokenType() == TokenType.ASSIGN) {
                 tokenStream.setIndex(intitalIndex);
                 setErrorOn();
+                setPrintParserOn();
                 LVal lVal = parseLVal();
                 Token assignToken = expect(TokenType.ASSIGN);
                 Exp exp = parseExp();
@@ -502,6 +504,7 @@ public class Parser {
             }else{
                 tokenStream.setIndex(intitalIndex);
                 setErrorOn();
+                setPrintParserOn();
                 Exp exp1 = parseExp();
                 Token semicn = expect(TokenType.SEMICN);
                 return finish("Stmt", new Stmt(exp1, semicn));
