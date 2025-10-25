@@ -12,7 +12,6 @@ import midend.symbol.SymbolTableManager;
 import java.util.ArrayList;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 
 /*
 ForStmt → LVal '=' Exp { ',' LVal '=' Exp }

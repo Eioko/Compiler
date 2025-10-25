@@ -76,13 +76,14 @@ public class UnaryExp extends ComptueExp {
                 return;
             }
             ArrayList<ValSymbol> formatArgs = funcSymbol.getParams();
-            ArrayList<Exp> realArgs = funcRParams.allArgs();
             int formatNum;
             if(formatArgs==null){
                 formatNum = 0;
             }else{
                 formatNum = formatArgs.size();
             }
+
+            ArrayList<Exp> realArgs = funcRParams.allArgs();
             int realNum = realArgs.size();
 
             if(realNum != formatNum){

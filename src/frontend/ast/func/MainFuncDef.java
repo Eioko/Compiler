@@ -14,7 +14,6 @@ import midend.symbol.SymbolType;
 import java.util.ArrayList;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
 /**

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import static error.ErrorManager.addError;
-import static error.ErrorManager.errors;
 
 public class SymbolTable {
     private final int depth;
