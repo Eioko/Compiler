@@ -2,10 +2,8 @@ package frontend.ast.block;
 
 import frontend.ast.Node;
 import frontend.ast.decl.Decl;
-import frontend.ast.func.FuncType;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
-import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
