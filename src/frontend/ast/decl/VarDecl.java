@@ -1,6 +1,7 @@
 package frontend.ast.decl;
 
 import frontend.ast.Node;
+import frontend.ast.block.Block;
 import frontend.lexer.Token;
 import midend.symbol.SymbolType;
 
@@ -10,19 +11,19 @@ import java.util.ArrayList;
  **/
 public class VarDecl extends Node {
     private Token staticToken;
-    private Token intToken;
+    private BType bType;
     private VarDef varDef;
     private ArrayList<Token> commaTokens;
     private ArrayList<VarDef> varDefs;
     private Token semicnToken;
     public VarDecl(Token staticToken,
-                   Token intToken,
+                   BType bType,
                    VarDef varDef,
                    ArrayList<Token> commaTokens,
                    ArrayList<VarDef> varDefs,
                    Token semicnToken) {
         this.staticToken = staticToken;
-        this.intToken = intToken;
+        this.bType = bType;
         this.varDef = varDef;
         this.commaTokens = commaTokens;
         this.varDefs = varDefs;

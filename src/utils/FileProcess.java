@@ -2,7 +2,6 @@ package utils;
 
 import frontend.lexer.Token;
 import error.SysyError;
-import frontend.lexer.TokenStream;
 import midend.symbol.SymbolTableManager;
 
 import java.io.BufferedReader;
@@ -17,7 +16,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import static error.ErrorManager.errors;

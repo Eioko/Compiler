@@ -5,6 +5,7 @@ import error.SysyError;
 import frontend.ast.CompUnit;
 import frontend.ast.Node;
 import frontend.ast.block.Block;
+import frontend.ast.block.BlockItem;
 import frontend.ast.decl.*;
 import frontend.ast.exp.AddExp;
 import frontend.ast.exp.Cond;
@@ -143,18 +144,26 @@ public class Parser {
         }
     }
     /*
+    BType → 'int'
+     */
+    private BType parseBType() {
+        Token intToken;
+        intToken = expect(TokenType.INTTK);
+        return new BType(intToken);
+    }
+    /*
     ConstDecl → 'const' BType ConstDef { ',' ConstDef } ';'
      */
     private ConstDecl parseConstDecl() {
         Token constToken;
-        Token intToken;
+        BType bType;
         ConstDef constDef;
         ArrayList<Token> commaTokens = new ArrayList<>();
         ArrayList<ConstDef> constDefs = new ArrayList<>();
         Token semicnToken;
 
         constToken = expect(TokenType.CONSTTK);
-        intToken = expect(TokenType.INTTK);
+        bType = parseBType();
         constDef = parseConstDef();
         while (tokenStream.getCurrentToken().getTokenType()==TokenType.COMMA) {
             Token comma1 = expect(TokenType.COMMA);
@@ -164,7 +173,7 @@ public class Parser {
         }
         semicnToken = expect(TokenType.SEMICN);
 
-        return finish("ConstDecl", new  ConstDecl(constToken, intToken, constDef, commaTokens, constDefs, semicnToken));
+        return finish("ConstDecl", new  ConstDecl(constToken, bType, constDef, commaTokens, constDefs, semicnToken));
     }
     /*
      ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal
@@ -223,7 +232,7 @@ public class Parser {
      */
     private VarDecl parseVarDecl() {
         Token staticToken = null;
-        Token intToken;
+        BType bType;
         VarDef varDef;
         ArrayList<Token> commaTokens = new ArrayList<>();
         ArrayList<VarDef> varDefs = new ArrayList<>();
@@ -232,7 +241,7 @@ public class Parser {
         if(tokenStream.getCurrentToken().getTokenType()!=TokenType.INTTK) {
             staticToken = expect(TokenType.STATICTK);
         }
-        intToken = expect(TokenType.INTTK);
+        bType = parseBType();
         varDef = parseVarDef();
         while(tokenStream.getCurrentToken().getTokenType()==TokenType.COMMA) {
             Token comma1 = expect(TokenType.COMMA);
@@ -241,7 +250,7 @@ public class Parser {
             varDefs.add(varDef1);
         }
         semicnToken = expect(TokenType.SEMICN);
-        return finish("VarDecl", new VarDecl(staticToken, intToken, varDef, commaTokens, varDefs, semicnToken));
+        return finish("VarDecl", new VarDecl(staticToken, bType, varDef, commaTokens, varDefs, semicnToken));
     }
     /*
     VarDef → Ident [ '[' ConstExp ']' ] | Ident [ '[' ConstExp ']' ] '=' InitVal
@@ -369,34 +378,40 @@ public class Parser {
      *  FuncFParam → BType Ident ['[' ']']
      */
     private FuncFParam parseFuncFParam() {
-        Token intToken;
+        BType bType;
         Token ident;
         Token lbrack = null;
         Token rbrack = null;
 
-        intToken = expect(TokenType.INTTK);
+        bType = parseBType();
         ident = expect(TokenType.IDENFR);
         if(tokenStream.getCurrentToken().getTokenType()==TokenType.LBRACK) {
             lbrack = expect(TokenType.LBRACK);
             rbrack = expect(TokenType.RBRACK);
         }
-        return finish("FuncFParam", new FuncFParam(intToken, ident, lbrack, rbrack));
+        return finish("FuncFParam", new FuncFParam(bType, ident, lbrack, rbrack));
     }
     /*
-     * Block -> '{' { Decl | Stmt } '}'
+    BlockItem → Decl | Stmt
+     */
+    private BlockItem parseBlockitem(){
+        if(startsDecl()){
+            return new BlockItem(parseDecl());
+        }else{
+            return new BlockItem(parseStmt());
+        }
+    }
+    /*
+     * Block → '{' { BlockItem } '}'
      */
     private Block parseBlock() {
         Token lbrace;
-        ArrayList<Node> items = new ArrayList<>();
+        ArrayList<BlockItem> items = new ArrayList<>();
         Token rbrace;
 
         lbrace = expect(TokenType.LBRACE);
         while(tokenStream.getCurrentToken().getTokenType()!=TokenType.RBRACE) {
-            if(startsDecl()) {
-                items.add(parseDecl());
-            }else{
-                items.add(parseStmt());
-            }
+            items.add(parseBlockitem());
         }
         rbrace = expect(TokenType.RBRACE);
         return finish("Block", new Block(lbrace, items, rbrace));
@@ -556,7 +571,7 @@ public class Parser {
      *  LVal → Ident ['[' Exp ']'] 
      */
     private LVal parseLVal() {
-        Token ident = null;
+        Token ident;
         Token lbrack = null;
         Exp exp = null;
         Token rbrack = null;

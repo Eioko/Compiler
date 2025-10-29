@@ -13,8 +13,6 @@ import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 
-import static error.ErrorManager.addError;
-import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
 /**
  * MainFuncDef -> 'int' 'main' '(' ')' Block
@@ -52,28 +50,10 @@ public class MainFuncDef extends Node {
 
     public void check(){
         SymbolTableManager.createSonTable();
-        missReturn();
-        boolean inFunc = true;
+        block.missReturn();
         int line = mainToken.getLineNum();
         curFuncSymbol = new FuncSymbol("main", SymbolType.INTFUNC, line, new ArrayList<>());
-        SymbolType symbolType = SymbolType.INTFUNC;
         this.block.check();
         SymbolTableManager.gotoFatherTable();
-    }
-    public void missReturn(){
-        Node a = block.getLast();
-        int lineNum = this.block.getRbraceToken().getLineNum();
-        if(a == null){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-            return;
-        }
-        if(a instanceof Decl){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-            return;
-        }
-        Stmt b = (Stmt) a;
-        if(!b.isReturn()){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-        }
     }
 }

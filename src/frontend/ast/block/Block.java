@@ -1,22 +1,25 @@
 package frontend.ast.block;
 
+import error.SysyError;
 import frontend.ast.Node;
-import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.addError;
+import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
+
 /**
- * Block -> '{' { Decl | Stmt } '}'
+ * Block → '{' { BlockItem } '}'
  */
 public class Block extends Node {
     private Token lbraceToken;            // '{'
-    private ArrayList<Node> items;        // 依次放 Decl 或 Stmt
+    private ArrayList<BlockItem> items;        // 依次放 Decl 或 Stmt
     private Token rbraceToken;            // '}'
 
     public Block(Token lbraceToken,
-                 ArrayList<Node> items,
+                 ArrayList<BlockItem> items,
                  Token rbraceToken) {
         this.lbraceToken = lbraceToken;
         this.items = items;
@@ -27,7 +30,7 @@ public class Block extends Node {
         return lbraceToken;
     }
 
-    public ArrayList<Node> getItems() {
+    public ArrayList<BlockItem> getItems() {
         return items;
     }
 
@@ -39,28 +42,30 @@ public class Block extends Node {
         return items == null || items.isEmpty();
     }
 
-    public boolean isStmt(int idx) {
-        return items.get(idx) instanceof Stmt;
-    }
-
-    public boolean isDecl(int idx) {
-        Node n = items.get(idx);
-        return !(n instanceof Stmt);
-    }
-
-    public Node getLast() {
+    public BlockItem getLast() {
         if(isEmpty()) return null;
         return items.get(items.size() - 1);
     }
+    //有返回值的函数缺少return语句（g错误）
+    public void missReturn(){
+        BlockItem a = this.getLast();
+        int lineNum = this.getRbraceToken().getLineNum();
+        if(a == null){
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            return;
+        }
+        if(a.isDecl()){
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+            return;
+        }
+        Stmt b = a.getStmt();
+        if(!b.isReturn()){
+            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
+        }
+    }
     public void check(){
-        for (Node n : items) {
-            if (n instanceof Stmt) {
-                Stmt stmt = (Stmt) n;
-                stmt.check();
-            }else{
-                Decl decl = (Decl) n;
-                decl.check();
-            }
+        for (BlockItem n : items) {
+            n.check();
         }
     }
 }

@@ -1,6 +1,7 @@
 package frontend.ast.func;
 
 import frontend.ast.Node;
+import frontend.ast.decl.BType;
 import frontend.lexer.Token;
 import midend.symbol.SymbolType;
 import midend.symbol.ValSymbol;
@@ -9,16 +10,16 @@ import midend.symbol.ValSymbol;
  * FuncFParam -> BType Ident ['[' ']']
  */
 public class FuncFParam extends Node {
-    private Token intToken;   // 'int'
+    private BType bType;
     private Token identToken;   // 标识符
     private Token lbrackToken;  // '['  可为 null
     private Token rbrackToken;  // ']'  可为 null
 
-    public FuncFParam(Token intToken,
-                     Token identToken,
-                     Token lbrackToken,
-                     Token rbrackToken) {
-        this.intToken = intToken;
+    public FuncFParam(BType bType,
+                      Token identToken,
+                      Token lbrackToken,
+                      Token rbrackToken) {
+        this.bType = bType;
         this.identToken = identToken;
         this.lbrackToken = lbrackToken;
         this.rbrackToken = rbrackToken;

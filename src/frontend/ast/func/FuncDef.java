@@ -3,6 +3,7 @@ package frontend.ast.func;
 import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.block.Block;
+import frontend.ast.block.BlockItem;
 import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
@@ -70,27 +71,10 @@ public class FuncDef extends Node {
         }
         //有返回值的函数缺少return语句（g错误）
         if(symbolType == SymbolType.INTFUNC){
-            missReturn();
+            block.missReturn();
         }
         this.block.check();
         SymbolTableManager.gotoFatherTable();
     }
 
-    //有返回值的函数缺少return语句（g错误）
-    public void missReturn(){
-        Node a = block.getLast();
-        int lineNum = this.block.getRbraceToken().getLineNum();
-        if(a == null){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-            return;
-        }
-        if(a instanceof Decl){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-            return;
-        }
-        Stmt b = (Stmt) a;
-        if(!b.isReturn()){
-            addError(new SysyError(MISSING_RETURN_IN_NONVOID, lineNum));
-        }
-    }
 }
