@@ -2,3 +2,8 @@
 out/
 *.pdf
 .idea/
+testfile.txt
+lexer.txt
+error.txt
+parser.txt
+symbol.txt
