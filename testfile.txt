@@ -1,9 +1,0 @@
-int main(){
-    int a = 1;
-    {
-        int b;
-    }
-    int d;
-    int c;
-    return 0;
-}
