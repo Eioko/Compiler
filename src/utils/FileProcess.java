@@ -2,6 +2,7 @@ package utils;
 
 import frontend.lexer.Token;
 import error.SysyError;
+import frontend.lexer.TokenStream;
 import midend.symbol.SymbolTableManager;
 
 import java.io.BufferedReader;

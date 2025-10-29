@@ -1,6 +1,9 @@
 int main(){
+    int a = 1;
+    {
+        int b;
+    }
+    int d;
     int c;
-    c= getint();
-    printf("%d",c);
-    return c;
+    return 0;
 }

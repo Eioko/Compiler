@@ -164,7 +164,7 @@ public class Parser {
         }
         semicnToken = expect(TokenType.SEMICN);
 
-        return finish("ConstDecl", new ConstDecl(constToken, intToken, constDef, commaTokens, constDefs, semicnToken));
+        return finish("ConstDecl", new  ConstDecl(constToken, intToken, constDef, commaTokens, constDefs, semicnToken));
     }
     /*
      ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal

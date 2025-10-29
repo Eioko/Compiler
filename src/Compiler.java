@@ -1,3 +1,4 @@
+import error.ErrorManager;
 import frontend.ast.CompUnit;
 import frontend.lexer.Lexer;
 import frontend.lexer.Token;
@@ -6,6 +7,9 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
+import static error.ErrorManager.isEmpty;
+import static utils.FileProcess.printTokens;
+
 
 public class Compiler {
     public static void main(String[] args) {
@@ -13,6 +17,9 @@ public class Compiler {
         String source = FileProcess.readFile();
         Lexer lexer = Lexer.getInstance();
         ArrayList<Token> tokens = lexer.lexerAnalyze(source);
+        if(ErrorManager.isEmpty()){
+            printTokens(tokens);
+        }
         Parser parser = new Parser(tokens);
         CompUnit compUnit = parser.parseCompUnit();
         compUnit.check();

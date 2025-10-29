@@ -4,39 +4,41 @@ LPARENT (
 RPARENT )
 LBRACE {
 INTTK int
-IDENFR c
-<VarDef>
-SEMICN ;
-<VarDecl>
-IDENFR c
-<LVal>
+IDENFR a
 ASSIGN =
-IDENFR getint
-LPARENT (
-RPARENT )
-<UnaryExp>
-<MulExp>
-<AddExp>
-<Exp>
-SEMICN ;
-<Stmt>
-PRINTFTK printf
-LPARENT (
-STRCON "%d"
-COMMA ,
-IDENFR c
-<LVal>
+INTCON 1
+<Number>
 <PrimaryExp>
 <UnaryExp>
 <MulExp>
 <AddExp>
 <Exp>
-RPARENT )
+<InitVal>
+<VarDef>
 SEMICN ;
+<VarDecl>
+LBRACE {
+INTTK int
+IDENFR b
+<VarDef>
+SEMICN ;
+<VarDecl>
+RBRACE }
+<Block>
 <Stmt>
-RETURNTK return
+INTTK int
+IDENFR d
+<VarDef>
+SEMICN ;
+<VarDecl>
+INTTK int
 IDENFR c
-<LVal>
+<VarDef>
+SEMICN ;
+<VarDecl>
+RETURNTK return
+INTCON 0
+<Number>
 <PrimaryExp>
 <UnaryExp>
 <MulExp>

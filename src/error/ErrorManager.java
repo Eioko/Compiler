@@ -16,4 +16,7 @@ public class ErrorManager {
     public static void setErrorOff() {
         errorOn = false;
     }
+    public static boolean isEmpty(){
+        return errors.isEmpty();
+    }
 }
