@@ -54,7 +54,7 @@ public class ForStmt extends Node {
     public void assignToConst(LVal lVal) {
         String name = lVal.getIdentToken().getTokenContent();
         int line = lVal.getIdentToken().getLineNum();
-        Symbol symbol = SymbolTableManager.getSymbol(name, line);
+        Symbol symbol = SymbolTableManager.getSymbol(name);
 
         if(symbol != null){
             //这里不处理未定义错误，防止重复记录一个错误

@@ -33,4 +33,15 @@ public class CompUnit extends Node{
         }
         mainFuncDef.check();
     }
+
+    public void buildIr(){
+        for(Decl decl : decls){
+            decl.buildIr();
+        }
+        for(FuncDef funcDef : funcDefs){
+            funcDef.buildIr();
+        }
+        mainFuncDef.buildIr();
+    }
+
 }

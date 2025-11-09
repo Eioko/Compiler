@@ -3,9 +3,19 @@ package frontend.ast.decl;
 import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.lexer.Token;
+import midend.ir.IrBuilder;
+import midend.ir.IrModule;
+import midend.ir.constant.ConstArray;
+import midend.ir.constant.ConstInt;
+import midend.ir.constant.Constant;
+import midend.ir.instruction.Alloca;
+import midend.ir.type.ArrayType;
+import midend.ir.value.GlobalVariable;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
 import midend.symbol.ValSymbol;
+
+import java.lang.reflect.Array;
 
 /*
  ConstDef → Ident [ '[' ConstExp ']' ] '=' ConstInitVal
@@ -18,6 +28,7 @@ public class ConstDef extends Node {
     private Token assignToken;
     private ConstInitVal constInitVal;
 
+    private int size;
     public ConstDef(Token ident,
                     Token lbrack,
                     ConstExp constExp,
@@ -49,5 +60,30 @@ public class ConstDef extends Node {
         }
         constInitVal.check();
     }
-
+    public void buildIr(){
+        ValSymbol valSymbol = (ValSymbol) SymbolTableManager.getSymbol(ident.getTokenContent());
+        if(lbrack == null){
+            // 单变量
+            constInitVal.buildIr();
+            if(SymbolTableManager.isGlobal()){
+                //全局常量分配
+                GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);
+            }else{
+                // 局部常量分配
+                Alloca alloc = irBuilder.buildConstAlloca(valueUp.getValueType(), curBlock, (Constant) valueUp);
+            }
+        }else{
+            // 数组
+            constExp.buildIr();
+            //这里文法保证 “各维长度的 ConstExp 都必须能在编译时求值到非负整数”
+            size = ((ConstInt)valueUp).getValue();
+            constInitVal.buildIr();
+            if(SymbolTableManager.isGlobal()){
+                GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);
+            }else{
+                ArrayType arrayType = new ArrayType(size);
+                Alloca allocArray = irBuilder.buildConstAlloca(arrayType, curBlock, (ConstArray) valueUp);
+            }
+        }
+    }
 }

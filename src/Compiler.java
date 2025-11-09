@@ -7,7 +7,6 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
-import static error.ErrorManager.isEmpty;
 import static utils.FileProcess.printTokens;
 
 
@@ -23,6 +22,7 @@ public class Compiler {
         Parser parser = new Parser(tokens);
         CompUnit compUnit = parser.parseCompUnit();
         compUnit.check();
+
         FileProcess.flushAll();
         FileProcess.closeAll();
     }

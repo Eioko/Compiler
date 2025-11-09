@@ -35,4 +35,10 @@ public class ConstDecl extends Node {
             def.check();
         }
     }
+    public void buildIr(){
+        constDef.buildIr();
+        for(ConstDef def : constDefs){
+            def.buildIr();
+        }
+    }
 }

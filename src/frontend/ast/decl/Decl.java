@@ -9,7 +9,7 @@ public class Decl extends Node {
     private ConstDecl constDecl;
     private VarDecl varDecl;
 
-    private int utype;
+    private final int utype;
 
     public Decl(ConstDecl constDecl) {
         this.constDecl = constDecl;
@@ -24,6 +24,13 @@ public class Decl extends Node {
             constDecl.check();
         }else{
             varDecl.check();
+        }
+    }
+    public void buildIr(){
+        if(utype == 0){
+            constDecl.buildIr();
+        }else{
+            varDecl.buildIr();
         }
     }
 }

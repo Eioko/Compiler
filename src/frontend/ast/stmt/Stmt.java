@@ -214,7 +214,7 @@ public class Stmt extends Node {
         if(isAssign()){
             String name = assignLVal.getIdentToken().getTokenContent();
             int line = assignLVal.getIdentToken().getLineNum();
-            Symbol symbol = SymbolTableManager.getSymbol(name, line);
+            Symbol symbol = SymbolTableManager.getSymbol(name);
 
             if(symbol != null){
                 //这里不处理未定义错误，防止重复记录一个错误

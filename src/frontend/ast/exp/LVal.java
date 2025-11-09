@@ -50,7 +50,7 @@ public class LVal extends ComptueExp{
     public void check(){
         String name = identToken.getTokenContent();
         int line = identToken.getLineNum();
-        Symbol symbol = SymbolTableManager.getSymbol(name, line);
+        Symbol symbol = SymbolTableManager.getSymbol(name);
         if(symbol == null){
             addError(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
             //这里要return吗？？？
@@ -62,7 +62,7 @@ public class LVal extends ComptueExp{
     public SymbolType getType(){
         String name = identToken.getTokenContent();
         int line = identToken.getLineNum();
-        Symbol symbol = SymbolTableManager.getSymbol(name, line);
+        Symbol symbol = SymbolTableManager.getSymbol(name);
         if(symbol != null){
             SymbolType type = symbol.getSymbolType();
             if(type == SymbolType.INT || type == SymbolType.CONSTINT || type == SymbolType.STATICINT){

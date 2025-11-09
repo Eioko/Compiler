@@ -24,11 +24,13 @@ public class SymbolTableManager {
         currentTable = currentTable.getFatherTable();
         //这里要不要depth--（可以加一个变量一起表示）
     }
-    public static Symbol getSymbol(String name, int line){
-        Symbol s = currentTable.getSymbol(name);
-        return s;
+    public static Symbol getSymbol(String name){
+        return currentTable.getSymbol(name);
     }
     public static String getSymbolPrints(){
         return rootTable.toString();
+    }
+    public static boolean isGlobal(){
+        return rootTable == currentTable;
     }
 }

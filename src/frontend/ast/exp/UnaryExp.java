@@ -61,7 +61,7 @@ public class UnaryExp extends ComptueExp {
         }else if(utype == 1){
             String name = identToken.getTokenContent();
             int line = identToken.getLineNum();
-            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name, line);
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name);
             if(funcSymbol == null){
                 if(!name.equals("getint")){
                     addError(new SysyError(ErrorType.UNDEFINED_IDENTIFIER, line));
@@ -116,7 +116,7 @@ public class UnaryExp extends ComptueExp {
         }else if(utype == 1){
             String name = identToken.getTokenContent();
             int line = identToken.getLineNum();
-            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name, line);
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(name);
             if(funcSymbol != null){
                 return funcSymbol.getSymbolType();
             }else{

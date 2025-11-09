@@ -3,6 +3,9 @@ package frontend.ast.decl;
 import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.lexer.Token;
+import midend.ir.constant.ConstArray;
+import midend.ir.constant.ConstInt;
+import midend.ir.constant.Constant;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,24 @@ public class ConstInitVal extends Node {
                     c.check();
                 }
             }
+        }
+    }
+    public void buildIr(){
+
+        if(utype == 0){
+            constExp0.buildIr();
+        }else{
+            ArrayList<Constant> elements = new ArrayList<>();
+            if(constExp1!=null){
+                constExp1.buildIr();
+                elements.add((Constant) valueUp);
+                for(ConstExp c : constExps){
+                    c.buildIr();
+                    elements.add((Constant) valueUp);
+                }
+            }
+            // build constant array value
+            valueUp = new ConstArray(elements);
         }
     }
 }

@@ -3,7 +3,6 @@ package frontend.parser;
 import error.ErrorType;
 import error.SysyError;
 import frontend.ast.CompUnit;
-import frontend.ast.Node;
 import frontend.ast.block.Block;
 import frontend.ast.block.BlockItem;
 import frontend.ast.decl.*;
