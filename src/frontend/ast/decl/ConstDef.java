@@ -9,6 +9,7 @@ import midend.ir.constant.ConstArray;
 import midend.ir.constant.ConstInt;
 import midend.ir.constant.Constant;
 import midend.ir.instruction.Alloca;
+import midend.ir.instruction.GEP;
 import midend.ir.type.ArrayType;
 import midend.ir.value.GlobalVariable;
 import midend.symbol.SymbolTableManager;
@@ -83,6 +84,17 @@ public class ConstDef extends Node {
             }else{
                 ArrayType arrayType = new ArrayType(size);
                 Alloca allocArray = irBuilder.buildConstAlloca(arrayType, curBlock, (ConstArray) valueUp);
+                GEP basePtr = irBuilder.buildGEP(curBlock, allocArray, ConstInt.ZERO, ConstInt.ZERO);
+                // 利用 store 往内存中存值
+                for (int i = 0; i < valueArrayUp.size(); i++) {
+                    if (i == 0) {
+                        irBuilder.buildStore(curBlock, valueArrayUp.get(i), basePtr);
+                    } else {
+                        // 这里利用的是一维的 GEP，此时的返回值依然是 int*
+                        GEP curPtr = irBuilder.buildGEP(curBlock, basePtr, new ConstInt(i));
+                        irBuilder.buildStore(curBlock, valueArrayUp.get(i), curPtr);
+                    }
+                }
             }
         }
     }
