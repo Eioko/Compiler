@@ -7,9 +7,15 @@ import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.ir.type.DataType;
+import midend.ir.type.IntegerType;
+import midend.ir.type.PointerType;
+import midend.ir.type.VoidType;
+import midend.ir.value.BasicBlock;
 import midend.symbol.FuncSymbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
+import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
 
@@ -54,6 +60,18 @@ public class MainFuncDef extends Node {
         int line = mainToken.getLineNum();
         curFuncSymbol = new FuncSymbol("main", SymbolType.INTFUNC, line, new ArrayList<>());
         this.block.check();
+        SymbolTableManager.gotoFatherTable();
+    }
+    public void buildIr(){
+        DataType returnType = new IntegerType();
+        ArrayList<DataType> paramTypes = new ArrayList<>();
+
+        curfunc = irBuilder.buildFunction("main", returnType, paramTypes);
+        //创建函数体的基本块
+        BasicBlock entryBlock = irBuilder.buildBasicBlock(curfunc);
+        curBlock = entryBlock;
+        SymbolTableManager.gotoNextSonTable();
+        block.buildIr();
         SymbolTableManager.gotoFatherTable();
     }
 }

@@ -69,18 +69,21 @@ public class ConstDef extends Node {
             if(SymbolTableManager.isGlobal()){
                 //全局常量分配
                 GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);
+                valSymbol.setIrValue(globalVariable);
             }else{
                 // 局部常量分配
                 Alloca alloc = irBuilder.buildConstAlloca(valueUp.getValueType(), curBlock, (Constant) valueUp);
+                irBuilder.buildStore(curBlock, valueUp, alloc);
             }
         }else{
             // 数组
             constExp.buildIr();
             //这里文法保证 “各维长度的 ConstExp 都必须能在编译时求值到非负整数”
-            size = ((ConstInt)valueUp).getValue();
+            size = ((ConstInt)valueUp).getNumber();
             constInitVal.buildIr();
             if(SymbolTableManager.isGlobal()){
                 GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);
+                valSymbol.setIrValue(globalVariable);
             }else{
                 ArrayType arrayType = new ArrayType(size);
                 Alloca allocArray = irBuilder.buildConstAlloca(arrayType, curBlock, (ConstArray) valueUp);

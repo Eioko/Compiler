@@ -8,6 +8,8 @@ import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.ir.type.*;
+import midend.ir.value.BasicBlock;
 import midend.symbol.FuncSymbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
@@ -15,8 +17,6 @@ import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
 
-import static error.ErrorManager.addError;
-import static error.ErrorType.MISSING_RETURN_IN_NONVOID;
 
 /**
  * FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
@@ -74,6 +74,35 @@ public class FuncDef extends Node {
             block.missReturn();
         }
         this.block.check();
+        SymbolTableManager.gotoFatherTable();
+    }
+    public void buildIr(){
+        FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(identToken.getTokenContent());
+        DataType returnType;
+        if(funcSymbol.getSymbolType() == SymbolType.VOIDFUNC) {
+            returnType = new VoidType();
+        }else{
+            returnType = new IntegerType();
+        }
+        ArrayList<DataType> paramTypes = new ArrayList<>();
+        for(ValSymbol paramSymbol : funcSymbol.getParams()){
+            //已经在check里面处理过，形参是Int或者IntArray
+            if(paramSymbol.getSymbolType() == SymbolType.INT){
+                paramTypes.add(new IntegerType());
+            }else if(paramSymbol.getSymbolType() == SymbolType.INTARRAY){
+                paramTypes.add(new PointerType(new IntegerType()));
+            }
+        }
+        curfunc = irBuilder.buildFunction(funcSymbol.getSymbolName(), returnType, paramTypes);
+        funcSymbol.setIrValue(curfunc);
+        //创建函数体的基本块
+        BasicBlock entryBlock = irBuilder.buildBasicBlock(curfunc);
+        curBlock = entryBlock;
+        SymbolTableManager.gotoNextSonTable();
+        if(funcFParams!=null){
+            funcFParams.buildIr();
+        }
+        block.buildIr();
         SymbolTableManager.gotoFatherTable();
     }
 

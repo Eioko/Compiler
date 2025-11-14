@@ -6,6 +6,8 @@ import frontend.lexer.Token;
 import midend.ir.constant.ConstArray;
 import midend.ir.constant.ConstInt;
 import midend.ir.constant.Constant;
+import midend.ir.value.Value;
+import midend.symbol.SymbolTableManager;
 
 import java.util.ArrayList;
 
@@ -58,17 +60,34 @@ public class ConstInitVal extends Node {
         if(utype == 0){
             constExp0.buildIr();
         }else{
-            ArrayList<Constant> elements = new ArrayList<>();
-            if(constExp1!=null){
-                constExp1.buildIr();
-                elements.add((Constant) valueUp);
-                for(ConstExp c : constExps){
-                    c.buildIr();
-                    elements.add((Constant) valueUp);
+            if(SymbolTableManager.isGlobal()){
+                ArrayList<Constant> elements = new ArrayList<>();
+                if(constExp1!=null){
+                    constExp1.buildIr();
+                    elements.add((ConstInt) valueUp);
+                    for(ConstExp c : constExps){
+                        c.buildIr();
+                        elements.add((ConstInt) valueUp);
+                    }
                 }
+                // build constant array value
+                valueUp = new ConstArray(elements);
+            }else{
+                ArrayList<Value> flattenArray = new ArrayList<>();
+                ArrayList<Constant> array = new ArrayList<>();
+                if(constExp1!=null){
+                    constExp1.buildIr();
+                    flattenArray.add(valueUp);
+                    array.add((ConstInt) valueUp);
+                    for(ConstExp c : constExps){
+                        c.buildIr();
+                        flattenArray.add(valueUp);
+                        array.add((ConstInt) valueUp);
+                    }
+                }
+                valueArrayUp = flattenArray;
+                valueUp = new ConstArray(array);
             }
-            // build constant array value
-            valueUp = new ConstArray(elements);
         }
     }
 }

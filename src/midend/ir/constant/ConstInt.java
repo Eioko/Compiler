@@ -4,12 +4,12 @@ import midend.ir.type.IntegerType;
 
 public class ConstInt extends Constant {
     public static final ConstInt ZERO = new ConstInt(0);
-    private int value;
-    public ConstInt(int value) {
+    private int number;
+    public ConstInt(int number) {
         super(new IntegerType());
-        this.value = value;
+        this.number = number;
     }
-    public int getValue() {
-        return value;
+    public int getNumber() {
+        return number;
     }
 }

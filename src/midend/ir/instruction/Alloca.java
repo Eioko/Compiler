@@ -8,8 +8,8 @@ import midend.ir.value.BasicBlock;
 
 public class Alloca extends Instruction{
     private ConstArray initVal = null;
-    public Alloca(int num, ValueType valueType, BasicBlock block) {
-        super("%p"+num, new PointerType(valueType), block);
+    public Alloca(int num, ValueType allocatedType, BasicBlock parent) {
+        super("%p"+num, new PointerType(allocatedType), parent);
     }
     public Alloca(int nameNum, ValueType allocatedType, BasicBlock parent, ConstArray initVal)
     {

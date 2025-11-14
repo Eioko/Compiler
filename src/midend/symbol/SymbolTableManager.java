@@ -33,4 +33,7 @@ public class SymbolTableManager {
     public static boolean isGlobal(){
         return rootTable == currentTable;
     }
+    public static void gotoNextSonTable(){
+        currentTable = currentTable.GetNextSonTable();
+    }
 }

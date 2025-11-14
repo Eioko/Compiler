@@ -25,6 +25,10 @@ public class User extends Value {
             }
         }
     }
+    public Value getUsedValue(int index)
+    {
+        return operands.get(index);
+    }
 
 
 }

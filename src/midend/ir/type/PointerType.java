@@ -1,7 +1,7 @@
 package midend.ir.type;
 
 public class PointerType extends DataType {
-    private ValueType pointeeType
+    private ValueType pointeeType;
     public PointerType(ValueType type) {
         this.pointeeType = type;
     }

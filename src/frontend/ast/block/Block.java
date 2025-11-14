@@ -68,4 +68,9 @@ public class Block extends Node {
             n.check();
         }
     }
+    public void buildIr(){
+        for(BlockItem n : items){
+            n.buildIr();
+        }
+    }
 }

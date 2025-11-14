@@ -35,4 +35,13 @@ public class BlockItem extends Node {
             throw new Error("Error in BlockItem");
         }
     }
+    public void buildIr(){
+        if(utype == 0){
+            decl.buildIr();
+        }else if(utype == 1){
+            stmt.buildIr();
+        }else{
+            throw new Error("Error in BlockItem");
+        }
+    }
 }

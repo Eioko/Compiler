@@ -4,6 +4,8 @@ import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.ast.exp.Exp;
 import frontend.lexer.Token;
+import midend.ir.constant.ConstInt;
+import midend.ir.value.Value;
 
 import java.util.ArrayList;
 /*
@@ -48,6 +50,37 @@ public class InitVal extends Node {
                     c.check();
                 }
             }
+        }
+    }
+    public void buildIr(){
+        if(utype == 0){
+            if(global){
+                exp0.buildIr();
+                valueUp = new ConstInt(valueIntUp);
+            }else{
+                exp0.buildIr();
+            }
+        }else{
+            ArrayList<Value> arrayList = new ArrayList<>();
+            if(exp1!=null){
+                if(global){
+                    exp1.buildIr();
+                    arrayList.add(new ConstInt(valueIntUp));
+                }else{
+                    exp1.buildIr();
+                    arrayList.add(valueUp);
+                }
+                for(Exp c : exps) {
+                    if(global){
+                        c.buildIr();
+                        arrayList.add(new ConstInt(valueIntUp));
+                    }else{
+                        c.buildIr();
+                        arrayList.add(valueUp);
+                    }
+                }
+            }
+            valueArrayUp = arrayList;
         }
     }
 }

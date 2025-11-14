@@ -22,4 +22,7 @@ public class Exp extends Node {
     public SymbolType getType() {
         return addExp.getType();
     }
+    public void buildIr(){
+        addExp.buildIr();
+    }
 }

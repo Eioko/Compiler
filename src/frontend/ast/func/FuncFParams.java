@@ -2,6 +2,9 @@ package frontend.ast.func;
 
 import frontend.ast.Node;
 import frontend.lexer.Token;
+import midend.ir.IrBuilder;
+import midend.ir.instruction.Alloca;
+import midend.symbol.SymbolTableManager;
 import midend.symbol.ValSymbol;
 
 import java.util.ArrayList;
@@ -34,6 +37,12 @@ public class FuncFParams extends Node {
     public ArrayList<FuncFParam> getOtherParams() {
         return otherParams;
     }
+    public ArrayList<FuncFParam> getAllParams(){
+        ArrayList<FuncFParam> res = new ArrayList<>();
+        res.add(firstParam);
+        res.addAll(otherParams);
+        return res;
+    }
 
     public int size() {
         return 1 + (otherParams == null ? 0 : otherParams.size());
@@ -47,4 +56,16 @@ public class FuncFParams extends Node {
 
         return res;
     }
+    public void buildIr(){
+        ArrayList<FuncFParam> allParams = getAllParams();
+        for (int i =0 ; i<allParams.size(); i++) {
+            Alloca alloca = irBuilder.buildAlloca(curfunc.getArguments().get(i).getValueType(), curBlock);
+            irBuilder.buildStore(curBlock, curfunc.getArguments().get(i), alloca);
+            FuncFParam param = allParams.get(i);
+            ValSymbol paramSymbol = (ValSymbol) SymbolTableManager.getSymbol(param.getIdentToken().getTokenContent());
+            paramSymbol.setIrValue(alloca);
+            //局部的函数参数也是一个指针的Value？？
+        }
+    }
+
 }

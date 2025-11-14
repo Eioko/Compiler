@@ -28,11 +28,11 @@ public class Symbol {
         }
         return false;
     }
-    public void SetIrValue(Value Value) {
+    public void setIrValue(Value Value) {
         this.value = Value;
     }
 
-    public Value GetIrValue() {
+    public Value getIrValue() {
         return this.value;
     }
 }
