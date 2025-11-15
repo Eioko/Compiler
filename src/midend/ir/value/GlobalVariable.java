@@ -3,6 +3,7 @@ package midend.ir.value;
 import midend.ir.IrModule;
 import midend.ir.constant.Constant;
 import midend.ir.type.PointerType;
+import midend.ir.type.StringType;
 
 public class GlobalVariable extends User {
     private final boolean isConst;
@@ -16,6 +17,10 @@ public class GlobalVariable extends User {
 
     @Override
     public String toString() {
+        if(((PointerType)getValueType()).getPointeeType() instanceof StringType){
+            return this.getName() + " = private unnamed_addr constant " + getUsedValue(0).getValueType()+ " "
+                    + getUsedValue(0).toString() + ", align 1";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(this.getName()).append(" = dso_local ");
         if (isConst) {

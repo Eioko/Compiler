@@ -8,7 +8,7 @@ import java.util.LinkedList;
 public class  BasicBlock extends Value{
     private final LinkedList<Instruction> instList = new LinkedList<>();
     public BasicBlock(int num , Function function) {
-        super("%b"+num, new LabelType(), function);
+        super("b"+num, new LabelType(), function);
     }
     public Function getParent(){
         return (Function) super.getParent();

@@ -29,7 +29,7 @@ public class Function extends Value {
      * @param isMain 是否为main函数（必须为true）
      */
     public Function(String name, FunctionType functionType, boolean isMain){
-        super(name, functionType, IrModule.getInstance());
+        super("@" + name, functionType, IrModule.getInstance());
         this.returnType = ((FunctionType)getValueType()).getReturnType();
         if(!isMain) {
             throw new AssertionError("This constructor is only for main function");

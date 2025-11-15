@@ -12,4 +12,11 @@ public class ConstInt extends Constant {
     public int getNumber() {
         return number;
     }
+    public String toString() {
+        return Integer.toString(number);
+    }
+    @Override
+    public String getName(){
+        return Integer.toString(number);
+    }
 }

@@ -13,4 +13,14 @@ public class ConstString extends Constant{
     public String getValue() {
         return str;
     }
+
+    @Override
+    public String toString() {
+        return "c\"" + str + "\\00\"";
+    }
+
+    @Override
+    public String getName(){
+        return toString();
+    }
 }

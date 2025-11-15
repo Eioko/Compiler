@@ -13,4 +13,7 @@ public class StringType extends DataType {
         this.len = -1;
     }
 
+    public String toString() {
+        return "i8*";
+    }
 }

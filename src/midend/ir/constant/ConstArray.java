@@ -11,4 +11,22 @@ public class ConstArray extends Constant{
         super(new ArrayType(elements.size()), elements.toArray(new Value[0]));
         this.elements = elements;
     }
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        for (int i = 0; i < elements.size(); i++) {
+            sb.append(elements.get(i).toString());
+            if (i != elements.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    @Override
+    public String getName(){
+        return toString();
+    }
 }
