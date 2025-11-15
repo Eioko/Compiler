@@ -25,9 +25,21 @@ public class User extends Value {
             }
         }
     }
+
+    /**
+     * User获取操作数
+     * @param index
+     * @return
+     */
     public Value getUsedValue(int index) {
         return operands.get(index);
     }
 
-
+    /**
+     * User获取操作数数量
+     * @return
+     */
+    public int getNumOfOperands() {
+        return operands.size();
+    }
 }

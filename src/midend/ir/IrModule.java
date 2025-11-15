@@ -1,5 +1,6 @@
 package midend.ir;
 
+import midend.ir.value.Declare;
 import midend.ir.value.Function;
 import midend.ir.value.GlobalVariable;
 import midend.ir.value.Value;
@@ -9,10 +10,12 @@ import java.util.ArrayList;
 public class IrModule extends Value {
     private static final IrModule IR_MODULE = new IrModule();
 
+    private final ArrayList<Declare> declares;
     private final ArrayList<Function> functions;
     private final ArrayList<GlobalVariable> globalVariables;
     private IrModule() {
         super("Module", null, null);
+        declares = new ArrayList<>();
         functions = new ArrayList<>();
         globalVariables = new ArrayList<>();
     }
@@ -32,6 +35,7 @@ public class IrModule extends Value {
     public ArrayList<Function> getFunctions(){
         return functions;
     }
+
     public void addGlobalVariable(GlobalVariable globalVariable){
         for (Value globalVariableNode : globalVariables){
             if (globalVariableNode.equals(globalVariable)){
@@ -42,5 +46,30 @@ public class IrModule extends Value {
     }
     public ArrayList<GlobalVariable> getGlobalVariables(){
         return globalVariables;
+    }
+
+    public void addDeclare(Declare declare){
+        for (Value declareNode : declares){
+            if (declareNode.equals(declare)){
+                throw new AssertionError("declare is already in!");
+            }
+        }
+        declares.add(declare);
+    }
+    public ArrayList<Declare> getDeclares(){
+        return declares;
+    }
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(Declare declare : declares){
+            sb.append(declare.toString()).append("\n");
+        }
+        for(GlobalVariable globalVariable : globalVariables){
+            sb.append(globalVariable.toString()).append("\n");
+        }
+        for(Function function : functions){
+            sb.append(function.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

@@ -22,8 +22,15 @@ public class Compiler {
         Parser parser = new Parser(tokens);
         CompUnit compUnit = parser.parseCompUnit();
         compUnit.check();
+        if(ErrorManager.isEmpty()){
+            compUnit.buildIr();
+        }
 
         FileProcess.flushAll();
+        if(ErrorManager.isEmpty()){
+            FileProcess.writeIrFile();
+        }
+
         FileProcess.closeAll();
     }
 }

@@ -5,8 +5,11 @@ public class PointerType extends DataType {
     public PointerType(ValueType type) {
         this.pointeeType = (DataType) type;
     }
-    public DataType getPointeeType()
-    {
+    public DataType getPointeeType() {
         return pointeeType;
+    }
+
+    public String toString() {
+        return pointeeType.toString() + "*";
     }
 }

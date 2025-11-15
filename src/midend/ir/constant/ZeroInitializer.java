@@ -13,6 +13,8 @@ public class ZeroInitializer extends Constant{
     public int getSize() {
         return size;
     }
+
+    @Override
     public String toString(){
         return "zeroinitializer";
     }

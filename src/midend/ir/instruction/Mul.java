@@ -7,4 +7,15 @@ public class Mul extends BinInstruction {
     public Mul(int nameNum, BasicBlock parent, Value op1, Value op2) {
         super(nameNum, parent, op1, op2);
     }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName());
+        sb.append(" = mul ");
+        sb.append(this.getUsedValue(0).getValueType().toString());
+        sb.append(" ");
+        sb.append(this.getUsedValue(0).getName());
+        sb.append(", ");
+        sb.append(this.getUsedValue(1).getName());
+        return sb.toString();
+    }
 }

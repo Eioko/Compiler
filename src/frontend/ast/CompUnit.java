@@ -4,6 +4,9 @@ import frontend.ast.decl.Decl;
 import frontend.ast.decl.VarDecl;
 import frontend.ast.func.FuncDef;
 import frontend.ast.func.MainFuncDef;
+import midend.ir.type.IntegerType;
+import midend.ir.type.StringType;
+import midend.ir.type.VoidType;
 import midend.symbol.SymbolTable;
 import midend.symbol.SymbolTableManager;
 
@@ -35,6 +38,23 @@ public class CompUnit extends Node{
     }
 
     public void buildIr(){
+
+        irBuilder.buildDeclare("getint", new IntegerType(), new ArrayList<>());
+        irBuilder.buildDeclare("putint", new VoidType(), new ArrayList<>(){
+            {
+                add(new IntegerType());
+            }
+        });
+        irBuilder.buildDeclare("putch", new VoidType(), new ArrayList<>(){
+            {
+                add(new IntegerType());
+            }
+        });
+        irBuilder.buildDeclare("putstr", new VoidType(), new ArrayList<>(){
+            {
+                add(new StringType());
+            }
+        });
         for(Decl decl : decls){
             decl.buildIr();
         }

@@ -14,4 +14,15 @@ public class Load extends Instruction {
     public Load(int nameNum, Value pointerValue, BasicBlock parent) {
         super("%v"+nameNum, ((PointerType)pointerValue.getValueType()).getPointeeType(), parent, pointerValue);
     }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName());
+        sb.append(" = load ");
+        sb.append(this.getValueType().toString());
+        sb.append(", ");
+        sb.append(this.getUsedValue(0).getValueType().toString());
+        sb.append(" ");
+        sb.append(this.getUsedValue(0).getName());
+        return sb.toString();
+    }
 }

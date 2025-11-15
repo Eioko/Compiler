@@ -4,7 +4,6 @@ import midend.ir.IrModule;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
 
-import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 
 public class Function extends Value {
@@ -25,9 +24,9 @@ public class Function extends Value {
 
     /**
      * main函数专用构造函数
-     * @param name
-     * @param functionType
-     * @param isMain
+     * @param name 函数名（main）
+     * @param functionType 函数类型
+     * @param isMain 是否为main函数（必须为true）
      */
     public Function(String name, FunctionType functionType, boolean isMain){
         super(name, functionType, IrModule.getInstance());
@@ -49,5 +48,28 @@ public class Function extends Value {
     }
     public ArrayList<Argument> getArguments() {
         return arguments;
+    }
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        // function header
+        sb.append("define dso_local ")
+          .append(returnType.toString())
+          .append(" ")
+          .append(getName())
+          .append("(");
+        for (int i = 0; i < arguments.size(); i++) {
+            Argument arg = arguments.get(i);
+            sb.append(arg.getValueType().toString()).append(" ").append(arg.getName());
+            if (i != arguments.size() - 1) sb.append(", ");
+        }
+        sb.append(") {")
+          .append("\n");
+        // body: print all basic blocks in order
+        for (BasicBlock block : blocks) {
+            sb.append(block.toString());
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

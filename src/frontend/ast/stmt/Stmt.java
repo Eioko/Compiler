@@ -9,6 +9,11 @@ import frontend.ast.exp.Exp;
 import frontend.ast.exp.LVal;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.ir.constant.ConstInt;
+import midend.ir.constant.ConstString;
+import midend.ir.instruction.GEP;
+import midend.ir.value.GlobalVariable;
+import midend.ir.value.Value;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
@@ -303,4 +308,74 @@ public class Stmt extends Node {
     public boolean isReturn()       { return utype == RETURN; }
     public boolean isPrintf()       { return utype == PRINTF; }
 
+    public void buildIr(){
+        if(isAssign()){
+            assignLVal.buildIr();
+            Value addr = valueUp;
+            assignExp.buildIr();
+            Value val = valueUp;
+            irBuilder.buildStore(curBlock, addr, val);
+        }else if(isExprOrEmpty()){
+            if(exprStmtExp!=null){
+                exprStmtExp.buildIr();
+            }
+        }else if(isBlock()){
+            SymbolTableManager.gotoNextSonTable();
+            block.buildIr();
+            SymbolTableManager.gotoFatherTable();
+        }else if(isIf()){
+
+        }else if (isFor()){
+
+        }else if(isBreak()){
+
+        }else if(isContinue()){
+
+        }else if(isReturn()){
+            if(returnExp!=null){
+                returnExp.buildIr();
+                Value retVal = valueUp;
+                irBuilder.buildReturn(curBlock, retVal);
+            }else{
+                irBuilder.buildReturn(curBlock);
+            }
+        }else if(isPrintf()){
+            ArrayList<Value> args = new ArrayList<>();
+            ArrayList<String> fmtStrs = new ArrayList<>();
+            for(Exp exp: printfArgs){
+                exp.buildIr();
+                args.add(valueUp);
+            }
+            String constStr = stringConstToken.getTokenContent();
+
+            String rawStr = constStr.length() >= 2 && constStr.charAt(0) == '\"' && constStr.charAt(constStr.length() - 1) == '\"'
+                    ? constStr.substring(1, constStr.length() - 1) : constStr;
+            for (int i = 0; i < rawStr.length(); ) {
+                if (rawStr.charAt(i) == '%' && i + 1 < rawStr.length() && rawStr.charAt(i + 1) == 'd') {
+                    fmtStrs.add("%d");
+                    i += 2;
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    while (i < rawStr.length() && !(rawStr.charAt(i) == '%' && i + 1 < rawStr.length() && rawStr.charAt(i + 1) == 'd')) {
+                        sb.append(rawStr.charAt(i));
+                        i++;
+                    }
+                    if (!sb.isEmpty()) {
+                        fmtStrs.add(sb.toString());
+                    }
+                }
+            }
+            int argIndex = 0;
+            for(String s : fmtStrs){
+                if(!s.equals("%d")){
+                    GlobalVariable stringGlobal = irBuilder.buildGlobalString(s);
+                    GEP gep = irBuilder.buildGEP(curBlock, stringGlobal, ConstInt.ZERO, ConstInt.ZERO);
+                    irBuilder.buildPutStr(curBlock, gep);
+                }else{
+                    Value argVal = args.get(argIndex++);
+                    irBuilder.buildPutInt(curBlock, argVal);
+                }
+            }
+        }
+    }
 }

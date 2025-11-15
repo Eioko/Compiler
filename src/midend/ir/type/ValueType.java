@@ -1,4 +1,4 @@
 package midend.ir.type;
 
-public class ValueType {
+public abstract class ValueType {
 }

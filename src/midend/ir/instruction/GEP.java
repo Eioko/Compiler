@@ -11,7 +11,7 @@ public class GEP extends Instruction {
     private final ValueType baseType;
 
     /**
-     * 函数参数数组寻址
+     * 函数参数数组寻址, 或者说是base为指针的寻址
      */
     public GEP(int nameNum, BasicBlock parent, Value base, Value firstIndex) {
         super("%p" + nameNum, (PointerType) base.getValueType(), parent, base, firstIndex);
@@ -26,4 +26,18 @@ public class GEP extends Instruction {
         this.baseType = ((PointerType) base.getValueType()).getPointeeType();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName());
+        sb.append(" = getelementptr ");
+        sb.append(baseType.toString());
+        for (int i = 0; i < this.getNumOfOperands(); i++) {
+            sb.append(", ");
+            sb.append(this.getUsedValue(i).getValueType().toString());
+            sb.append(" ");
+            sb.append(this.getUsedValue(i).getName());
+        }
+        return sb.toString();
+    }
 }

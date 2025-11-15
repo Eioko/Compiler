@@ -14,4 +14,18 @@ public class GlobalVariable extends User {
         return isConst;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName()).append(" = dso_local ");
+        if (isConst) {
+            sb.append("constant ");
+        } else {
+            sb.append("global ");
+        }
+        sb.append(((PointerType)this.getValueType()).getPointeeType());
+        sb.append(" ");
+        sb.append(getUsedValue(0).toString());
+        return sb.toString();
+    }
 }

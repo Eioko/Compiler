@@ -22,7 +22,15 @@ public class Alloca extends Instruction{
         // 指针
         super("%p" + nameNum, new PointerType(allocatedType), parent);
         this.initVal = null;
+        //??这里还没有实现
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getName());
+        sb.append(" = alloca ");
+        sb.append(((PointerType)this.getValueType()).getPointeeType().toString());
+        return sb.toString();
+    }
 }
 

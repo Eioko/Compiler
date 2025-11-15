@@ -5,9 +5,11 @@ public class ArrayType extends DataType{
     public ArrayType(int size) {
         this.size = size;
     }
-
-
     public int getSize() {
         return size;
+    }
+
+    public String toString() {
+        return "[" + size + " x i32]";
     }
 }

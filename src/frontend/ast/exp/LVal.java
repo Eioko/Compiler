@@ -83,16 +83,14 @@ public class LVal extends ComptueExp{
     public void buildIr(){
         String name = identToken.getTokenContent();
         Symbol symbol = SymbolTableManager.getSymbol(name);
-        Value value = symbol.getIrValue();;
+        Value value = symbol.getIrValue();
         if(lbrackToken==null){
-            Load load = irBuilder.buildLoad(curBlock, value);
-            valueUp = load;
+            valueUp = value;
         }else{
             indexExp.buildIr();
             Value indexValue = valueUp;
             GEP gep = irBuilder.buildGEP(curBlock, value, indexValue);
-            Load load = irBuilder.buildLoad(curBlock, gep);
-            valueUp = load;
+            valueUp = gep;
         }
     }
 }

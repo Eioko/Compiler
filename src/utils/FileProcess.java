@@ -2,6 +2,7 @@ package utils;
 
 import frontend.lexer.Token;
 import error.SysyError;
+import midend.ir.IrModule;
 import midend.symbol.SymbolTableManager;
 
 import java.io.BufferedReader;
@@ -21,26 +22,31 @@ import java.util.Set;
 import static error.ErrorManager.errors;
 
 public class FileProcess {
+
+    private FileProcess() {}
+
     private static final String inputFile = "testfile.txt";
     private static final String tokenOutputFile = "lexer.txt";
     private static final String errorFile = "error.txt";
     private static final String parserOutputFile = "parser.txt";
     private static final String symbolOutputFile = "symbol.txt";
+    private static final String irOutputFile = "llvm_ir.txt";
 
     private static final Path inputPath = Path.of(inputFile);
     private static final Path tokenOutputPath = Path.of(tokenOutputFile);
     private static final Path errorPath = Path.of(errorFile);
     private static final Path parserOutputPath = Path.of(parserOutputFile);
     private static final Path symbolOutputPath = Path.of(symbolOutputFile);
+    private static final Path irOutputPath = Path.of(irOutputFile);
 
     private static BufferedWriter tokenWriter;
     private static BufferedReader reader;
     private static BufferedWriter errorWriter;
     private static BufferedWriter parserWriter;
     private static BufferedWriter symbolWriter;
+    private static BufferedWriter irWriter;
 
-    public static boolean printParser = true;
-    private FileProcess() {}
+
 
     private static void ensureInputExistsAndReadable() {
         if (!Files.exists(inputPath)) {
@@ -73,10 +79,16 @@ public class FileProcess {
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
+            irWriter = Files.newBufferedWriter(
+                    irOutputPath,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
         }catch (IOException e) {
             throw new RuntimeException("初始化输出错误");
         }
     }
+
     public static String readFile(){
         ensureInputExistsAndReadable();
         try {
@@ -96,6 +108,9 @@ public class FileProcess {
             throw new RuntimeException("读取失败: " + inputPath.toAbsolutePath(), ioe);
         }
     }
+
+    // --------------------------------------Parser输出相关-----------------------------------------------------
+    public static boolean printParser = true;
     private static final ArrayList<String> tokenAndGrammarBuffer = new ArrayList<>();
     private static final Set<String> SUPPRESS = Set.of("Decl", "BlockItem", "BType");
 
@@ -122,6 +137,7 @@ public class FileProcess {
         }
         return node;
     }
+
     //输出决策
     public static void flushAll() {
         try {
@@ -151,6 +167,15 @@ public class FileProcess {
         }
     }
 
+    public static void writeIrFile(){
+        try{
+            irWriter.write(IrModule.getInstance().toString());
+            irWriter.flush();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // --------------------------------------Lexer输出相关-----------------------------------------------------
     public static void printTokens(ArrayList<Token> tokens){
         for(Token token : tokens){
             try{
@@ -162,12 +187,14 @@ public class FileProcess {
         }
         flushQuietly(tokenWriter);
     }
+
     public static void closeAll() {
         closeQuietly(tokenWriter);
         closeQuietly(errorWriter);
         closeQuietly(reader);
         closeQuietly(parserWriter);
         closeQuietly(symbolWriter);
+        closeQuietly(irWriter);
     }
     private static void flushQuietly(BufferedWriter w) {
         if (w != null) {

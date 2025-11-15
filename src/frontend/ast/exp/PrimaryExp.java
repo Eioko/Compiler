@@ -1,6 +1,8 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.instruction.Load;
+import midend.ir.value.Value;
 import midend.symbol.SymbolType;
 
 /**
@@ -69,6 +71,9 @@ public class PrimaryExp extends ComptueExp {
             exp.buildIr();
         }else if(utype == 1) {
             lVal.buildIr();
+            Value addr = valueUp;
+            Load load = irBuilder.buildLoad(curBlock, addr);
+            valueUp = load;
         }else{
             number.buildIr();
         }

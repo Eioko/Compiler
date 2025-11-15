@@ -2,16 +2,14 @@ package midend.ir;
 
 
 import midend.ir.constant.ConstArray;
+import midend.ir.constant.ConstString;
 import midend.ir.constant.Constant;
 import midend.ir.instruction.*;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
 import midend.ir.type.ValueType;
 import midend.ir.type.VoidType;
-import midend.ir.value.BasicBlock;
-import midend.ir.value.Function;
-import midend.ir.value.GlobalVariable;
-import midend.ir.value.Value;
+import midend.ir.value.*;
 
 import java.util.ArrayList;
 
@@ -157,4 +155,41 @@ public class IrBuilder {
         return load;
     }
 
+    public Declare buildDeclare(String name, DataType returnType, ArrayList<DataType> paramTypes) {
+        Declare declare = new Declare(name, returnType, paramTypes);
+        irModule.addDeclare(declare);
+        return declare;
+    }
+
+    public Ret buildReturn(BasicBlock parent, Value... returnValue) {
+        Ret ret;
+        if(returnValue.length == 0){
+            ret = new Ret(parent);
+
+        }else{
+            ret = new Ret(nameNumCount++, parent, returnValue[0]);
+        }
+        parent.insertTail(ret);
+        return ret;
+    }
+
+    public GlobalVariable buildGlobalString(String str) {
+        String name = "@.str." + strNumCount++;
+        ConstString constString = new ConstString(str);
+        GlobalVariable globalString = new GlobalVariable(name, constString, true);
+        irModule.addGlobalVariable(globalString);
+        return globalString;
+    }
+
+    public PutStr buildPutStr(BasicBlock parent, Value strAddr) {
+        PutStr putStr = new PutStr(parent, strAddr);
+        parent.insertTail(putStr);
+        return putStr;
+    }
+
+    public PutInt buildPutInt(BasicBlock parent, Value intValue) {
+        PutInt putInt = new PutInt(parent, intValue);
+        parent.insertTail(putInt);
+        return putInt;
+    }
 }
