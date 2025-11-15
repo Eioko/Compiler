@@ -8,6 +8,9 @@ import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.ir.constant.ConstInt;
+import midend.ir.instruction.Instruction;
+import midend.ir.instruction.Ret;
 import midend.ir.type.*;
 import midend.ir.value.BasicBlock;
 import midend.symbol.FuncSymbol;
@@ -103,6 +106,16 @@ public class FuncDef extends Node {
             funcFParams.buildIr();
         }
         block.buildIr();
+
+        Instruction last = curBlock.getLastInst();
+
+        if (!(last instanceof Ret)) {
+            if (curfunc.getReturnType() instanceof VoidType) {
+                irBuilder.buildReturn(curBlock);
+            } else {
+                irBuilder.buildReturn(curBlock, ConstInt.ZERO);
+            }
+        }
         SymbolTableManager.gotoFatherTable();
     }
 

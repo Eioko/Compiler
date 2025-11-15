@@ -1,0 +1,9 @@
+declare i32 @getint()
+declare void @putint(i32)
+declare void @putch(i32)
+declare void @putstr(midend.ir.type.StringType@69d0a921)
+@ga = dso_local global i32 midend.ir.constant.ConstInt@446cdf90
+define dso_local i32 main() {
+%b0:
+  ret i32 null
+}

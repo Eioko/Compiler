@@ -6,6 +6,7 @@ import frontend.ast.func.FuncRParams;
 import frontend.lexer.Token;
 import midend.ir.constant.ConstInt;
 import midend.ir.instruction.Call;
+import midend.ir.instruction.GetInt;
 import midend.ir.instruction.Sub;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
@@ -146,6 +147,11 @@ public class UnaryExp extends ComptueExp {
         if(utype == 0){
             primaryExp.buildIr();
         }else if(utype == 1){
+            if(identToken.getTokenContent().equals("getint")){
+                GetInt getInt = irBuilder.buildGetInt(curBlock);
+                valueUp = getInt;
+                return;
+            }
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(identToken.getTokenContent());
             Function funcValue = (Function) funcSymbol.getIrValue();
             ArrayList<Value> args = new ArrayList<>();

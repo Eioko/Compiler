@@ -7,6 +7,9 @@ import frontend.ast.decl.Decl;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
 import frontend.lexer.TokenType;
+import midend.ir.constant.ConstInt;
+import midend.ir.instruction.Instruction;
+import midend.ir.instruction.Ret;
 import midend.ir.type.DataType;
 import midend.ir.type.IntegerType;
 import midend.ir.type.PointerType;
@@ -72,6 +75,11 @@ public class MainFuncDef extends Node {
         curBlock = entryBlock;
         SymbolTableManager.gotoNextSonTable();
         block.buildIr();
+
+        Instruction last = curBlock.getLastInst();
+        if(!(last instanceof Ret)){
+            irBuilder.buildReturn(curBlock, ConstInt.ZERO);
+        }
         SymbolTableManager.gotoFatherTable();
     }
 }

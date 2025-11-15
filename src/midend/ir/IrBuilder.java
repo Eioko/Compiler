@@ -192,4 +192,11 @@ public class IrBuilder {
         parent.insertTail(putInt);
         return putInt;
     }
+
+    public GetInt buildGetInt(BasicBlock parent) {
+        int nameNum = nameNumCount++;
+        GetInt getInt = new GetInt(nameNum, parent);
+        parent.insertTail(getInt);
+        return getInt;
+    }
 }

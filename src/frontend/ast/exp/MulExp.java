@@ -27,7 +27,7 @@ public class MulExp extends ComptueExp {
     public ArrayList<Token> getOpTokens() { return opTokens; }
     public ArrayList<UnaryExp> getOtherUnaries() { return otherUnaries; }
 
-    public int size() { return 1 + (otherUnaries == null ? 0 : otherUnaries.size()); }
+    public int allSize() { return 1 + (otherUnaries == null ? 0 : otherUnaries.size()); }
 
     public void check(){
         firstUnary.check();
@@ -43,7 +43,7 @@ public class MulExp extends ComptueExp {
             int sum = 0;
             firstUnary.buildIr();
             sum += valueIntUp;
-            for(int i=0; i < size(); i++){
+            for(int i=0; i < allSize()-1; i++){
                 otherUnaries.get(i).buildIr();
                 Token opToken = opTokens.get(i);
                 if(opToken.getTokenContent().equals("*")){
@@ -59,7 +59,7 @@ public class MulExp extends ComptueExp {
         }else{
             firstUnary.buildIr();
             Value sum = valueUp;
-            for(int i=0; i < size(); i++) {
+            for(int i=0; i < allSize()-1; i++) {
                 otherUnaries.get(i).buildIr();
                 Token opToken = opTokens.get(i);
                 if (opToken.getTokenContent().equals("*")) {

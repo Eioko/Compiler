@@ -321,6 +321,7 @@ public class Stmt extends Node {
             }
         }else if(isBlock()){
             SymbolTableManager.gotoNextSonTable();
+            curBlock = irBuilder.buildBasicBlock(curfunc);
             block.buildIr();
             SymbolTableManager.gotoFatherTable();
         }else if(isIf()){

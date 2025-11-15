@@ -30,6 +30,13 @@ public class  BasicBlock extends Value{
         instList.addFirst(inst);
     }
 
+    public Instruction getLastInst(){
+        if(instList.isEmpty()){
+            return null;
+        }
+        return instList.getLast();
+    }
+
     // Print label and all instructions with indentation
     @Override
     public String toString() {
