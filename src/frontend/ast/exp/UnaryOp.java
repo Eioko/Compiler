@@ -2,6 +2,7 @@ package frontend.ast.exp;
 
 import frontend.ast.Node;
 import frontend.lexer.Token;
+import frontend.lexer.TokenType;
 
 /**
  UnaryOp → '+' | '−' | '!'
@@ -15,4 +16,10 @@ public class UnaryOp extends Node {
         return op;
     }
     public void check() {}
+    public boolean isPlus() {
+        return op.getTokenType() == TokenType.PLUS;
+    }
+    public boolean isMinus() {
+        return op.getTokenType() == TokenType.MINU;
+    }
 }

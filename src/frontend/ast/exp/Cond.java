@@ -16,4 +16,7 @@ public class Cond extends ComptueExp {
     public void check(){
         lOrExp.check();
     }
+    public void buildIr(){
+        lOrExp.buildIr();
+    }
 }

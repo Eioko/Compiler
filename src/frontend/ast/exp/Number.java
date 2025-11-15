@@ -1,6 +1,7 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.constant.ConstInt;
 import midend.symbol.SymbolType;
 
 /**
@@ -21,5 +22,9 @@ public class Number extends ComptueExp {
     }
     public SymbolType getType() {
         return SymbolType.INT;
+    }
+    public void buildIr(){
+        valueIntUp = Integer.parseInt(intConstToken.getTokenContent());
+        valueUp = new ConstInt(valueIntUp);
     }
 }

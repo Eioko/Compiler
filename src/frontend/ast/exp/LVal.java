@@ -3,6 +3,9 @@ package frontend.ast.exp;
 import error.ErrorType;
 import error.SysyError;
 import frontend.lexer.Token;
+import midend.ir.instruction.GEP;
+import midend.ir.instruction.Load;
+import midend.ir.value.Value;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
@@ -75,6 +78,21 @@ public class LVal extends ComptueExp{
             }
         }else{
             return null;
+        }
+    }
+    public void buildIr(){
+        String name = identToken.getTokenContent();
+        Symbol symbol = SymbolTableManager.getSymbol(name);
+        Value value = symbol.getIrValue();;
+        if(lbrackToken==null){
+            Load load = irBuilder.buildLoad(curBlock, value);
+            valueUp = load;
+        }else{
+            indexExp.buildIr();
+            Value indexValue = valueUp;
+            GEP gep = irBuilder.buildGEP(curBlock, value, indexValue);
+            Load load = irBuilder.buildLoad(curBlock, gep);
+            valueUp = load;
         }
     }
 }

@@ -3,6 +3,7 @@ package frontend.ast.func;
 import frontend.ast.Node;
 import frontend.ast.exp.Exp;
 import frontend.lexer.Token;
+import midend.ir.value.Value;
 
 import java.util.ArrayList;
 
@@ -48,5 +49,15 @@ public class FuncRParams extends Node {
         allArgs.add(firstExp);
         allArgs.addAll(otherExps);
         return allArgs;
+    }
+    public void buildIr(){
+        firstExp.buildIr();
+        ArrayList<Value> args = new ArrayList<>();
+        args.add(valueUp);
+        for(Exp exp : otherExps){
+            exp.buildIr();
+            args.add(valueUp);
+        }
+        valueArrayUp = args;
     }
 }

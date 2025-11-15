@@ -1,6 +1,8 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.constant.ConstInt;
+import midend.ir.value.Value;
 
 import java.util.ArrayList;
 
@@ -28,5 +30,8 @@ public class LOrExp extends ComptueExp {
         for(LAndExp otherAnd : otherAnds) {
             otherAnd.check();
         }
+    }
+    public void buildIr(){
+
     }
 }

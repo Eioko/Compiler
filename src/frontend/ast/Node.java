@@ -12,7 +12,7 @@ public class Node {
     protected static int inLoop = 0;
     protected static FuncSymbol curFuncSymbol = null;
 
-    //----------------------------------LLVM生成-----------------------------------
+    //----------------------------------LLVM生成----------------------------------------
     protected static BasicBlock curBlock = null;
 
     protected static final IrBuilder irBuilder = IrBuilder.getInstance();

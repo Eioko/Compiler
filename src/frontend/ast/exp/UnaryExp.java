@@ -4,6 +4,11 @@ import error.ErrorType;
 import error.SysyError;
 import frontend.ast.func.FuncRParams;
 import frontend.lexer.Token;
+import midend.ir.constant.ConstInt;
+import midend.ir.instruction.Call;
+import midend.ir.instruction.Sub;
+import midend.ir.value.Function;
+import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
 import midend.symbol.SymbolTableManager;
 import midend.symbol.SymbolType;
@@ -136,4 +141,27 @@ public class UnaryExp extends ComptueExp {
 
     public UnaryOp getUnaryOpToken() { return unaryOp; }
     public UnaryExp getUnaryExp() { return unaryExp; }
+
+    public void buildIr() {
+        if(utype == 0){
+            primaryExp.buildIr();
+        }else if(utype == 1){
+            FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(identToken.getTokenContent());
+            Function funcValue = (Function) funcSymbol.getIrValue();
+            ArrayList<Value> args = new ArrayList<>();
+            if(funcRParams != null){
+                funcRParams.buildIr();
+                args = valueArrayUp;
+            }
+            Call call = irBuilder.buildCall(curBlock, funcValue, args);
+            valueUp = call;
+        }else if(utype == 2){
+            unaryExp.buildIr();
+            if(unaryOp.isMinus()){
+                ConstInt zero = new ConstInt(0);
+                Sub sub = irBuilder.buildSub(curBlock, zero, valueUp);
+                valueUp = sub;
+            }
+        }
+    }
 }

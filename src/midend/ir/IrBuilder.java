@@ -3,10 +3,7 @@ package midend.ir;
 
 import midend.ir.constant.ConstArray;
 import midend.ir.constant.Constant;
-import midend.ir.instruction.Alloca;
-import midend.ir.instruction.Call;
-import midend.ir.instruction.GEP;
-import midend.ir.instruction.Store;
+import midend.ir.instruction.*;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
 import midend.ir.type.ValueType;
@@ -117,4 +114,47 @@ public class IrBuilder {
         function.addBasicBlock(basicBlock);
         return basicBlock;
     }
+
+    public Add buildAdd(BasicBlock basicBlock, Value op1, Value op2) {
+        int nameNum = nameNumCount++;
+        Add add = new Add(nameNum, basicBlock, op1, op2);
+        basicBlock.insertTail(add);
+        return add;
+    }
+
+    public Sub buildSub(BasicBlock basicBlock, Value op1, Value op2) {
+        int nameNum = nameNumCount++;
+        Sub sub = new Sub(nameNum, basicBlock, op1, op2);
+        basicBlock.insertTail(sub);
+        return sub;
+    }
+
+    public Mul buildMul(BasicBlock basicBlock, Value op1, Value op2) {
+        int nameNum = nameNumCount++;
+        Mul mul = new Mul(nameNum, basicBlock, op1, op2);
+        basicBlock.insertTail(mul);
+        return mul;
+    }
+
+    public Div buildDiv(BasicBlock basicBlock, Value op1, Value op2) {
+        int nameNum = nameNumCount++;
+        Div div = new Div(nameNum, basicBlock, op1, op2);
+        basicBlock.insertTail(div);
+        return div;
+    }
+
+    public Mod buildMod(BasicBlock basicBlock, Value op1, Value op2) {
+        int nameNum = nameNumCount++;
+        Mod mod = new Mod(nameNum, basicBlock, op1, op2);
+        basicBlock.insertTail(mod);
+        return mod;
+    }
+
+    public Load buildLoad(BasicBlock parent, Value pointerValue) {
+        int nameNum = nameNumCount++;
+        Load load = new Load(nameNum, pointerValue, parent);
+        parent.insertTail(load);
+        return load;
+    }
+
 }

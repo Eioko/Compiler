@@ -1,6 +1,7 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.value.Value;
 
 import java.util.ArrayList;
 
@@ -30,4 +31,5 @@ public class LAndExp extends ComptueExp {
             e.check();
         }
     }
+
 }

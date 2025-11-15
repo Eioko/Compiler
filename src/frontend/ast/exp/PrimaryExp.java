@@ -64,4 +64,13 @@ public class PrimaryExp extends ComptueExp {
             return SymbolType.INT;
         }
     }
+    public void buildIr() {
+        if(utype == 0) {
+            exp.buildIr();
+        }else if(utype == 1) {
+            lVal.buildIr();
+        }else{
+            number.buildIr();
+        }
+    }
 }
