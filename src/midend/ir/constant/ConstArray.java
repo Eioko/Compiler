@@ -29,4 +29,7 @@ public class ConstArray extends Constant{
     public String getName(){
         return toString();
     }
+    public Constant getElementAt(int index){
+        return elements.get(index);
+    }
 }

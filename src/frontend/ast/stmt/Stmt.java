@@ -314,14 +314,13 @@ public class Stmt extends Node {
             Value addr = valueUp;
             assignExp.buildIr();
             Value val = valueUp;
-            irBuilder.buildStore(curBlock, addr, val);
+            irBuilder.buildStore(curBlock, val, addr);
         }else if(isExprOrEmpty()){
             if(exprStmtExp!=null){
                 exprStmtExp.buildIr();
             }
         }else if(isBlock()){
             SymbolTableManager.gotoNextSonTable();
-            curBlock = irBuilder.buildBasicBlock(curfunc);
             block.buildIr();
             SymbolTableManager.gotoFatherTable();
         }else if(isIf()){
@@ -368,8 +367,13 @@ public class Stmt extends Node {
             }
             int argIndex = 0;
             for(String s : fmtStrs){
+                String a = s;
+                a = a.replace("\\n", "a");
+
+                int len = a.length() + 1;
+                s = s.replace("\\n", "\\0A");
                 if(!s.equals("%d")){
-                    GlobalVariable stringGlobal = irBuilder.buildGlobalString(s);
+                    GlobalVariable stringGlobal = irBuilder.buildGlobalString(s, len);
                     GEP gep = irBuilder.buildGEP(curBlock, stringGlobal, ConstInt.ZERO, ConstInt.ZERO);
                     irBuilder.buildPutStr(curBlock, gep);
                 }else{

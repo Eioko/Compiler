@@ -88,12 +88,14 @@ public class FuncDef extends Node {
             returnType = new IntegerType();
         }
         ArrayList<DataType> paramTypes = new ArrayList<>();
-        for(ValSymbol paramSymbol : funcSymbol.getParams()){
-            //已经在check里面处理过，形参是Int或者IntArray
-            if(paramSymbol.getSymbolType() == SymbolType.INT){
-                paramTypes.add(new IntegerType());
-            }else if(paramSymbol.getSymbolType() == SymbolType.INTARRAY){
-                paramTypes.add(new PointerType(new IntegerType()));
+        if(funcSymbol.getParams() != null){
+            for(ValSymbol paramSymbol : funcSymbol.getParams()){
+                //已经在check里面处理过，形参是Int或者IntArray
+                if(paramSymbol.getSymbolType() == SymbolType.INT){
+                    paramTypes.add(new IntegerType());
+                }else if(paramSymbol.getSymbolType() == SymbolType.INTARRAY){
+                    paramTypes.add(new PointerType(new IntegerType()));
+                }
             }
         }
         curfunc = irBuilder.buildFunction(funcSymbol.getSymbolName(), returnType, paramTypes);

@@ -30,7 +30,7 @@ public class GEP extends Instruction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getName());
-        sb.append(" = getelementptr ");
+        sb.append(" = getelementptr inbounds ");
         sb.append(baseType.toString());
         for (int i = 0; i < this.getNumOfOperands(); i++) {
             sb.append(", ");

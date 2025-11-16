@@ -43,7 +43,7 @@ public class IrBuilder {
         int nameNum = nameNumCount++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
         Alloca ans = new Alloca(nameNum, allocatedType, realParent, initVal);
-        realParent.insertHead(ans);
+        realParent.insertTail(ans);
         return ans;
     }
 
@@ -51,7 +51,7 @@ public class IrBuilder {
         int nameNum = nameNumCount++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
         Alloca ans = new Alloca(nameNum, allocatedType, realParent);
-        realParent.insertHead(ans);
+        realParent.insertTail(ans);
         return ans;
     }
 
@@ -173,9 +173,9 @@ public class IrBuilder {
         return ret;
     }
 
-    public GlobalVariable buildGlobalString(String str) {
-        String name = "@.str." + strNumCount++;
-        ConstString constString = new ConstString(str);
+    public GlobalVariable buildGlobalString(String str, int len) {
+        String name = ".str." + strNumCount++;
+        ConstString constString = new ConstString(str, len);
         GlobalVariable globalString = new GlobalVariable(name, constString, true);
         irModule.addGlobalVariable(globalString);
         return globalString;

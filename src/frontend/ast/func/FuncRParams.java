@@ -3,6 +3,7 @@ package frontend.ast.func;
 import frontend.ast.Node;
 import frontend.ast.exp.Exp;
 import frontend.lexer.Token;
+import midend.ir.type.IntegerType;
 import midend.ir.value.Value;
 
 import java.util.ArrayList;
@@ -51,12 +52,19 @@ public class FuncRParams extends Node {
         return allArgs;
     }
     public void buildIr(){
-        firstExp.buildIr();
+
         ArrayList<Value> args = new ArrayList<>();
-        args.add(valueUp);
-        for(Exp exp : otherExps){
+
+        for(int i= 0 ; i < size(); i++){
+            Exp exp = allArgs().get(i);
+            if(!(formalTypesDown.get(i) instanceof IntegerType)) {
+                arrayAsPtr = true;
+            }else{
+                arrayAsPtr = false;
+            }
             exp.buildIr();
-            args.add(valueUp);
+            arrayAsPtr = false;
+            args.add(exp.valueUp);
         }
         valueArrayUp = args;
     }

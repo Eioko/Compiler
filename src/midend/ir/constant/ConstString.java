@@ -5,8 +5,8 @@ import midend.ir.type.StringType;
 public class ConstString extends Constant{
     private String str;
 
-    public ConstString(String str) {
-        super(new StringType(str.length()));
+    public ConstString(String str, int len) {
+        super(new StringType(len));
         this.str = str;
     }
 

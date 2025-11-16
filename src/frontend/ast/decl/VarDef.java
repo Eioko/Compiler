@@ -144,11 +144,14 @@ public class VarDef extends Node {
 
                     GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
                             initArray , false);
+                    //symbol 存的是一个指向initVal类型的指针，这里constArray，就是ArrayType
                     valSymbol.setIrValue(globalVariable);
                 }
             }else{
                 // 局部数组
                 Alloca alloc = irBuilder.buildAlloca(arrayType, curBlock);
+
+                //symbol 存的是一个ArrayType的指针
                 valSymbol.setIrValue(alloc);
                 if(utype == 0){
                     // 局部数组未初始化

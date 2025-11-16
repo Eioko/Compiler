@@ -18,6 +18,8 @@ public class ConstExp extends ComptueExp {
         addExp.check();
     }
     public void buildIr(){
+        global = true;
         addExp.buildIr();
+        global = false;
     }
 }

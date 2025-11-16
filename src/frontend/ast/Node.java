@@ -1,6 +1,7 @@
 package frontend.ast;
 
 import midend.ir.IrBuilder;
+import midend.ir.type.DataType;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
@@ -34,4 +35,12 @@ public class Node {
         继承属性，现在的函数
      */
     protected static Function curfunc = null;
+    /**
+     * 继承属性，数组应该输出数组格式还是指针格式（函数参数）
+     */
+    protected static boolean arrayAsPtr = false;
+    /**
+     *  继承属性，函数调用的形参类型列表（向下传递）
+     */
+    protected static ArrayList<DataType> formalTypesDown = new ArrayList<>();
 }

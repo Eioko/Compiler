@@ -33,4 +33,8 @@ public class GlobalVariable extends User {
         sb.append(getUsedValue(0).toString());
         return sb.toString();
     }
+
+    public Constant getInitValue() {
+        return (Constant) getUsedValue(0);
+    }
 }

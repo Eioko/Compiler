@@ -14,6 +14,9 @@ public class StringType extends DataType {
     }
 
     public String toString() {
-        return "i8*";
+        if(len == -1){
+            return "i8*";
+        }
+        return "[" + len + " x i8]";
     }
 }

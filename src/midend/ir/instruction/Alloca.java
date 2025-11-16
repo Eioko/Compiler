@@ -7,6 +7,7 @@ import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
 
 public class Alloca extends Instruction{
+    // 局部常量数组初始化值
     private ConstArray initVal = null;
     public Alloca(int numNum, ValueType allocatedType, BasicBlock parent) {
         super("%p"+numNum, new PointerType(allocatedType), parent);
@@ -31,6 +32,9 @@ public class Alloca extends Instruction{
         sb.append(" = alloca ");
         sb.append(((PointerType)this.getValueType()).getPointeeType().toString());
         return sb.toString();
+    }
+    public ConstArray getInitVal(){
+        return initVal;
     }
 }
 

@@ -70,10 +70,15 @@ public class PrimaryExp extends ComptueExp {
         if(utype == 0) {
             exp.buildIr();
         }else if(utype == 1) {
-            lVal.buildIr();
-            Value addr = valueUp;
-            Load load = irBuilder.buildLoad(curBlock, addr);
-            valueUp = load;
+            if(!arrayAsPtr){
+                lVal.buildIr();
+                Value addr = valueUp;
+                Load load = irBuilder.buildLoad(curBlock, addr);
+                valueUp = load;
+            }else{
+                arrayAsPtr = false;
+                lVal.buildIr();
+            }
         }else{
             number.buildIr();
         }

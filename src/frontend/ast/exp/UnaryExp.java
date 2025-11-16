@@ -8,6 +8,9 @@ import midend.ir.constant.ConstInt;
 import midend.ir.instruction.Call;
 import midend.ir.instruction.GetInt;
 import midend.ir.instruction.Sub;
+import midend.ir.type.DataType;
+import midend.ir.type.FunctionType;
+import midend.ir.type.ValueType;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
@@ -154,6 +157,8 @@ public class UnaryExp extends ComptueExp {
             }
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(identToken.getTokenContent());
             Function funcValue = (Function) funcSymbol.getIrValue();
+            ArrayList<DataType> formalTypes = ((FunctionType)funcValue.getValueType()).getArguments();
+            formalTypesDown = formalTypes;
             ArrayList<Value> args = new ArrayList<>();
             if(funcRParams != null){
                 funcRParams.buildIr();
