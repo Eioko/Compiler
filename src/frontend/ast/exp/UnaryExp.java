@@ -10,6 +10,7 @@ import midend.ir.instruction.GetInt;
 import midend.ir.instruction.Sub;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
+import midend.ir.type.IntegerType;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
@@ -150,7 +151,7 @@ public class UnaryExp extends ComptueExp {
             if(utype == 0){
                 primaryExp.buildIr();
             }else if(utype == 1){
-                throw new RuntimeException("Global function call is not allowed");
+                throw new AssertionError("Global function call is not allowed");
             }else if(utype == 2){
                 unaryExp.buildIr();
                 if(unaryOp.isMinus()){
@@ -176,11 +177,18 @@ public class UnaryExp extends ComptueExp {
             FuncSymbol funcSymbol = (FuncSymbol) SymbolTableManager.getSymbol(identToken.getTokenContent());
             Function funcValue = (Function) funcSymbol.getIrValue();
             ArrayList<DataType> formalTypes = ((FunctionType)funcValue.getValueType()).getArguments();
-            formalTypesDown = formalTypes;
+
             ArrayList<Value> args = new ArrayList<>();
             if(funcRParams != null){
-                funcRParams.buildIr();
-                args = valueArrayUp;
+                for(int i= 0 ; i < formalTypes.size(); i++){
+                    Exp exp = funcRParams.allArgs().get(i);
+                    if(!(formalTypes.get(i) instanceof IntegerType)) {
+                        arrayAsPtr = true;
+                    }
+                    exp.buildIr();
+                    arrayAsPtr = false;
+                    args.add(valueUp);
+                }
             }
             Call call = irBuilder.buildCall(curBlock, funcValue, args);
             valueUp = call;

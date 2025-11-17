@@ -10,7 +10,7 @@ public class Add extends BinInstruction {
 
     @Override
     public String toString() {
-        return this.getName() + " = add " + this.getValueType().toString() + " " +
+        return this.getName() + " = add nsw " + this.getValueType().toString() + " " +
                 this.getUsedValue(0).getName() + ", " + this.getUsedValue(1).getName();
     }
 }

@@ -10,7 +10,7 @@ public class Sub extends BinInstruction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getName());
-        sb.append(" = sub ");
+        sb.append(" = sub nsw ");
         sb.append(this.getUsedValue(0).getValueType().toString());
         sb.append(" ");
         sb.append(this.getUsedValue(0).getName());

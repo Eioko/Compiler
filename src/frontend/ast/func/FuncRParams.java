@@ -36,7 +36,7 @@ public class FuncRParams extends Node {
         return otherExps;
     }
 
-    public int size() {
+    public int allSize() {
         return 1 + (otherExps == null ? 0 : otherExps.size());
     }
     public void check(){
@@ -50,22 +50,5 @@ public class FuncRParams extends Node {
         allArgs.add(firstExp);
         allArgs.addAll(otherExps);
         return allArgs;
-    }
-    public void buildIr(){
-
-        ArrayList<Value> args = new ArrayList<>();
-
-        for(int i= 0 ; i < size(); i++){
-            Exp exp = allArgs().get(i);
-            if(!(formalTypesDown.get(i) instanceof IntegerType)) {
-                arrayAsPtr = true;
-            }else{
-                arrayAsPtr = false;
-            }
-            exp.buildIr();
-            arrayAsPtr = false;
-            args.add(exp.valueUp);
-        }
-        valueArrayUp = args;
     }
 }

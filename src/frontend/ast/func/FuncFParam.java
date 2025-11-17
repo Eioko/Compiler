@@ -42,7 +42,7 @@ public class FuncFParam extends Node {
     }
     public ValSymbol check(){
         SymbolType symbolType;
-        if(lbrackToken!=null && rbrackToken!=null){
+        if(lbrackToken!=null){
             symbolType = SymbolType.INTARRAY;
         }else{
             symbolType = SymbolType.INT;

@@ -111,11 +111,9 @@ public class FuncDef extends Node {
 
         Instruction last = curBlock.getLastInst();
 
-        if (!(last instanceof Ret)) {
-            if (curfunc.getReturnType() instanceof VoidType) {
+        if (curfunc.getReturnType() instanceof VoidType){
+            if (!(last instanceof Ret)){
                 irBuilder.buildReturn(curBlock);
-            } else {
-                irBuilder.buildReturn(curBlock, ConstInt.ZERO);
             }
         }
         SymbolTableManager.gotoFatherTable();

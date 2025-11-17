@@ -46,7 +46,10 @@ public class VarDecl extends Node {
                 v.buildIr();
             }
         }else{
-
+            varDef.buildIr();
+            for (VarDef v : varDefs) {
+                v.buildIr();
+            }
         }
     }
 }

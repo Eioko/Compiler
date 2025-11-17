@@ -17,8 +17,7 @@ public class Call extends Instruction {
      * @param args
      */
     public Call(int nameNum, Function function, BasicBlock parent, ArrayList<Value> args) {
-        super("%v" + nameNum, function.getReturnType(),
-                parent, new ArrayList<Value>(){
+        super("%v" + nameNum, function.getReturnType(), parent, new ArrayList<Value>(){
                     {
                         add(function);
                         addAll(args);
