@@ -121,6 +121,8 @@ public class VarDef extends Node {
             // 数组
             constExp.buildIr();
             size = ((ConstInt)valueUp).getNumber();
+            globalArrayLen = size;
+
             ArrayType arrayType = new ArrayType(size);
             if(SymbolTableManager.isGlobal()){
                 // 全局数组
@@ -140,7 +142,7 @@ public class VarDef extends Node {
                     {
                         constArray.add((ConstInt) value);
                     }
-                    ConstArray initArray = new ConstArray(constArray);
+                    ConstArray initArray = new ConstArray(constArray, globalArrayLen);
 
                     GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
                             initArray , false);

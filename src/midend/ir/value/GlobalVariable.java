@@ -11,6 +11,10 @@ public class GlobalVariable extends User {
         super("@g"+name, new PointerType(initVal.getValueType()), IrModule.getInstance(), initVal);
         this.isConst = isConst;
     }
+    public GlobalVariable(String name, Constant initVal, boolean isConst, int declareLen) {
+        super("@g"+name, new PointerType(initVal.getValueType()), IrModule.getInstance(), initVal);
+        this.isConst = isConst;
+    }
     public boolean isConst() {
         return isConst;
     }

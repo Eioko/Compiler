@@ -2,37 +2,71 @@ declare i32 @getint()
 declare void @putint(i32)
 declare void @putch(i32)
 declare void @putstr(i8*)
-@ga = dso_local global i32 1000
-@g.str.0 = private unnamed_addr constant [2 x i8] c"\0A\00", align 1
-define dso_local i32 @ffoo(i32 %a0, i32 %a1) {
+define dso_local void @fprocess_int_by_value(i32 %a0) {
 b0:
   %p1 = alloca i32
   store i32 %a0, i32* %p1
-  %p2 = alloca i32
-  store i32 %a1, i32* %p2
-  %v3 = load i32, i32* %p1
-  %v4 = load i32, i32* %p2
-  %v5 = add i32 %v3, %v4
-  ret i32 %v5
-}
-define dso_local void @fbar() {
-b7:
-  store i32 1200, i32* @ga
+  store i32 100, i32* %p1
   ret void
 }
-define dso_local i32 @main() {
-b8:
-  call void @fbar()
+define dso_local void @fprocess_array_by_reference(i32* %a0) {
+b2:
+  %p3 = alloca i32*
+  store i32* %a0, i32** %p3
+  %v4 = load i32*, i32** %p3
+  %p5 = getelementptr inbounds i32, i32* %v4, i32 0
+  store i32 99, i32* %p5
+  ret void
+}
+define dso_local i32 @fadd_two_integers(i32 %a0, i32 %a1) {
+b6:
+  %p7 = alloca i32
+  store i32 %a0, i32* %p7
+  %p8 = alloca i32
+  store i32 %a1, i32* %p8
   %p9 = alloca i32
-  %v10 = load i32, i32* @ga
-  store i32 %v10, i32* %p9
-  %v11 = call i32 @getint()
-  store i32 %v11, i32* @ga
-  %v12 = load i32, i32* @ga
+  %v10 = load i32, i32* %p7
+  %v11 = load i32, i32* %p8
+  %v12 = add i32 %v10, %v11
+  store i32 %v12, i32* %p9
   %v13 = load i32, i32* %p9
-  %v14 = call i32 @ffoo(i32 %v12, i32 %v13)
-  call void @putint(i32 %v14)
-  %p15 = getelementptr inbounds [2 x i8], [2 x i8]* @g.str.0, i32 0, i32 0
-  call void @putstr(i8* %p15)
+  ret i32 %v13
+}
+define dso_local i32 @fget_second_element(i32* %a0) {
+b15:
+  %p16 = alloca i32*
+  store i32* %a0, i32** %p16
+  %p17 = alloca i32
+  %v18 = load i32*, i32** %p16
+  %p19 = getelementptr inbounds i32, i32* %v18, i32 1
+  %v20 = load i32, i32* %p19
+  store i32 %v20, i32* %p17
+  %v21 = load i32, i32* %p17
+  ret i32 %v21
+}
+define dso_local i32 @main() {
+b23:
+  %p24 = alloca i32
+  store i32 10, i32* %p24
+  %p25 = alloca [3 x i32]
+  %p26 = getelementptr inbounds [3 x i32], [3 x i32]* %p25, i32 0, i32 0
+  %p27 = getelementptr inbounds i32, i32* %p26, i32 0
+  store i32 1, i32* %p27
+  %p28 = getelementptr inbounds [3 x i32], [3 x i32]* %p25, i32 0, i32 0
+  %p29 = getelementptr inbounds i32, i32* %p28, i32 1
+  store i32 2, i32* %p29
+  %p30 = getelementptr inbounds [3 x i32], [3 x i32]* %p25, i32 0, i32 0
+  %p31 = getelementptr inbounds i32, i32* %p30, i32 2
+  store i32 3, i32* %p31
+  %p32 = alloca i32
+  %v33 = load i32, i32* %p24
+  call void @fprocess_int_by_value(i32 %v33)
+  %p34 = getelementptr inbounds [3 x i32], [3 x i32]* %p25, i32 0, i32 0
+  call void @fprocess_array_by_reference(i32* %p34)
+  %v35 = call i32 @fadd_two_integers(i32 5, i32 7)
+  store i32 %v35, i32* %p32
+  %p36 = getelementptr inbounds [3 x i32], [3 x i32]* %p25, i32 0, i32 0
+  %v37 = call i32 @fget_second_element(i32* %p36)
+  store i32 %v37, i32* %p32
   ret i32 0
 }

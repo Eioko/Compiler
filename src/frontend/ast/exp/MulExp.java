@@ -40,9 +40,8 @@ public class MulExp extends ComptueExp {
     }
     public void buildIr(){
         if(global){
-            int sum = 0;
             firstUnary.buildIr();
-            sum += valueIntUp;
+            int sum = valueIntUp;
             for(int i=0; i < allSize()-1; i++){
                 otherUnaries.get(i).buildIr();
                 Token opToken = opTokens.get(i);

@@ -1,7 +1,9 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.constant.ConstInt;
 import midend.ir.instruction.Load;
+import midend.ir.type.IntegerType;
 import midend.ir.value.Value;
 import midend.symbol.SymbolType;
 
@@ -67,14 +69,31 @@ public class PrimaryExp extends ComptueExp {
         }
     }
     public void buildIr() {
+        if(global){
+            if(utype == 0) {
+                exp.buildIr();
+            }else if(utype == 1) {
+                lVal.buildIr();
+            }else{
+                number.buildIr();
+            }
+            if(!(valueUp.getValueType() instanceof IntegerType)){
+                Value addr = valueUp;
+                Load load = irBuilder.buildLoad(curBlock, addr);
+                valueUp = load;
+            }
+            return;
+        }
         if(utype == 0) {
             exp.buildIr();
         }else if(utype == 1) {
             if(!arrayAsPtr){
                 lVal.buildIr();
-                Value addr = valueUp;
-                Load load = irBuilder.buildLoad(curBlock, addr);
-                valueUp = load;
+                if(!(valueUp.getValueType() instanceof IntegerType)){
+                    Value addr = valueUp;
+                    Load load = irBuilder.buildLoad(curBlock, addr);
+                    valueUp = load;
+                }
             }else{
                 arrayAsPtr = false;
                 lVal.buildIr();

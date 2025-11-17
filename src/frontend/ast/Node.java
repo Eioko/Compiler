@@ -43,4 +43,8 @@ public class Node {
      *  继承属性，函数调用的形参类型列表（向下传递）
      */
     protected static ArrayList<DataType> formalTypesDown = new ArrayList<>();
+    /**
+     * 继承属性，全局数组的长度（用于初始化全局数组）
+     */
+    protected static int globalArrayLen = -1;
 }

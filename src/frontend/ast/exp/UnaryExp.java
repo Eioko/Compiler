@@ -10,7 +10,6 @@ import midend.ir.instruction.GetInt;
 import midend.ir.instruction.Sub;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
-import midend.ir.type.ValueType;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
@@ -147,6 +146,25 @@ public class UnaryExp extends ComptueExp {
     public UnaryExp getUnaryExp() { return unaryExp; }
 
     public void buildIr() {
+        if(global){
+            if(utype == 0){
+                primaryExp.buildIr();
+            }else if(utype == 1){
+                throw new RuntimeException("Global function call is not allowed");
+            }else if(utype == 2){
+                unaryExp.buildIr();
+                if(unaryOp.isMinus()){
+                    valueIntUp = -valueIntUp;
+                    valueUp = new ConstInt(valueIntUp);
+                }
+                if (unaryOp.isNot())
+                {
+                    valueIntUp = valueIntUp == 0 ? 1 : 0;
+                    valueUp = new ConstInt(valueIntUp);
+                }
+            }
+            return;
+        }
         if(utype == 0){
             primaryExp.buildIr();
         }else if(utype == 1){

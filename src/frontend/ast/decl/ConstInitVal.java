@@ -71,7 +71,7 @@ public class ConstInitVal extends Node {
                     }
                 }
                 // build constant array value
-                valueUp = new ConstArray(elements);
+                valueUp = new ConstArray(elements, globalArrayLen);
             }else{
                 ArrayList<Value> flattenArray = new ArrayList<>();
                 ArrayList<Constant> array = new ArrayList<>();

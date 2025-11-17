@@ -22,4 +22,7 @@ public class UnaryOp extends Node {
     public boolean isMinus() {
         return op.getTokenType() == TokenType.MINU;
     }
+    public boolean isNot() {
+        return op.getTokenType() == TokenType.NOT;
+    }
 }

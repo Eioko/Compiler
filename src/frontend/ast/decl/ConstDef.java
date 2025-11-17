@@ -74,12 +74,14 @@ public class ConstDef extends Node {
                 // 局部常量分配
                 Alloca alloc = irBuilder.buildConstAlloca(valueUp.getValueType(), curBlock, (Constant) valueUp);
                 irBuilder.buildStore(curBlock, valueUp, alloc);
+                valSymbol.setIrValue(alloc);
             }
         }else{
             // 数组
             constExp.buildIr();
             //这里文法保证 “各维长度的 ConstExp 都必须能在编译时求值到非负整数”
-            size = ((ConstInt)valueUp).getNumber();
+            globalArrayLen = ((ConstInt)valueUp).getNumber();
+            size = globalArrayLen;
             constInitVal.buildIr();
             if(SymbolTableManager.isGlobal()){
                 GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);
@@ -98,6 +100,7 @@ public class ConstDef extends Node {
                         irBuilder.buildStore(curBlock, valueArrayUp.get(i), curPtr);
                     }
                 }
+                valSymbol.setIrValue(allocArray);
             }
         }
     }

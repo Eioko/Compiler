@@ -1,9 +1,7 @@
 package frontend.ast.decl;
 
 import frontend.ast.Node;
-import frontend.ast.block.Block;
 import frontend.lexer.Token;
-import midend.symbol.SymbolType;
 
 import java.util.ArrayList;
 /*
