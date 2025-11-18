@@ -1,5 +1,7 @@
 package frontend.ast.exp;
 
+import midend.ir.value.BasicBlock;
+
 /**
  * Cond -> LOrExp
  */
@@ -16,7 +18,7 @@ public class Cond extends ComptueExp {
     public void check(){
         lOrExp.check();
     }
-    public void buildIr(){
-        lOrExp.buildIr();
+    public void buildIr(BasicBlock trueBlock, BasicBlock falseBlock){
+        lOrExp.buildIr(trueBlock, falseBlock);
     }
 }

@@ -1,6 +1,8 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.instruction.Icmp;
+import midend.ir.value.Value;
 
 import java.util.ArrayList;
 
@@ -29,5 +31,26 @@ public class RelExp extends ComptueExp{
         for(AddExp addExp : otherAdds){
             addExp.check();
         }
+    }
+    public void buildIr(){
+        firstAdd.buildIr();
+        Value res = valueUp;
+
+        for (int i = 0; i < otherAdds.size(); i++) {
+            AddExp addExp = otherAdds.get(i);
+            addExp.buildIr();
+            Token opToken = opTokens.get(i);
+            Value right = valueUp;
+            if(opToken.getTokenContent().equals("<")){
+                res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.LT, res, right);
+            }else if(opToken.getTokenContent().equals(">")){
+                res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.GT, res, right);
+            }else if(opToken.getTokenContent().equals("<=")){
+                res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.LE, res, right);
+            }else if(opToken.getTokenContent().equals(">=")){
+                res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.GE, res, right);
+            }
+        }
+        valueUp = res;
     }
 }

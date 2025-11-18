@@ -22,7 +22,6 @@ public class SymbolTableManager {
     }
     public static void gotoFatherTable(){
         currentTable = currentTable.getFatherTable();
-        //这里要不要depth--（可以加一个变量一起表示）
     }
     public static Symbol getSymbol(String name){
         return currentTable.getSymbol(name);

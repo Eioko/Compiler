@@ -23,7 +23,6 @@ public class IrModule extends Value {
         return IR_MODULE;
     }
 
-
     public void addFunction(Function function){
         for (Value functionNode : functions){
             if (functionNode.equals(function)){

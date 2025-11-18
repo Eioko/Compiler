@@ -41,7 +41,7 @@ public class  BasicBlock extends Value{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getName()).append(":\n");
+        sb.append("\n").append(getName()).append(":\n");
         for (Instruction instruction : instList) {
             sb.append("  ").append(instruction.toString()).append("\n");
         }

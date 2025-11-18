@@ -53,7 +53,7 @@ public class Function extends Value {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         // function header
-        sb.append("define dso_local ")
+        sb.append("\ndefine dso_local ")
           .append(returnType.toString())
           .append(" ")
           .append(getName())

@@ -12,6 +12,7 @@ import frontend.lexer.TokenType;
 import midend.ir.constant.ConstInt;
 import midend.ir.constant.ConstString;
 import midend.ir.instruction.GEP;
+import midend.ir.value.BasicBlock;
 import midend.ir.value.GlobalVariable;
 import midend.ir.value.Value;
 import midend.symbol.Symbol;
@@ -324,7 +325,29 @@ public class Stmt extends Node {
             block.buildIr();
             SymbolTableManager.gotoFatherTable();
         }else if(isIf()){
+            BasicBlock thenBlock = irBuilder.buildBasicBlock(curfunc);
+            BasicBlock elseBlock;
+            BasicBlock afterIfBlock = irBuilder.buildBasicBlock(curfunc);
+            if(elseStmt!=null){
+                elseBlock = irBuilder.buildBasicBlock(curfunc);
+            }else{
+                elseBlock = afterIfBlock;
+            }
+            ifCond.buildIr(thenBlock, elseBlock);
+            // then
+            curBlock = thenBlock;
+            thenStmt.buildIr();
+            irBuilder.buildUncondBr(curBlock, afterIfBlock);
 
+            if(elseStmt!=null){
+                // else
+                curBlock = elseBlock;
+                elseStmt.buildIr();
+                irBuilder.buildUncondBr(curBlock, afterIfBlock);
+            }
+
+            // after if
+            curBlock = afterIfBlock;
         }else if (isFor()){
 
         }else if(isBreak()){

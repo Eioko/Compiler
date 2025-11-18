@@ -1,6 +1,7 @@
 package frontend.ast.exp;
 
 import frontend.lexer.Token;
+import midend.ir.value.BasicBlock;
 import midend.ir.value.Value;
 
 import java.util.ArrayList;
@@ -31,5 +32,26 @@ public class LAndExp extends ComptueExp {
             e.check();
         }
     }
-
+    public void buildIr(BasicBlock trueBlock, BasicBlock falseBlock){
+        BasicBlock nextBlock = null;
+        if(!otherEqs.isEmpty()){
+            nextBlock = irBuilder.buildBasicBlock(curfunc);
+            firstEq.buildIr(nextBlock, falseBlock);
+        }else{
+            // 整个就一个eqExp
+            firstEq.buildIr(trueBlock, falseBlock);
+            return;
+        }
+        curBlock = nextBlock;
+        for (int i = 0; i < otherEqs.size(); i++) {
+            EqExp eqExp = otherEqs.get(i);
+            if(i!= otherEqs.size()-1){
+                BasicBlock newNextBlock = irBuilder.buildBasicBlock(curfunc);
+                eqExp.buildIr(newNextBlock, falseBlock);
+                curBlock = newNextBlock;
+            }else{
+                eqExp.buildIr(trueBlock, falseBlock);
+            }
+        }
+    }
 }

@@ -204,4 +204,21 @@ public class IrBuilder {
         parent.insertTail(getInt);
         return getInt;
     }
+
+    public Icmp buildIcmp(BasicBlock parent, Icmp.IcmpOp op, Value left, Value right) {
+        int nameNum = nameNumCount++;
+        Icmp icmp = new Icmp(nameNum, op, left, right, parent);
+        parent.insertTail(icmp);
+        return icmp;
+    }
+
+    public void buildCondBr(BasicBlock parent, Value condition, BasicBlock trueBlock, BasicBlock falseBlock) {
+        Br condBr = new Br(parent, condition, trueBlock, falseBlock);
+        parent.insertTail(condBr);
+    }
+
+    public void buildUncondBr(BasicBlock parent, BasicBlock targetBlock) {
+        Br uncondBr = new Br(parent, targetBlock);
+        parent.insertTail(uncondBr);
+    }
 }
