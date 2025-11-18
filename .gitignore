@@ -8,3 +8,4 @@ error.txt
 parser.txt
 symbol.txt
 llvm_ir.txt
+mips.txt

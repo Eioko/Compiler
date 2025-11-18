@@ -112,7 +112,14 @@ public class VarDef extends Node {
                     global = true;
                     initVal.buildIr();
                     global = false;
-                    GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp , false);
+                    GlobalVariable globalVariable;
+                    // 未显式初始化，默认0
+                    if(isStatic){
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                (Constant)valueUp , true, SymbolTableManager.getCurrentTableId());
+                    }else{
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp , false);
+                    }
                     valSymbol.setIrValue(globalVariable);
                 }
             }else{
@@ -136,9 +143,15 @@ public class VarDef extends Node {
             if(SymbolTableManager.isGlobal() || isStatic){
                 // 全局数组 或 静态数组
                 if(utype == 0){
+                    GlobalVariable globalVariable;
                     // 未显式初始化，默认全 0
-                    GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
-                            new ZeroInitializer(arrayType), false);
+                    if(isStatic){
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                new ZeroInitializer(arrayType), true, SymbolTableManager.getCurrentTableId());
+                    }else{
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                new ZeroInitializer(arrayType), false);
+                    }
                     valSymbol.setIrValue(globalVariable);
                 }else{
                     // 已显式初始化：InitVal 生成 ConstArray 作为全局初值
@@ -147,14 +160,19 @@ public class VarDef extends Node {
                     global = false;
 
                     ArrayList<Constant> constArray = new ArrayList<>();
-                    for (Value value : valueArrayUp)
-                    {
+                    for (Value value : valueArrayUp) {
                         constArray.add((ConstInt) value);
                     }
                     ConstArray initArray = new ConstArray(constArray, size);
+                    GlobalVariable globalVariable;
 
-                    GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
-                            initArray , false);
+                    if(isStatic){
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                initArray , true, SymbolTableManager.getCurrentTableId());
+                    }else{
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                initArray , false);
+                    }
                     //symbol 存的是一个指向initVal类型的指针，这里constArray，就是ArrayType
                     valSymbol.setIrValue(globalVariable);
                 }
