@@ -35,4 +35,11 @@ public class Symbol {
     public Value getIrValue() {
         return this.value;
     }
+
+    public boolean isStatic() {
+        if(symbolType == SymbolType.STATICINT || symbolType == SymbolType.STATICINTARRAY){
+            return true;
+        }
+        return false;
+    }
 }
