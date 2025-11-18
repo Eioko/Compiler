@@ -40,16 +40,9 @@ public class VarDecl extends Node {
         }
     }
     public void buildIr(){
-        if(staticToken == null) {
-            varDef.buildIr();
-            for (VarDef v : varDefs) {
-                v.buildIr();
-            }
-        }else{
-            varDef.buildIr();
-            for (VarDef v : varDefs) {
-                v.buildIr();
-            }
+        varDef.buildIr();
+        for (VarDef v : varDefs) {
+            v.buildIr();
         }
     }
 }

@@ -89,16 +89,26 @@ public class VarDef extends Node {
     }
     public void buildIr(){
         ValSymbol valSymbol = (ValSymbol) SymbolTableManager.getSymbol(ident.getTokenContent());
+        boolean isStatic = valSymbol.isStatic();
+        // static 均使用全局存储
+        // 普通局部变量才使用 Alloca。
         if(lbrack == null){
             // 单变量
-            if(SymbolTableManager.isGlobal()){
-                // 全局单变量
+            if(SymbolTableManager.isGlobal() || isStatic){
+                // 全局单变量 或 静态单变量
                 if(utype == 0){
-                    // 全局变量未初始化，默认0
-                    GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), ConstInt.ZERO , false);
+                    GlobalVariable globalVariable;
+                    // 未显式初始化，默认0
+                    if(isStatic){
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
+                                ConstInt.ZERO , true, SymbolTableManager.getCurrentTableId());
+                    }else{
+                        globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), ConstInt.ZERO , false);
+                    }
+
                     valSymbol.setIrValue(globalVariable);
                 }else{
-                    // 全局变量已初始化
+                    // 已显式初始化：InitVal 计算常量，作为全局初值
                     global = true;
                     initVal.buildIr();
                     global = false;
@@ -106,13 +116,13 @@ public class VarDef extends Node {
                     valSymbol.setIrValue(globalVariable);
                 }
             }else{
-                //局部单变量
+                // 普通局部单变量
                 Alloca alloc = irBuilder.buildAlloca(new IntegerType(), curBlock);
                 valSymbol.setIrValue(alloc);
                 if(utype == 0){
-                    // 局部变量未初始化
+                    // 局部变量未初始化，不生成 IR
                 }else{
-                    // 局部变量已初始化
+                    // 局部变量已初始化，在当前块 store
                     initVal.buildIr();
                     irBuilder.buildStore(curBlock, valueUp, alloc);
                 }
@@ -121,18 +131,17 @@ public class VarDef extends Node {
             // 数组
             constExp.buildIr();
             size = ((ConstInt)valueUp).getNumber();
-            globalArrayLen = size;
-
             ArrayType arrayType = new ArrayType(size);
-            if(SymbolTableManager.isGlobal()){
-                // 全局数组
+
+            if(SymbolTableManager.isGlobal() || isStatic){
+                // 全局数组 或 静态数组
                 if(utype == 0){
-                    // 全局数组未初始化，默认0
+                    // 未显式初始化，默认全 0
                     GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
                             new ZeroInitializer(arrayType), false);
                     valSymbol.setIrValue(globalVariable);
                 }else{
-                    // 全局数组已初始化
+                    // 已显式初始化：InitVal 生成 ConstArray 作为全局初值
                     global = true;
                     initVal.buildIr();
                     global = false;
@@ -142,7 +151,7 @@ public class VarDef extends Node {
                     {
                         constArray.add((ConstInt) value);
                     }
-                    ConstArray initArray = new ConstArray(constArray, globalArrayLen);
+                    ConstArray initArray = new ConstArray(constArray, size);
 
                     GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(),
                             initArray , false);
@@ -150,7 +159,7 @@ public class VarDef extends Node {
                     valSymbol.setIrValue(globalVariable);
                 }
             }else{
-                // 局部数组
+                // 普通局部数组
                 Alloca alloc = irBuilder.buildAlloca(arrayType, curBlock);
 
                 //symbol 存的是一个ArrayType的指针

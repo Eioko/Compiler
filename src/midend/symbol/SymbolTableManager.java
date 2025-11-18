@@ -36,4 +36,7 @@ public class SymbolTableManager {
     public static void gotoNextSonTable(){
         currentTable = currentTable.GetNextSonTable();
     }
+    public static int getCurrentTableId(){
+        return currentTable.getTableId();
+    }
 }

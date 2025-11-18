@@ -3,8 +3,6 @@ package frontend.ast.decl;
 import frontend.ast.Node;
 import frontend.ast.exp.ConstExp;
 import frontend.lexer.Token;
-import midend.ir.IrBuilder;
-import midend.ir.IrModule;
 import midend.ir.constant.ConstArray;
 import midend.ir.constant.ConstInt;
 import midend.ir.constant.Constant;
@@ -80,8 +78,8 @@ public class ConstDef extends Node {
             // 数组
             constExp.buildIr();
             //这里文法保证 “各维长度的 ConstExp 都必须能在编译时求值到非负整数”
-            globalArrayLen = ((ConstInt)valueUp).getNumber();
-            size = globalArrayLen;
+            size = ((ConstInt)valueUp).getNumber();
+            globalArrayLen = size;
             constInitVal.buildIr();
             if(SymbolTableManager.isGlobal()){
                 GlobalVariable globalVariable = irBuilder.buildGlobalVariable(ident.getTokenContent(), (Constant)valueUp,true);

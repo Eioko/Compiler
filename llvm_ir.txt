@@ -2,30 +2,8 @@ declare i32 @getint()
 declare void @putint(i32)
 declare void @putch(i32)
 declare void @putstr(i8*)
-define dso_local i32 @fmin(i32 %a0, i32 %a1, i32 %a2) {
-b0:
-  %p1 = alloca i32
-  store i32 %a0, i32* %p1
-  %p2 = alloca i32
-  store i32 %a1, i32* %p2
-  %p3 = alloca i32
-  store i32 %a2, i32* %p3
-  ret i32 0
-}
-define dso_local i32 @ffib(i32 %a0) {
-b5:
-  %p6 = alloca i32
-  store i32 %a0, i32* %p6
-  ret i32 1
-}
+@sa2 = dso_local global i32 0
 define dso_local i32 @main() {
-b8:
-  %p9 = alloca i32
-  store i32 1, i32* %p9
-  %p10 = alloca i32
-  %v11 = call i32 @ffib(i32 2)
-  %v12 = load i32, i32* %p9
-  %v13 = call i32 @fmin(i32 %v11, i32 %v12, i32 1)
-  store i32 %v13, i32* %p10
+b0:
   ret i32 0
 }

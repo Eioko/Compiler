@@ -9,7 +9,10 @@ import java.util.Hashtable;
 import static error.ErrorManager.addError;
 
 public class SymbolTable {
+    /** 符号表的深度 */
     private final int depth;
+
+    /** buildIr用于遍历子符号表 */
     private int index;
 
     private final ArrayList<Symbol> symbolList;
@@ -92,6 +95,9 @@ public class SymbolTable {
         }
 
         return stringBuilder.toString();
+    }
+    public int getTableId() {
+        return this.depth;
     }
 
 }

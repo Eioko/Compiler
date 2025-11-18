@@ -32,6 +32,11 @@ public class IrBuilder {
         irModule.addGlobalVariable(globalVariable);
         return globalVariable;
     }
+    public GlobalVariable buildGlobalVariable(String name, Constant initVal, boolean isStatic, int symbolTableId) {
+        GlobalVariable globalVariable = new GlobalVariable(name, initVal, isStatic, symbolTableId);
+        irModule.addGlobalVariable(globalVariable);
+        return globalVariable;
+    }
     public Alloca buildConstAlloca(ValueType allocatedType, BasicBlock parent, ConstArray initVal) {
         int nameNum = nameNumCount++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
