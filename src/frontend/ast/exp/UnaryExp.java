@@ -4,10 +4,9 @@ import error.ErrorType;
 import error.SysyError;
 import frontend.ast.func.FuncRParams;
 import frontend.lexer.Token;
+import midend.ir.IrBuilder;
 import midend.ir.constant.ConstInt;
-import midend.ir.instruction.Call;
-import midend.ir.instruction.GetInt;
-import midend.ir.instruction.Sub;
+import midend.ir.instruction.*;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
 import midend.ir.type.IntegerType;
@@ -195,9 +194,12 @@ public class UnaryExp extends ComptueExp {
         }else if(utype == 2){
             unaryExp.buildIr();
             if(unaryOp.isMinus()){
-                ConstInt zero = new ConstInt(0);
-                Sub sub = irBuilder.buildSub(curBlock, zero, valueUp);
+                Sub sub = irBuilder.buildSub(curBlock, ConstInt.ZERO, valueUp);
                 valueUp = sub;
+            }else if(unaryOp.isNot()) {
+                Icmp icmp = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.EQ, valueUp, ConstInt.ZERO);
+                Zext zext = irBuilder.buildZext(curBlock, icmp, new IntegerType());
+                valueUp = zext;
             }
         }
     }

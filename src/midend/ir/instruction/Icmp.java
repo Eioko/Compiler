@@ -14,7 +14,7 @@ public class Icmp extends Instruction {
     private Value right;
 
     public Icmp(int nameNum, IcmpOp op, Value left, Value right, BasicBlock parent) {
-        super("%v"+nameNum, new IntegerType(), parent, left, right);
+        super("%v"+nameNum, new IntegerType(1), parent, left, right);
         this.op = op;
         this.left = left;
         this.right = right;

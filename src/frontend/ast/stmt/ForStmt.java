@@ -6,6 +6,8 @@ import frontend.ast.Node;
 import frontend.ast.exp.Exp;
 import frontend.ast.exp.LVal;
 import frontend.lexer.Token;
+import midend.ir.value.BasicBlock;
+import midend.ir.value.Value;
 import midend.symbol.Symbol;
 import midend.symbol.SymbolTableManager;
 
@@ -61,6 +63,21 @@ public class ForStmt extends Node {
             if(symbol.isConst()){
                 addError(new SysyError(ErrorType.ASSIGN_TO_CONST, line));
             }
+        }
+    }
+    public void buildIr(){
+        lVal.buildIr();
+        Value addr = valueUp;
+        exp.buildIr();
+        Value val = valueUp;
+        irBuilder.buildStore(curBlock, val, addr);
+
+        for(int i=0;i<lvals.size();i++){
+            lvals.get(i).buildIr();
+            Value laddr = valueUp;
+            exps.get(i).buildIr();
+            Value rval = valueUp;
+            irBuilder.buildStore(curBlock, rval, laddr);
         }
     }
 }

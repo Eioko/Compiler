@@ -48,7 +48,7 @@ public class IrBuilder {
         int nameNum = nameNumCount++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
         Alloca ans = new Alloca(nameNum, allocatedType, realParent, initVal);
-        realParent.insertTail(ans);
+        realParent.insertHead(ans);
         return ans;
     }
 
@@ -56,7 +56,7 @@ public class IrBuilder {
         int nameNum = nameNumCount++;
         BasicBlock realParent = parent.getParent().getHeadBlock();
         Alloca ans = new Alloca(nameNum, allocatedType, realParent);
-        realParent.insertTail(ans);
+        realParent.insertHead(ans);
         return ans;
     }
 
@@ -213,12 +213,37 @@ public class IrBuilder {
     }
 
     public void buildCondBr(BasicBlock parent, Value condition, BasicBlock trueBlock, BasicBlock falseBlock) {
+        if(lastInstIsRetOrBr(parent)){
+            return;
+        }
         Br condBr = new Br(parent, condition, trueBlock, falseBlock);
         parent.insertTail(condBr);
     }
 
     public void buildUncondBr(BasicBlock parent, BasicBlock targetBlock) {
+        if(lastInstIsRetOrBr(parent)){
+            return;
+        }
         Br uncondBr = new Br(parent, targetBlock);
         parent.insertTail(uncondBr);
+    }
+
+    public boolean lastInstIsRetOrBr(BasicBlock block){
+        if(block.getLastInst() == null){
+            return false;
+        }
+        Instruction lastInst = block.getLastInst();
+        if(lastInst instanceof Br || lastInst instanceof Ret){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public Zext buildZext(BasicBlock parent, Value from, DataType toType) {
+        int nameNum = nameNumCount++;
+        Zext zext = new Zext(nameNum, from, toType, parent);
+        parent.insertTail(zext);
+        return zext;
     }
 }

@@ -86,7 +86,7 @@ public class Stmt extends Node {
     private Token forLparen;
     private ForStmt forInit;     // 可为 null
     private Token forFirstSemicn;
-    private Cond forCond;          // 可为 null
+    private Cond forCond;        // 可为 null
     private Token forSecondSemicn;
     private ForStmt forUpdate;   // 可为 null
     private Token forRparen;
@@ -325,14 +325,17 @@ public class Stmt extends Node {
             block.buildIr();
             SymbolTableManager.gotoFatherTable();
         }else if(isIf()){
+
             BasicBlock thenBlock = irBuilder.buildBasicBlock(curfunc);
             BasicBlock elseBlock;
+
             BasicBlock afterIfBlock = irBuilder.buildBasicBlock(curfunc);
             if(elseStmt!=null){
                 elseBlock = irBuilder.buildBasicBlock(curfunc);
             }else{
                 elseBlock = afterIfBlock;
             }
+
             ifCond.buildIr(thenBlock, elseBlock);
             // then
             curBlock = thenBlock;
@@ -349,11 +352,47 @@ public class Stmt extends Node {
             // after if
             curBlock = afterIfBlock;
         }else if (isFor()){
+            if(forInit!=null){
+                forInit.buildIr();
+            }
+            BasicBlock condBlock = irBuilder.buildBasicBlock(curfunc);
+            irBuilder.buildUncondBr(curBlock, condBlock);
+
+            BasicBlock bodyBlock = irBuilder.buildBasicBlock(curfunc);
+            BasicBlock updateBlock = irBuilder.buildBasicBlock(curfunc);
+            BasicBlock afterForBlock = irBuilder.buildBasicBlock(curfunc);
+
+            forAfterBlockStack.add(afterForBlock);
+            forUpdateBlockStack.add(updateBlock);
+
+            curBlock = condBlock;
+            if(forCond!=null){
+                forCond.buildIr(bodyBlock, afterForBlock);
+            }else{
+                irBuilder.buildUncondBr(curBlock, bodyBlock);
+            }
+
+            curBlock = bodyBlock;
+
+            forBody.buildIr();
+            irBuilder.buildUncondBr(curBlock, updateBlock);
+
+            curBlock = updateBlock;
+            if(forUpdate!=null){
+                forUpdate.buildIr();
+            }
+            irBuilder.buildUncondBr(curBlock, condBlock);
+
+            curBlock = afterForBlock;
+            forAfterBlockStack.pop();
+            forUpdateBlockStack.pop();
 
         }else if(isBreak()){
-
+            BasicBlock afterBlock = forAfterBlockStack.peek();
+            irBuilder.buildUncondBr(curBlock, afterBlock);
         }else if(isContinue()){
-
+            BasicBlock updateBlock = forUpdateBlockStack.peek();
+            irBuilder.buildUncondBr(curBlock, updateBlock);
         }else if(isReturn()){
             if(returnExp!=null){
                 returnExp.buildIr();

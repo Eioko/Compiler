@@ -15,9 +15,7 @@ import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
 import midend.ir.value.GlobalVariable;
 import midend.ir.value.Value;
-import midend.symbol.Symbol;
-import midend.symbol.SymbolTableManager;
-import midend.symbol.SymbolType;
+import midend.symbol.*;
 
 import static error.ErrorManager.addError;
 
@@ -93,6 +91,11 @@ public class LVal extends ComptueExp{
         String name = identToken.getTokenContent();
         Symbol symbol = SymbolTableManager.getSymbol(name);
         Value value = symbol.getIrValue();
+        if(value == null){
+            symbol = (ValSymbol) SymbolTableManager.GetSymbolFromFather(identToken.getTokenContent());
+            value = symbol.getIrValue();
+        }
+
         if(value.getValueType() instanceof IntegerType){
             valueUp = value;
         }else{

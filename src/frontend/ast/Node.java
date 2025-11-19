@@ -7,6 +7,7 @@ import midend.ir.value.Value;
 import midend.symbol.FuncSymbol;
 import midend.ir.value.BasicBlock;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Node {
     //----------------------------------错误检查-----------------------------------------
@@ -43,4 +44,12 @@ public class Node {
      * 继承属性，全局数组的长度（用于初始化全局数组）
      */
     protected static int globalArrayLen = -1;
+    /**
+     * 继承属性，for循环的后边的基本块的栈，仅供break、continue使用
+     */
+    protected static Stack<BasicBlock> forAfterBlockStack = new Stack<>();
+    /**
+     * 继承属性，for循环的update的栈，仅供break、continue使用
+     */
+    protected static Stack<BasicBlock> forUpdateBlockStack = new Stack<>();
 }

@@ -3,6 +3,7 @@ package frontend.ast.exp;
 import frontend.lexer.Token;
 import midend.ir.constant.ConstInt;
 import midend.ir.instruction.Icmp;
+import midend.ir.type.IntegerType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Value;
 
@@ -41,17 +42,24 @@ public class EqExp extends ComptueExp {
             relExp.buildIr();
             Token opToken = opTokens.get(i);
             Value right = valueUp;
+            if(((IntegerType)res.getValueType()).getBitWidth() != 32){
+                // 转为32位整型再比较
+                res = irBuilder.buildZext(curBlock, res, new IntegerType(32));
+            }
+            if(((IntegerType)right.getValueType()).getBitWidth() != 32){
+                right = irBuilder.buildZext(curBlock, right, new IntegerType(32));
+            }
             if(opToken.getTokenContent().equals("==")){
                 res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.EQ, res, right);
             }else if(opToken.getTokenContent().equals("!=")){
                 res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.NE, res, right);
             }
         }
-        Value icmp = res;
-        if(otherRels.isEmpty() && firstRel.getOtherAdds().isEmpty()){
-            // 只有一个RelExp，没有进行过比较，直接判断是否为0
-            icmp = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.NE, res, new ConstInt(0));
+        if(((IntegerType)res.getValueType()).getBitWidth() != 1){
+            // 转为bool类型
+            res = irBuilder.buildIcmp(curBlock, Icmp.IcmpOp.NE, res, new ConstInt(0));
         }
-        irBuilder.buildCondBr(curBlock, icmp, trueBlock, falseBlock);
+
+        irBuilder.buildCondBr(curBlock, res, trueBlock, falseBlock);
     }
 }

@@ -38,4 +38,16 @@ public class SymbolTableManager {
     public static int getCurrentTableId(){
         return currentTable.getTableId();
     }
+
+    public static Symbol GetSymbolFromFather(String name) {
+        SymbolTable table = currentTable.getFatherTable();
+        while (table != null) {
+            Symbol symbol = table.getSymbol(name);
+            if (symbol != null) {
+                return symbol;
+            }
+            table = table.getFatherTable();
+        }
+        return null;
+    }
 }
