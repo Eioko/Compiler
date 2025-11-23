@@ -2,17 +2,17 @@ package midend.ir.value;
 
 import midend.ir.IrModule;
 import midend.ir.type.DataType;
-import midend.ir.type.ValueType;
 
 import java.util.ArrayList;
 
 public class Declare extends Value{
 
-    ArrayList<DataType> paramTypes = new ArrayList<>();
+    ArrayList<DataType> paramTypes;
     /**
      *
-     * @param name
+     * @param name 函数名
      * @param returnType 函数的返回值类型
+     * @param paramTypes 函数的参数类型列表
      */
     public Declare(String name, DataType returnType, ArrayList<DataType> paramTypes) {
         super("@"+name, returnType, IrModule.getInstance());
