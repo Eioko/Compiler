@@ -1,9 +1,9 @@
 package midend.ir;
 
-import midend.ir.value.Declare;
-import midend.ir.value.Function;
-import midend.ir.value.GlobalVariable;
-import midend.ir.value.Value;
+import backend.MipsModule;
+import backend.component.MipsBlock;
+import backend.component.MipsFunction;
+import midend.ir.value.*;
 
 import java.util.ArrayList;
 
@@ -70,5 +70,28 @@ public class IrModule extends Value {
             sb.append(function.toString()).append("\n");
         }
         return sb.toString();
+    }
+    public void irMap(){
+        for(Function function : functions){
+            MipsFunction mipsFunction = new MipsFunction(function.getName());
+            function.setMipsFunction(mipsFunction);
+            ArrayList<BasicBlock> blocks = function.getBlocks();
+            for(BasicBlock block : blocks){
+                MipsBlock mipsBlock = new MipsBlock(block.getName());
+                block.setMipsBlock(mipsBlock);
+            }
+        }
+    }
+
+    public void toMips(){
+        for(GlobalVariable globalVariable : globalVariables){
+            globalVariable.toMips();
+        }
+        // jump to main
+
+        irMap();
+        for(Function function : functions){
+            function.toMips();
+        }
     }
 }

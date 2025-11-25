@@ -15,4 +15,6 @@ public class Instruction extends User {
     public Instruction(String name, DataType dataType, BasicBlock parent, Value... ops) {
         super(name, dataType, parent, ops);
     }
+
+    public void toMips(BasicBlock block, Value function) {}
 }

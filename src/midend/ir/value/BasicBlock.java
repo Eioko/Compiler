@@ -1,5 +1,6 @@
 package midend.ir.value;
 
+import backend.component.MipsBlock;
 import midend.ir.instruction.Instruction;
 import midend.ir.type.LabelType;
 
@@ -46,6 +47,19 @@ public class  BasicBlock extends Value{
             sb.append("  ").append(instruction.toString()).append("\n");
         }
         return sb.toString();
+    }
+
+    private MipsBlock mipsBlock = null;
+    public MipsBlock getMipsBlock() {
+        return mipsBlock;
+    }
+    public void setMipsBlock(MipsBlock mipsBlock) {
+        this.mipsBlock = mipsBlock;
+    }
+    public void toMips(Function function) {
+        for (Instruction instruction : instList) {
+            instruction.toMips(this, function);
+        }
     }
 
 }

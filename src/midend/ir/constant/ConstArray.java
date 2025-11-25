@@ -51,4 +51,12 @@ public class ConstArray extends Constant{
     public Constant getElementAt(int index){
         return elements.get(index);
     }
+    public ArrayList<Integer> toIntList(){
+        ArrayList<Integer> intList = new ArrayList<>();
+        for(Constant constVal : allElements){
+            ConstInt constInt = (ConstInt) constVal;
+            intList.add(constInt.getNumber());
+        }
+        return intList;
+    }
 }

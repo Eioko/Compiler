@@ -1,5 +1,6 @@
 package midend.ir.value;
 
+import backend.component.MipsFunction;
 import midend.ir.IrModule;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
@@ -49,6 +50,10 @@ public class Function extends Value {
     public ArrayList<Argument> getArguments() {
         return arguments;
     }
+    public ArrayList<BasicBlock> getBlocks() {
+        return blocks;
+    }
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -71,5 +76,18 @@ public class Function extends Value {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    private MipsFunction mipsFunction = null;
+    public MipsFunction getMipsFunction(){
+        return mipsFunction;
+    }
+    public void setMipsFunction(MipsFunction mipsFunction){
+        this.mipsFunction = mipsFunction;
+    }
+    public void toMips(){
+        for(BasicBlock block : blocks){
+            block.toMips(this);
+        }
     }
 }
