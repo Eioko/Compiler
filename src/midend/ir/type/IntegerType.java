@@ -17,4 +17,9 @@ public class IntegerType extends DataType {
     public String toString() {
         return "i" + bitWidth;
     }
+
+    @Override
+    public int getSizeInBytes() {
+        return 4;
+    }
 }

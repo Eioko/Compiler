@@ -41,7 +41,16 @@ public class MipsPhyReg extends MipsOperand {
         }
     }
 
+    public static MipsPhyReg SP = new MipsPhyReg(Register.SP);
+    public static MipsPhyReg RA = new MipsPhyReg(Register.RA);
+    public static MipsPhyReg V0 = new MipsPhyReg(Register.V0);
+    public static MipsPhyReg A0 = new MipsPhyReg(Register.A0);
+
     private final Register reg;
+
+    public static MipsPhyReg getReg(int idx) {
+        return new MipsPhyReg(Register.values()[idx]);
+    }
     public MipsPhyReg(Register reg) {
         this.reg = reg;
     }

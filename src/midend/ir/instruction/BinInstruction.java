@@ -10,7 +10,5 @@ public class BinInstruction extends Instruction{
         super("%v"+nameNum, new IntegerType(), parent, op1, op2);
     }
 
-    public void toMips(BasicBlock block, Function function) {
-
-    }
+    public void toMips(BasicBlock block, Function function) {}
 }

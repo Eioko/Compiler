@@ -19,4 +19,9 @@ public class StringType extends DataType {
         }
         return "[" + len + " x i8]";
     }
+
+    @Override
+    public int getSizeInBytes() {
+        return len;
+    }
 }

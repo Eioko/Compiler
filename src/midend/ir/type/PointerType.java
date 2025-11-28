@@ -12,4 +12,8 @@ public class PointerType extends DataType {
     public String toString() {
         return pointeeType.toString() + "*";
     }
+    @Override
+    public int getSizeInBytes() {
+        return 4;
+    }
 }

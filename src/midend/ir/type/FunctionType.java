@@ -1,6 +1,5 @@
 package midend.ir.type;
 
-import midend.ir.value.Argument;
 
 import java.util.ArrayList;
 

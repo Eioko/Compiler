@@ -40,15 +40,19 @@ public class Sub extends BinInstruction {
             mipsBlock.addInstruction(new MipsLi(dest, new MipsImm(result)));
         } else if(val2 instanceof ConstInt){
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
+            loadMemToReg(val1, src1, block,function);
             int a = ((ConstInt) val2).getNumber();
             ConstInt negConst = new ConstInt(-a);
             MipsOperand src2 = negConst.toMipsOperand(true, function, block, 1);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         } else{
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
+            loadMemToReg(val1, src1, block, function);
             //下面这条也可以是false
             MipsOperand src2 = val2.toMipsOperand(true, function, block, 1);
+            loadMemToReg(val2, src2, block, function);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.SUBU, dest, src1, src2));
         }
+        saveRegToStack(this, dest ,block, function);
     }
 }

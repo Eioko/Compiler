@@ -1,10 +1,15 @@
 package midend.ir.instruction;
 
+import backend.component.MipsBlock;
+import backend.instruction.MipsBinary;
+import backend.operand.MipsImm;
+import backend.operand.MipsOperand;
 import midend.ir.type.ArrayType;
 import midend.ir.type.IntegerType;
 import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 public class GEP extends Instruction {
@@ -39,5 +44,26 @@ public class GEP extends Instruction {
             sb.append(this.getUsedValue(i).getName());
         }
         return sb.toString();
+    }
+
+    public void toMips(BasicBlock block, Function function){
+        MipsBlock mipsBlock = block.getMipsBlock();
+        Value baseValue = this.getUsedValue(0);
+        MipsOperand base = baseValue.toMipsOperand(false, function, block, 0);
+        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
+        loadMemToReg(baseValue, base, block, function);
+        Value indexValue;
+        if(getNumOfOperands() == 2){
+            indexValue = this.getUsedValue(1);
+        }else{
+            //其实我的二维寻址好像都是0，0，这里无所谓
+            indexValue = this.getUsedValue(2);
+        }
+        MipsOperand index = indexValue.toMipsOperand(false, function, block, 1);
+        loadMemToReg(indexValue, index, block, function);
+        MipsImm imm = new MipsImm(2);
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm));
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, index));
+        saveRegToStack(this, dest ,block, function);
     }
 }

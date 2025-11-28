@@ -1,11 +1,15 @@
 package midend.ir.value;
 
 import backend.component.MipsFunction;
+import backend.operand.MipsPhyReg;
 import midend.ir.IrModule;
 import midend.ir.type.DataType;
 import midend.ir.type.FunctionType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static backend.MipsModule.*;
 
 public class Function extends Value {
     private final ArrayList<Argument> arguments = new ArrayList<>();
@@ -14,11 +18,13 @@ public class Function extends Value {
 
     private final DataType returnType;
 
+    private HashMap<Value, MipsPhyReg> valueRegMap = new HashMap<>();
+
     public Function(String name, FunctionType functionType) {
         super("@f" + name, functionType, IrModule.getInstance());
         this.returnType = ((FunctionType)getValueType()).getReturnType();
         for(int i = 0; i<functionType.getArguments().size(); i++) {
-            Argument argument = new Argument(i, functionType.getArguments().get(i), this);
+            Argument argument = new Argument(i , functionType.getArguments().get(i), this);
             arguments.add(argument);
         }
     }
@@ -85,7 +91,21 @@ public class Function extends Value {
     public void setMipsFunction(MipsFunction mipsFunction){
         this.mipsFunction = mipsFunction;
     }
+
+    public HashMap<Value, MipsPhyReg> getValueRegMap(){
+        return valueRegMap;
+    }
+
     public void toMips(){
+
+        setCurrentFunction(this);
+        for (int i = 0; i < this.arguments.size(); i++) {
+            if (i < 4) {
+                recordValueRegMap(this.arguments.get(i), MipsPhyReg.getReg(MipsPhyReg.Register.A0.ordinal() + i));
+            }
+            allocateStackForValue(this.arguments.get(i));
+        }
+
         for(BasicBlock block : blocks){
             block.toMips(this);
         }

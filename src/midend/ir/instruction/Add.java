@@ -33,12 +33,16 @@ public class Add extends BinInstruction {
             mipsBlock.addInstruction(new MipsLi(dest, new MipsImm(result)));
         } else if(val1 instanceof ConstInt){
             MipsOperand src1 = val2.toMipsOperand(false, function, block, 0);
+            loadMemToReg(val2, src1, block, function);
             MipsOperand src2 = val1.toMipsOperand(true, function, block, 1);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         } else{
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
+            loadMemToReg(val2, src1, block, function);
             MipsOperand src2 = val2.toMipsOperand(true, function, block, 1);
+            loadMemToReg(val2, src2, block, function);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         }
+        saveRegToStack(this, dest ,block, function);
     }
 }

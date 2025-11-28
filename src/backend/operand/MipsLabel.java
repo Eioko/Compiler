@@ -1,9 +1,9 @@
 package backend.operand;
 
-public class Label extends MipsOperand {
+public class MipsLabel extends MipsOperand {
     private String name;
 
-    public Label(String name) {
+    public MipsLabel(String name) {
         this.name = name;
     }
 

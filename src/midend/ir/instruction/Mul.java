@@ -39,8 +39,11 @@ public class Mul extends BinInstruction {
         } else {
             MipsOperand src1 = val2.toMipsOperand(false, function, block, 0);
             MipsOperand src2 = val1.toMipsOperand(false, function, block, 1);
+            loadMemToReg(val1, src1, block, function);
+            loadMemToReg(val2, src2, block, function);
             //MUL能跑吗————能
             mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.MUL, dest, src1, src2));
         }
+        saveRegToStack(this, dest ,block, function);
     }
 }

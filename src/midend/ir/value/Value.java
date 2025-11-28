@@ -2,9 +2,11 @@ package midend.ir.value;
 
 import backend.MipsBuilder;
 import backend.MipsModule;
+import backend.instruction.MipsLa;
 import backend.instruction.MipsLi;
 import backend.instruction.MipsMove;
 import backend.operand.MipsImm;
+import backend.operand.MipsLabel;
 import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
 import midend.ir.constant.ConstInt;
@@ -12,6 +14,8 @@ import midend.ir.instruction.Instruction;
 import midend.ir.type.ValueType;
 
 import java.util.ArrayList;
+
+import static midend.ir.instruction.Instruction.loadMemToReg;
 
 public class Value {
     protected String name;
@@ -73,7 +77,6 @@ public class Value {
             }else{
                 reg = new MipsPhyReg(MipsPhyReg.Register.T2);
             }
-            mipsModule.operandMap.put(this, reg);
             return reg;
         }else if(this instanceof ConstInt){
             int num = ((ConstInt) this).getNumber();
@@ -96,8 +99,28 @@ public class Value {
                     return reg;
                 }
             }
+        }else if(this instanceof GlobalVariable){
+            MipsPhyReg reg;
+            if(opIndex == 0){
+                reg = new MipsPhyReg(MipsPhyReg.Register.T0);
+            }else if(opIndex == 1){
+                reg = new MipsPhyReg(MipsPhyReg.Register.T1);
+            }else{
+                reg = new MipsPhyReg(MipsPhyReg.Register.T2);
+            }
+            irBlock.getMipsBlock().addInstruction(new MipsLa(reg, new MipsLabel(this.getName())));
+            return reg;
+        }else{
+            MipsPhyReg reg;
+            if(opIndex == 0){
+                reg = new MipsPhyReg(MipsPhyReg.Register.T0);
+            }else if(opIndex == 1){
+                reg = new MipsPhyReg(MipsPhyReg.Register.T1);
+            }else{
+                reg = new MipsPhyReg(MipsPhyReg.Register.T2);
+            }
+            return reg;
         }
-        return null;
     }
 
     public boolean inSignedShortRange(int num){

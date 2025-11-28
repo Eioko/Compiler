@@ -4,4 +4,6 @@ package midend.ir.type;
  */
 public abstract class DataType extends ValueType{
 
+
+    public abstract int getSizeInBytes();
 }

@@ -21,9 +21,16 @@ public class Div extends BinInstruction {
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
         MipsOperand dest = this.toMipsOperand(false, function, block, 2);
-        MipsOperand src1 = getUsedValue(0).toMipsOperand(false, function, block, 0);
-        MipsOperand src2 = getUsedValue(1).toMipsOperand(false, function, block, 1);
+        Value val1 = this.getUsedValue(0);
+        Value val2 = this.getUsedValue(1);
+
+        MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
+        MipsOperand src2 = val2.toMipsOperand(false, function, block, 1);
+
+        loadMemToReg(val1, src1, block, function);
+        loadMemToReg(val2, src2, block, function);
         // 这里把除法和后面的move from HI/LO合并了, 不再加mflo指令
         mipsBlock.addInstruction(new MipsBinary(DIV, dest, src1, src2));
+        saveRegToStack(this, dest ,block, function);
     }
 }

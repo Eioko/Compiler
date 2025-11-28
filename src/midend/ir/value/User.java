@@ -42,4 +42,8 @@ public class User extends Value {
     public int getNumOfOperands() {
         return operands.size();
     }
+
+    public ArrayList<Value> getOperands() {
+        return operands;
+    }
 }

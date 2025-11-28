@@ -1,9 +1,18 @@
 package midend.ir.instruction;
 
+import backend.component.MipsBlock;
+import backend.component.MipsFunction;
+import backend.instruction.*;
+import backend.operand.MipsImm;
+import backend.operand.MipsLabel;
+import backend.operand.MipsOperand;
+import backend.operand.MipsPhyReg;
+import midend.ir.constant.ConstInt;
 import midend.ir.type.DataType;
-import midend.ir.value.BasicBlock;
-import midend.ir.value.User;
-import midend.ir.value.Value;
+import midend.ir.value.*;
+
+import static backend.MipsModule.*;
+import static backend.operand.MipsPhyReg.SP;
 
 public class Instruction extends User {
     /**
@@ -16,5 +25,37 @@ public class Instruction extends User {
         super(name, dataType, parent, ops);
     }
 
-    public void toMips(BasicBlock block, Value function) {}
+    public void toMips(BasicBlock block, Function function) {}
+
+    public void saveRegToStack(Value value, MipsOperand src, BasicBlock block, Function function) {
+        MipsBlock mipsBlock = block.getMipsBlock();
+
+        int offset = allocateStackForValue(value);
+        mipsBlock.addInstruction(new MipsSw(src, new MipsImm(offset), SP));
+    }
+
+    public static void loadMemToReg(Value val, MipsOperand dest, BasicBlock block, Function function) {
+        MipsBlock mipsBlock = block.getMipsBlock();
+
+        if(val instanceof ConstInt){
+            int num = ((ConstInt)val).getNumber();
+            MipsImm imm = new MipsImm(num);
+            mipsBlock.addInstruction(new MipsLi(dest, imm));
+        }else if(val instanceof GlobalVariable){
+            MipsLabel mipsLabel = new MipsLabel(val.getName());
+            mipsBlock.addInstruction(new MipsLa(dest, mipsLabel));
+        }else{
+            MipsPhyReg reg = getValueToReg(val, function);
+            if(reg != null){
+                mipsBlock.addInstruction(new MipsMove(dest, reg));
+                return;
+            }
+
+            Integer offset = getValStackOffset(val);
+            if(offset == null){
+                offset = allocateStackForValue(val);
+            }
+            mipsBlock.addInstruction(new MipsLw(dest,new MipsImm(offset), SP));
+        }
+    }
 }

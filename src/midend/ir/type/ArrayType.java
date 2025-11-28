@@ -12,4 +12,9 @@ public class ArrayType extends DataType{
     public String toString() {
         return "[" + size + " x i32]";
     }
+
+    @Override
+    public int getSizeInBytes() {
+        return size * 4;
+    }
 }
