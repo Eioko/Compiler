@@ -92,7 +92,7 @@ public class Call extends Instruction {
                 doRealPara(arg, i, currentOffset, block, function,  allocatedRegisterList);
             }else{
                 MipsPhyReg argReg = doRealPara(arg, i, currentOffset ,block, function,  allocatedRegisterList);
-                mipsBlock.addInstruction(new MipsSw(argReg, new MipsImm( -newlen - 4 * i - 4 + currentOffset), FP));
+                mipsBlock.addInstruction(new MipsSw(argReg, new MipsImm(- 4 * i - 4 + currentOffset), FP));
             }
         }
 
