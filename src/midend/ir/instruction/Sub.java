@@ -43,10 +43,9 @@ public class Sub extends BinInstruction {
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
             loadMemToReg(val1, src1, block,function);
             int a = ((ConstInt) val2).getNumber();
-            ConstInt negConst = new ConstInt(-a);
-            MipsOperand src2 = negConst.toMipsOperand(true, function, block, 1);
+            MipsImm src2 = new MipsImm(-a);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
-        } else{
+        } else {
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
             loadMemToReg(val1, src1, block, function);
             //下面这条也可以是false

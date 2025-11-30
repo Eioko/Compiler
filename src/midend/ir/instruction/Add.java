@@ -35,7 +35,7 @@ public class Add extends BinInstruction {
         } else if(val1 instanceof ConstInt){
             MipsOperand src1 = val2.toMipsOperand(false, function, block, 0);
             loadMemToReg(val2, src1, block, function);
-            MipsOperand src2 = val1.toMipsOperand(true, function, block, 1);
+            MipsImm src2 = new MipsImm(((ConstInt) val1).getNumber());
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         } else{
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);

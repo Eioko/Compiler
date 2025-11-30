@@ -68,59 +68,15 @@ public class Value {
                 return operand;
             }
         }
-        if(this instanceof Instruction){
-            MipsPhyReg reg;
-            if(opIndex == 0){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T0);
-            }else if(opIndex == 1){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T1);
-            }else{
-                reg = new MipsPhyReg(MipsPhyReg.Register.T2);
-            }
-            return reg;
-        }else if(this instanceof ConstInt){
-            int num = ((ConstInt) this).getNumber();
-            if(canImm && inSignedShortRange(num)){
-                return new MipsImm(num);
-            }else{
-                if(num == 0){
-                    return new MipsPhyReg(MipsPhyReg.Register.ZERO);
-                }else {
-                    MipsPhyReg reg;
-                    if(opIndex == 0){
-                        reg = new MipsPhyReg(MipsPhyReg.Register.T0);
-                    }else if(opIndex == 1){
-                        reg = new MipsPhyReg(MipsPhyReg.Register.T1);
-                    }else{
-                        reg = new MipsPhyReg(MipsPhyReg.Register.T2);
-                    }
-                    MipsLi li = new MipsLi(reg, new MipsImm(num));
-                    irBlock.getMipsBlock().addInstruction(li);
-                    return reg;
-                }
-            }
-        }else if(this instanceof GlobalVariable){
-            MipsPhyReg reg;
-            if(opIndex == 0){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T0);
-            }else if(opIndex == 1){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T1);
-            }else{
-                reg = new MipsPhyReg(MipsPhyReg.Register.T2);
-            }
-            irBlock.getMipsBlock().addInstruction(new MipsLa(reg, new MipsLabel(this.getName().substring(1))));
-            return reg;
+        MipsPhyReg reg;
+        if(opIndex == 0){
+            reg = new MipsPhyReg(MipsPhyReg.Register.T0);
+        }else if(opIndex == 1){
+            reg = new MipsPhyReg(MipsPhyReg.Register.T1);
         }else{
-            MipsPhyReg reg;
-            if(opIndex == 0){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T0);
-            }else if(opIndex == 1){
-                reg = new MipsPhyReg(MipsPhyReg.Register.T1);
-            }else{
-                reg = new MipsPhyReg(MipsPhyReg.Register.T2);
-            }
-            return reg;
+            reg = new MipsPhyReg(MipsPhyReg.Register.T2);
         }
+        return reg;
     }
 
     public boolean inSignedShortRange(int num){

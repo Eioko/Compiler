@@ -91,6 +91,7 @@ public class MipsModule {
         mipsModule.currentFunction = function.getMipsFunction();
         stackOffset = 0;
         valueRegMap = function.getValueRegMap();
+        valueStackOffsetMap = new HashMap<>();
     }
 
     public static void recordValueRegMap(Value value, MipsOperand reg){

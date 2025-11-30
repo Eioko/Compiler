@@ -72,29 +72,32 @@ public class Call extends Instruction {
 
         int currentOffset = getCurrentStackOffset();
         ArrayList<MipsPhyReg> allocatedRegisterList = getAllocatedRegs();
-        //调用者保存现场
-        saveCurrent(block, currentOffset, allocatedRegisterList);
 
-        int newlen = 4 * allocatedRegisterList.size() + 12;
+        ArrayList<Value> args = new ArrayList<>(this.getOperands().subList(1, this.getNumOfOperands()));
+
+        int newlen = 4 * allocatedRegisterList.size() + 12 + args.size() * 4;
+
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, SP , SP, new MipsImm(-newlen)));
+        //调用者保存现场
+        saveCurrent(block, currentOffset ,allocatedRegisterList);
+
         currentOffset -= 4 * allocatedRegisterList.size();
         currentOffset -= 12; //为FP、SP和RA腾出空间
 
         //填参
-        ArrayList<Value> args = new ArrayList<>(this.getOperands().subList(1, this.getNumOfOperands()));
         for(int i = 0; i < args.size(); i++) {
             Value arg = args.get(i);
             if(i<4) {
                 //前4个参数放寄存器
-                doRealPara(arg, i, block, function, currentOffset, allocatedRegisterList);
+                doRealPara(arg, i, currentOffset, block, function,  allocatedRegisterList);
             }else{
-                MipsPhyReg argReg = doRealPara(arg, i, block, function, currentOffset, allocatedRegisterList);
-                mipsBlock.addInstruction(new MipsSw(argReg, new MipsImm( -newlen - 4 * i - 4), SP));
+                MipsPhyReg argReg = doRealPara(arg, i, currentOffset ,block, function,  allocatedRegisterList);
+                mipsBlock.addInstruction(new MipsSw(argReg, new MipsImm( -newlen - 4 * i - 4 + currentOffset), FP));
             }
         }
 
         //跳转, 我的fp在函数参数之上，在sp、ra之下
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, FP , SP, new MipsImm(-newlen)));
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, SP , SP, new MipsImm(-newlen - args.size() * 4)));
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, FP , FP, new MipsImm(currentOffset)));
         mipsBlock.addInstruction(new MipsJal(calleeFunction.getMipsFunction()));
 
         // 恢复SP寄存器和RA寄存器
@@ -113,7 +116,7 @@ public class Call extends Instruction {
         mipsBlock.addInstruction(new MipsEmpty());
     }
 
-    public MipsPhyReg doRealPara(Value arg, int i, BasicBlock block, Function function, int currentOffset,
+    public MipsPhyReg doRealPara(Value arg, int i, int beforeOffset, BasicBlock block, Function function,
                            ArrayList<MipsPhyReg> allocatedRegisterList){
         MipsBlock mipsBlock = block.getMipsBlock();
         MipsPhyReg argReg = new MipsPhyReg(MipsPhyReg.Register.values()[MipsPhyReg.Register.A0.ordinal() + i]);
@@ -122,7 +125,7 @@ public class Call extends Instruction {
             if(reg != null){
                 //这里会不会RE？？？
                 mipsBlock.addInstruction(new MipsLw(argReg,
-                        new MipsImm(-4 * allocatedRegisterList.indexOf(reg) - 4), SP));
+                        new MipsImm(-4 * allocatedRegisterList.indexOf(reg) - 4 + beforeOffset), FP));
             }else{
                 loadMemToReg(arg, argReg, block, function);
             }
@@ -131,18 +134,18 @@ public class Call extends Instruction {
         }
         return argReg;
     }
-    public void saveCurrent(BasicBlock block,int currentOffset, ArrayList<MipsPhyReg> allocatedRegisterList) {
+    public void saveCurrent(BasicBlock block, int beforeOffset,ArrayList<MipsPhyReg> allocatedRegisterList) {
         MipsBlock mipsBlock = block.getMipsBlock();
         // 获取已分配的寄存器列表
         int registerNum = 0;
         for (MipsPhyReg register : allocatedRegisterList) {
             registerNum++;
-            mipsBlock.addInstruction(new MipsSw(register, new MipsImm(-registerNum * 4), SP));
+            mipsBlock.addInstruction(new MipsSw(register, new MipsImm(-registerNum * 4 + beforeOffset), FP));
         }
         // 保存SP、RA、FP
-        mipsBlock.addInstruction(new MipsSw(FP, new MipsImm( -4 - registerNum * 4), SP));
-        mipsBlock.addInstruction(new MipsSw(SP, new MipsImm( -8 - registerNum * 4), SP));
-        mipsBlock.addInstruction(new MipsSw(RA, new MipsImm( -12 - registerNum * 4), SP));
+        mipsBlock.addInstruction(new MipsSw(FP, new MipsImm( -4 - registerNum * 4 + beforeOffset), FP));
+        mipsBlock.addInstruction(new MipsSw(SP, new MipsImm( -8 - registerNum * 4 + beforeOffset), FP));
+        mipsBlock.addInstruction(new MipsSw(RA, new MipsImm( -12 - registerNum * 4 + beforeOffset), FP));
     }
 }
 

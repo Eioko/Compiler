@@ -39,11 +39,11 @@ public class Instruction extends User {
 
         if(val instanceof ConstInt){
             int num = ((ConstInt)val).getNumber();
-//            MipsImm imm = new MipsImm(num);
-//            mipsBlock.addInstruction(new MipsLi(dest, imm));
+            MipsImm imm = new MipsImm(num);
+            mipsBlock.addInstruction(new MipsLi(dest, imm));
         }else if(val instanceof GlobalVariable){
-//            MipsLabel mipsLabel = new MipsLabel(val.getName());
-//            mipsBlock.addInstruction(new MipsLa(dest, mipsLabel));
+            MipsLabel mipsLabel = new MipsLabel(val.getName());
+            mipsBlock.addInstruction(new MipsLa(dest, mipsLabel));
         }else{
             MipsPhyReg reg = getValueToReg(val, function);
             if(reg != null){

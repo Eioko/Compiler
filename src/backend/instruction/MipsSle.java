@@ -15,6 +15,6 @@ public class MipsSle extends MipsInstruction {
 
     @Override
     public String toString() {
-        return "slt " + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
+        return "sle " + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
     }
 }
