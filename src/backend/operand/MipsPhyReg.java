@@ -45,6 +45,7 @@ public class MipsPhyReg extends MipsOperand {
     public static MipsPhyReg RA = new MipsPhyReg(Register.RA);
     public static MipsPhyReg V0 = new MipsPhyReg(Register.V0);
     public static MipsPhyReg A0 = new MipsPhyReg(Register.A0);
+    public static MipsPhyReg FP = new MipsPhyReg(Register.FP);
 
     private final Register reg;
 
@@ -53,5 +54,10 @@ public class MipsPhyReg extends MipsOperand {
     }
     public MipsPhyReg(Register reg) {
         this.reg = reg;
+    }
+
+    @Override
+    public String toString() {
+        return "$" + reg.name;
     }
 }

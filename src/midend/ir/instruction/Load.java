@@ -1,6 +1,7 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLw;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
@@ -40,5 +41,6 @@ public class Load extends Instruction {
         MipsImm offset = new MipsImm(0);
         mipsBlock.addInstruction(new MipsLw(dest, offset, src));
         saveRegToStack(this, dest, block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

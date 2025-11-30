@@ -1,6 +1,7 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLi;
 import backend.instruction.MipsMove;
 import backend.instruction.MipsSyscall;
@@ -29,5 +30,6 @@ public class GetInt extends Instruction{
         mipsBlock.addInstruction(new MipsSyscall());
 
         saveRegToStack(this, V0, bb, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

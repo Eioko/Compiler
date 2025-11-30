@@ -3,6 +3,7 @@ package midend.ir.instruction;
 import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsEmpty;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
@@ -15,7 +16,7 @@ import midend.ir.value.BasicBlock;
 
 import static backend.MipsModule.allocateStackSpace;
 import static backend.MipsModule.getCurrentStackOffset;
-import static backend.operand.MipsPhyReg.SP;
+import static backend.operand.MipsPhyReg.FP;
 
 public class  Alloca extends Instruction{
     // 局部常量数组初始化值
@@ -49,19 +50,17 @@ public class  Alloca extends Instruction{
         MipsBlock mipsBlock = block.getMipsBlock();
         MipsFunction mipsFunction = function.getMipsFunction();
 
-        ValueType allocatedType = ((PointerType)this.getValueType()).getPointeeType();
-        int size = allocatedType.getSizeInByte();
+        int size = (((PointerType)this.getValueType()).getPointeeType()).getSizeInBytes();
         mipsFunction.addAllocaSize(size);
         //单纯分配空间，减少offset
         allocateStackSpace(size);
         MipsOperand destAddr = this.toMipsOperand(true , function, block, 2);
         //数据在的位置
-        int stackOffset = getCurrentStackOffset();
-        MipsOperand realOffset = new MipsImm(stackOffset);
-
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, destAddr, SP, realOffset));
+        MipsOperand realOffset = new MipsImm(getCurrentStackOffset());
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, destAddr, FP, realOffset));
         //把指针值存在再下面
         saveRegToStack(this, destAddr ,block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }
 

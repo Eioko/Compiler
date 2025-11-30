@@ -23,4 +23,8 @@ public class ConstString extends Constant{
     public String getName(){
         return toString();
     }
+
+    public String getMipsString(){
+        return str.replace("\\0A", "\\n");
+    }
 }

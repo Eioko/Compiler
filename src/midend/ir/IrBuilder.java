@@ -179,7 +179,7 @@ public class IrBuilder {
     }
 
     public GlobalVariable buildGlobalString(String str, int len) {
-        String name = ".str." + strNumCount++;
+        String name = "_str_" + strNumCount++;
         ConstString constString = new ConstString(str, len);
         GlobalVariable globalString = new GlobalVariable(name, constString, true);
         irModule.addGlobalVariable(globalString);

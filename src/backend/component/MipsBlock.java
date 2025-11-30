@@ -19,4 +19,14 @@ public class MipsBlock{
         instructions.add(instruction);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append(":\n");
+        for(MipsInstruction instruction : instructions){
+            sb.append("\t").append(instruction.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
 }

@@ -73,12 +73,15 @@ public class IrModule extends Value {
     }
     public void irMap(){
         for(Function function : functions){
-            MipsFunction mipsFunction = new MipsFunction(function.getName());
+            MipsFunction mipsFunction = new MipsFunction(function.getName().substring(1));
             function.setMipsFunction(mipsFunction);
+            mipsModule.addFunction(mipsFunction);
+
             ArrayList<BasicBlock> blocks = function.getBlocks();
             for(BasicBlock block : blocks){
                 MipsBlock mipsBlock = new MipsBlock(block.getName());
                 block.setMipsBlock(mipsBlock);
+                mipsFunction.addBlock(mipsBlock);
             }
         }
     }
@@ -87,7 +90,6 @@ public class IrModule extends Value {
         for(GlobalVariable globalVariable : globalVariables){
             globalVariable.toMips();
         }
-        // jump to main
 
         irMap();
         for(Function function : functions){

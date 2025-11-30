@@ -108,7 +108,7 @@ public class Value {
             }else{
                 reg = new MipsPhyReg(MipsPhyReg.Register.T2);
             }
-            irBlock.getMipsBlock().addInstruction(new MipsLa(reg, new MipsLabel(this.getName())));
+            irBlock.getMipsBlock().addInstruction(new MipsLa(reg, new MipsLabel(this.getName().substring(1))));
             return reg;
         }else{
             MipsPhyReg reg;

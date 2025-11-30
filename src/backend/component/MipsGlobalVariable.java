@@ -11,7 +11,7 @@ public class MipsGlobalVariable {
     private final String content;
 
     public MipsGlobalVariable(String name, ArrayList<Integer> elements) {
-        this.name = name.substring(2);
+        this.name = name.substring(1);
         this.isInit = true;
         this.isStr = false;
         this.size = 4 * elements.size();
@@ -20,20 +20,43 @@ public class MipsGlobalVariable {
     }
 
     public MipsGlobalVariable(String name, int size) {
-        this.name = name.substring(2);
+        this.name = name.substring(1);
         this.isInit = false;
         this.isStr = false;
-        this.size = size;
+        this.size = 4 * size;
         this.elements = null;
         this.content = null;
     }
 
     public MipsGlobalVariable(String name, String content) {
-        this.name = name.substring(2);
+        this.name = name.substring(1);
         this.isInit = true;
         this.isStr = true;
         this.size = content.length() + 1;
         this.elements = null;
         this.content = content;
+    }
+
+    public boolean isInit() {
+        return isInit;
+    }
+    public boolean isStr() {
+        return isStr;
+    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append(":").append("\n");
+        if (isInit) {
+            if (isStr) {
+                sb.append("\t.asciiz\t").append("\"").append(content).append("\"").append("\n");
+            } else {
+                for (Integer element : elements) {
+                    sb.append("\t.word\t").append(element).append("\n");
+                }
+            }
+        } else {
+            sb.append("\t.space\t").append(size).append("\n");
+        }
+        return sb.toString();
     }
 }

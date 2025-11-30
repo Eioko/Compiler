@@ -1,9 +1,18 @@
 package midend.ir.instruction;
 
+import backend.MipsModule;
+import backend.component.MipsBlock;
+import backend.instruction.*;
+import backend.operand.MipsImm;
+import backend.operand.MipsOperand;
 import midend.ir.type.DataType;
 import midend.ir.type.VoidType;
 import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
 import midend.ir.value.Value;
+
+import static backend.operand.MipsPhyReg.RA;
+import static backend.operand.MipsPhyReg.V0;
 
 public class Ret extends Instruction {
     public Ret(BasicBlock parent) {
@@ -25,5 +34,24 @@ public class Ret extends Instruction {
         sb.append(" ");
         sb.append(this.getUsedValue(0).getName());
         return sb.toString();
+    }
+
+    public void toMips(BasicBlock block, Function function) {
+        MipsBlock mipsBlock = block.getMipsBlock();
+        if(this.getValueType() instanceof VoidType) {
+            mipsBlock.addInstruction(new MipsJr(RA));
+        }else{
+            if(function.getMipsFunction() == MipsModule.getInstance().mainFunction){
+                // exit syscall
+                mipsBlock.addInstruction(new MipsLi(V0, new MipsImm(10))); // syscall code 10 for exit
+                mipsBlock.addInstruction(new MipsSyscall());
+                return;
+            }
+            MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block, 0);
+            loadMemToReg(this.getUsedValue(0), retVal, block, function);
+            mipsBlock.addInstruction(new MipsMove(V0, retVal));
+            mipsBlock.addInstruction(new MipsJr(RA));
+        }
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

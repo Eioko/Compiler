@@ -2,6 +2,7 @@ package midend.ir.instruction;
 
 import backend.component.MipsBlock;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsEmpty;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import midend.ir.type.ArrayType;
@@ -57,7 +58,9 @@ public class GEP extends Instruction {
             indexValue = this.getUsedValue(1);
         }else{
             //其实我的二维寻址好像都是0，0，这里无所谓
-            indexValue = this.getUsedValue(2);
+            saveRegToStack(this, base, block, function);
+            mipsBlock.addInstruction(new MipsEmpty());
+            return;
         }
         MipsOperand index = indexValue.toMipsOperand(false, function, block, 1);
         loadMemToReg(indexValue, index, block, function);
@@ -65,5 +68,6 @@ public class GEP extends Instruction {
         mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm));
         mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, index));
         saveRegToStack(this, dest ,block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

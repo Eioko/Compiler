@@ -2,10 +2,7 @@ package midend.ir.value;
 
 import backend.component.MipsGlobalVariable;
 import midend.ir.IrModule;
-import midend.ir.constant.ConstArray;
-import midend.ir.constant.ConstInt;
-import midend.ir.constant.Constant;
-import midend.ir.constant.ZeroInitializer;
+import midend.ir.constant.*;
 import midend.ir.type.PointerType;
 import midend.ir.type.StringType;
 
@@ -56,11 +53,13 @@ public class GlobalVariable extends User {
     public Constant getInitValue() {
         return (Constant) getUsedValue(0);
     }
+
     public void toMips(){
         ArrayList<Integer> initVal = new ArrayList<>();
 
         if(((PointerType)getValueType()).getPointeeType() instanceof StringType){
-            MipsGlobalVariable mipsGlobalVariable = new MipsGlobalVariable(this.getName(), getUsedValue(0).toString());
+            MipsGlobalVariable mipsGlobalVariable = new MipsGlobalVariable(this.getName(),
+                    ((ConstString)getInitValue()).getMipsString());
             mipsModule.addGlobalVariable(mipsGlobalVariable);
         }else if(getInitValue() instanceof ZeroInitializer){
             int size = ((ZeroInitializer) getInitValue()).getSize();

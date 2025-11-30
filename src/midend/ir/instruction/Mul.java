@@ -2,6 +2,7 @@ package midend.ir.instruction;
 
 import backend.component.MipsBlock;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLi;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
@@ -45,5 +46,6 @@ public class Mul extends BinInstruction {
             mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.MUL, dest, src1, src2));
         }
         saveRegToStack(this, dest ,block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

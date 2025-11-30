@@ -1,6 +1,7 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsSw;
 import backend.operand.MipsOperand;
 import midend.ir.type.VoidType;
@@ -30,5 +31,6 @@ public class Store extends Instruction {
 
         MipsOperand offset = new backend.operand.MipsImm(0);
         mipsBlock.addInstruction(new MipsSw(src, offset, destAddr));
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

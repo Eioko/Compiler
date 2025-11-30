@@ -1,6 +1,7 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLi;
 import backend.instruction.MipsMove;
 import backend.instruction.MipsSyscall;
@@ -31,9 +32,9 @@ public class PutInt extends Instruction{
         MipsOperand toPrint = A0;
         loadMemToReg(p, toPrint, block, function);
 
-        MipsImm imm = new MipsImm(11);
+        MipsImm imm = new MipsImm(1);
         mipsBlock.addInstruction(new MipsLi(V0, imm));
         mipsBlock.addInstruction(new MipsSyscall());
-
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

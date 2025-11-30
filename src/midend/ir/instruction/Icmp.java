@@ -1,7 +1,14 @@
 package midend.ir.instruction;
 
+import backend.component.MipsBlock;
+import backend.instruction.MipsSeq;
+import backend.instruction.MipsSle;
+import backend.instruction.MipsSlt;
+import backend.instruction.MipsSne;
+import backend.operand.MipsOperand;
 import midend.ir.type.IntegerType;
 import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 public class Icmp extends Instruction {
@@ -45,5 +52,31 @@ public class Icmp extends Instruction {
         return  getName() + " = " + opStr + " " +
                 left.getValueType().toString() + " " + left.getName() + ", " +
                 right.getName();
+    }
+
+    public void toMips(BasicBlock block, Function function) {
+        MipsBlock mipsBlock = block.getMipsBlock();
+        MipsOperand leftOp = left.toMipsOperand(false, function, block, 0);
+        MipsOperand rightOp = right.toMipsOperand(false, function, block, 1);
+        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
+
+        loadMemToReg(left, leftOp, block, function);
+        loadMemToReg(right, rightOp, block, function);
+
+        if(op == IcmpOp.EQ){
+            mipsBlock.addInstruction(new MipsSeq(dest, leftOp, rightOp));
+        } else if(op == IcmpOp.NE){
+            mipsBlock.addInstruction(new MipsSne(dest, leftOp, rightOp));
+        } else if(op == IcmpOp.LT){
+            mipsBlock.addInstruction(new MipsSlt(dest, leftOp, rightOp));
+        } else if(op == IcmpOp.LE){
+            mipsBlock.addInstruction(new MipsSle(dest, leftOp, rightOp));
+        } else if(op == IcmpOp.GT){
+            mipsBlock.addInstruction(new MipsSlt(dest, rightOp, leftOp));
+        } else if(op == IcmpOp.GE){
+            mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
+        }
+        saveRegToStack(this, dest, block, function);
+        mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
     }
 }

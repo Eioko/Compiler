@@ -3,11 +3,13 @@ import frontend.ast.CompUnit;
 import frontend.lexer.Lexer;
 import frontend.lexer.Token;
 import frontend.parser.Parser;
+import midend.ir.IrModule;
 import utils.FileProcess;
 
 import java.util.ArrayList;
 
 import static utils.FileProcess.printTokens;
+import static utils.FileProcess.writeMipsFile;
 
 
 public class Compiler {
@@ -24,11 +26,13 @@ public class Compiler {
         compUnit.check();
         if(ErrorManager.isEmpty()){
             compUnit.buildIr();
+            IrModule.getInstance().toMips();
         }
 
         FileProcess.flushAll();
         if(ErrorManager.isEmpty()){
             FileProcess.writeIrFile();
+            writeMipsFile();
         }
 
         FileProcess.closeAll();

@@ -1,5 +1,7 @@
 package utils;
 
+import backend.MipsModule;
+import backend.component.MipsBlock;
 import frontend.lexer.Token;
 import error.SysyError;
 import midend.ir.IrModule;
@@ -31,6 +33,7 @@ public class FileProcess {
     private static final String parserOutputFile = "parser.txt";
     private static final String symbolOutputFile = "symbol.txt";
     private static final String irOutputFile = "llvm_ir.txt";
+    private static final String mipsOutputFile = "mips.txt";
 
     private static final Path inputPath = Path.of(inputFile);
     private static final Path tokenOutputPath = Path.of(tokenOutputFile);
@@ -38,6 +41,7 @@ public class FileProcess {
     private static final Path parserOutputPath = Path.of(parserOutputFile);
     private static final Path symbolOutputPath = Path.of(symbolOutputFile);
     private static final Path irOutputPath = Path.of(irOutputFile);
+    private static final Path mipsOutputPath = Path.of(mipsOutputFile);
 
     private static BufferedWriter tokenWriter;
     private static BufferedReader reader;
@@ -45,8 +49,7 @@ public class FileProcess {
     private static BufferedWriter parserWriter;
     private static BufferedWriter symbolWriter;
     private static BufferedWriter irWriter;
-
-
+    private static BufferedWriter mipsWriter;
 
     private static void ensureInputExistsAndReadable() {
         if (!Files.exists(inputPath)) {
@@ -81,6 +84,11 @@ public class FileProcess {
                     StandardOpenOption.TRUNCATE_EXISTING);
             irWriter = Files.newBufferedWriter(
                     irOutputPath,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+            mipsWriter = Files.newBufferedWriter(
+                    mipsOutputPath,
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
@@ -171,6 +179,14 @@ public class FileProcess {
         try{
             irWriter.write(IrModule.getInstance().toString());
             irWriter.flush();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void writeMipsFile(){
+        try{
+            mipsWriter.write(MipsModule.getInstance().toString());
+            mipsWriter.flush();
         }catch (IOException e) {
             e.printStackTrace();
         }

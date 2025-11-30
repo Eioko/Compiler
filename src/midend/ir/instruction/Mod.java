@@ -1,6 +1,7 @@
 package midend.ir.instruction;
 import backend.component.MipsBlock;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsEmpty;
 import backend.operand.MipsOperand;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
@@ -40,5 +41,6 @@ public class Mod extends BinInstruction {
         // 这里把除法和后面的move from HI/LO合并了, 不再加mfhi指令
         mipsBlock.addInstruction(new MipsBinary(MOD, dest, src1, src2));
         saveRegToStack(this, dest ,block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

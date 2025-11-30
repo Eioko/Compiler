@@ -125,7 +125,6 @@ public class LVal extends ComptueExp{
                     valueUp = gep;
                 }
             }else if(valueType instanceof ArrayType){
-                System.out.println(global);
                 // 全局/局部数组变量
                 if(global && value instanceof GlobalVariable){
                     //全局数组变量，直接取初值

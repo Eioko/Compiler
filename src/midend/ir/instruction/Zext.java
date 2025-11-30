@@ -1,8 +1,11 @@
 package midend.ir.instruction;
 
+import backend.component.MipsBlock;
+import backend.instruction.MipsEmpty;
+import backend.operand.MipsOperand;
 import midend.ir.type.DataType;
-import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 public class Zext extends Instruction {
@@ -24,6 +27,13 @@ public class Zext extends Instruction {
         return getName() + " = zext " +
                 from.getValueType().toString() + " " + from.getName() +
                 " to " + toType.toString();
+    }
+    public void toMips(BasicBlock block, Function function) {
+        MipsBlock mipsBlock = block.getMipsBlock();
+        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
+        loadMemToReg(from, dest, block, function);
+        saveRegToStack(this, dest, block, function);
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }
 

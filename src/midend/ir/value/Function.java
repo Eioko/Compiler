@@ -103,7 +103,7 @@ public class Function extends Value {
             if (i < 4) {
                 recordValueRegMap(this.arguments.get(i), MipsPhyReg.getReg(MipsPhyReg.Register.A0.ordinal() + i));
             }
-            allocateStackForValue(this.arguments.get(i));
+            recordStackFotValue(this.arguments.get(i));
         }
 
         for(BasicBlock block : blocks){

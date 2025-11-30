@@ -2,6 +2,7 @@ package midend.ir.instruction;
 
 import backend.component.MipsBlock;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLi;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
@@ -38,11 +39,12 @@ public class Add extends BinInstruction {
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         } else{
             MipsOperand src1 = val1.toMipsOperand(false, function, block, 0);
-            loadMemToReg(val2, src1, block, function);
+            loadMemToReg(val1, src1, block, function);
             MipsOperand src2 = val2.toMipsOperand(true, function, block, 1);
             loadMemToReg(val2, src2, block, function);
             mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
         }
+        mipsBlock.addInstruction(new MipsEmpty());
         saveRegToStack(this, dest ,block, function);
     }
 }

@@ -1,13 +1,18 @@
 package backend;
 
+import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import backend.component.MipsGlobalVariable;
+import backend.instruction.MipsBinary;
+import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static backend.operand.MipsPhyReg.SP;
 
 public class MipsModule {
     //data segment
@@ -17,10 +22,10 @@ public class MipsModule {
 
     public final HashMap<Value, MipsOperand> operandMap = new HashMap<>();
 
+    public MipsFunction mainFunction = null;
+
     //一个函数内部的value到寄存器的映射表，在切换函数时更新
     public static HashMap<Value, MipsPhyReg> valueRegMap = new HashMap<>();
-
-    public static ArrayList<MipsPhyReg> allocatedRegs = new ArrayList<>();
 
     public MipsFunction currentFunction = null;
     /**
@@ -43,6 +48,9 @@ public class MipsModule {
         return globalVariables;
     }
     public void addFunction(MipsFunction function){
+        if (function.getName().equals("main")) {
+            mainFunction = function;
+        }
         functions.add(function);
     }
     public ArrayList<MipsFunction> getFunctions(){
@@ -55,7 +63,14 @@ public class MipsModule {
         return operandMap.get(value);
     }
 
-    public static int allocateStackForValue(Value value){
+    public static int allocateStackForValue(MipsBlock mipsBlock,  Value value){
+        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, SP, SP, new MipsImm(-4)));
+        stackOffset -= 4;
+        valueStackOffsetMap.put(value, stackOffset);
+        return stackOffset;
+    }
+
+    public static int recordStackFotValue(Value value){
         stackOffset -= 4;
         valueStackOffsetMap.put(value, stackOffset);
         return stackOffset;
@@ -82,9 +97,41 @@ public class MipsModule {
         valueRegMap.put(value, (MipsPhyReg)reg);
     }
     public static MipsPhyReg getValueToReg(Value value, Function function){
-        return function.getValueRegMap().get(value);
+        return valueRegMap.get(value);
     }
     public static ArrayList<MipsPhyReg> getAllocatedRegs(){
-        return allocatedRegs;
+        return new ArrayList<>(valueRegMap.values());
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        // data segment
+        sb.append(".data\n");
+        for (MipsGlobalVariable globalVariable : globalVariables) {
+            if(globalVariable.isInit() && !globalVariable.isStr()){
+                sb.append(globalVariable.toString()).append("\n");
+            }
+        }
+        for (MipsGlobalVariable globalVariable : globalVariables) {
+            if(!globalVariable.isInit() && !globalVariable.isStr()) {
+                sb.append(globalVariable.toString()).append("\n");
+            }
+        }
+        for (MipsGlobalVariable globalVariable : globalVariables) {
+            if(globalVariable.isStr()){
+                sb.append(globalVariable.toString()).append("\n");
+            }
+        }
+        // text segment
+        sb.append(".text\n");
+        sb.append(mainFunction.toString());
+
+        for (MipsFunction function : functions) {
+            if(function != mainFunction){
+                sb.append(function.toString()).append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 }

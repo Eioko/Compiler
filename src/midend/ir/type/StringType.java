@@ -3,6 +3,7 @@ package midend.ir.type;
 public class StringType extends DataType {
     int len;
     public StringType(int len) {
+        super(len);
         this.len = len;
     }
 
@@ -10,6 +11,7 @@ public class StringType extends DataType {
      * Declare语句中使用
      */
     public StringType() {
+        super(-1);
         this.len = -1;
     }
 
