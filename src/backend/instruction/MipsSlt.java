@@ -3,9 +3,9 @@ package backend.instruction;
 import backend.operand.MipsOperand;
 
 public class MipsSlt extends MipsInstruction {
-    private final MipsOperand dest;
-    private final MipsOperand src1;
-    private final MipsOperand src2;
+    private MipsOperand dest;
+    private MipsOperand src1;
+    private MipsOperand src2;
 
     public MipsSlt(MipsOperand dest, MipsOperand src1, MipsOperand src2) {
         this.dest = dest;
@@ -16,5 +16,17 @@ public class MipsSlt extends MipsInstruction {
     @Override
     public String toString() {
         return "slt " + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
+    }
+
+    public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (dest!=null && dest.equals(oldReg)) {
+            dest = newReg;
+        }
+        if (src1!=null && src1.equals(oldReg)) {
+            src1 = newReg;
+        }
+        if (src2!=null && src2.equals(oldReg)) {
+            src2 = newReg;
+        }
     }
 }

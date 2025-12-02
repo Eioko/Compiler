@@ -1,6 +1,8 @@
 package backend.operand;
 
-public class MipsPhyReg extends MipsOperand {
+import java.util.ArrayList;
+
+public class MipsPhyReg extends MipsReg {
     public enum Register {
         ZERO ("zero"),
         AT ("at"),
@@ -47,13 +49,69 @@ public class MipsPhyReg extends MipsOperand {
     public static MipsPhyReg A0 = new MipsPhyReg(Register.A0);
     public static MipsPhyReg FP = new MipsPhyReg(Register.FP);
 
-    private final Register reg;
+    public static final ArrayList <MipsPhyReg> allocatableRegs = new ArrayList<>();
+    public static final ArrayList<Integer> allocatableRegIds = new ArrayList<>();
+    static {
+        allocatableRegs.add(new MipsPhyReg(Register.T0));
+        allocatableRegs.add(new MipsPhyReg(Register.T1));
+        allocatableRegs.add(new MipsPhyReg(Register.T2));
+        allocatableRegs.add(new MipsPhyReg(Register.T3));
+        allocatableRegs.add(new MipsPhyReg(Register.T4));
+        allocatableRegs.add(new MipsPhyReg(Register.T5));
+        allocatableRegs.add(new MipsPhyReg(Register.T6));
+        allocatableRegs.add(new MipsPhyReg(Register.T7));
+        allocatableRegs.add(new MipsPhyReg(Register.S0));
+        allocatableRegs.add(new MipsPhyReg(Register.S1));
+        allocatableRegs.add(new MipsPhyReg(Register.S2));
+        allocatableRegs.add(new MipsPhyReg(Register.S3));
+        allocatableRegs.add(new MipsPhyReg(Register.S4));
+        allocatableRegs.add(new MipsPhyReg(Register.S5));
+        allocatableRegs.add(new MipsPhyReg(Register.S6));
+        allocatableRegs.add(new MipsPhyReg(Register.S7));
+        allocatableRegs.add(new MipsPhyReg(Register.T8));
+        allocatableRegs.add(new MipsPhyReg(Register.T9));
+        allocatableRegs.add(new MipsPhyReg(Register.K0));
+        allocatableRegs.add(new MipsPhyReg(Register.K1));
 
+        for (MipsPhyReg reg : allocatableRegs) {
+            allocatableRegIds.add(reg.reg.ordinal());
+        }
+    }
+
+    private final Register reg;
+    private boolean isAllocated;
+    @Override
+    public boolean isPreColored() {
+        return !isAllocated;
+    }
+
+
+    public int getIndex() {
+        return reg.ordinal();
+    }
+
+    public boolean isAllocated() {
+        return isAllocated;
+    }
+
+    @Override
+    public boolean needColor() {
+        return !isAllocated;
+    }
+
+    public void setAllocated(boolean allocated) {
+        isAllocated = allocated;
+    }
     public static MipsPhyReg getReg(int idx) {
         return new MipsPhyReg(Register.values()[idx]);
     }
     public MipsPhyReg(Register reg) {
         this.reg = reg;
+    }
+
+    public MipsPhyReg(int idx, boolean isAllocated) {
+        this.reg = Register.values()[idx];
+        this.isAllocated = isAllocated;
     }
 
     @Override

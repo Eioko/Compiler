@@ -34,8 +34,10 @@ public class Br extends Instruction{
         MipsBlock mipsBlock = block.getMipsBlock();
 
         if (this.getNumOfOperands() == 1) {
+            // 无条件跳转
             BasicBlock dest = (BasicBlock) this.getUsedValue(0);
             mipsBlock.addInstruction(new backend.instruction.MipsJ(new MipsLabel(dest.getName())));
+            mipsBlock.setTrueSucc(dest.getMipsBlock());
         } else {
             Value cond = this.getUsedValue(0);
             BasicBlock thenBB = (BasicBlock) this.getUsedValue(1);
@@ -49,6 +51,8 @@ public class Br extends Instruction{
 
             mipsBlock.addInstruction(new MipsBeqz(condReg, new MipsLabel(elseBB.getName())));
             mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
+            mipsBlock.setTrueSucc(thenBB.getMipsBlock());
+            mipsBlock.setFalseSucc(elseBB.getMipsBlock());
         }
         mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
     }

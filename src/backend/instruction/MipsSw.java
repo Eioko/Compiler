@@ -15,4 +15,23 @@ public class MipsSw extends MipsInstruction {
     public String toString() {
         return "sw " + src.toString() + ", " + offset.toString() + "(" + dest.toString() + ")";
     }
+
+    public void setOffset(MipsOperand offset) {
+        addUseReg(this.offset, offset);
+        this.offset = offset;
+    }
+
+    @Override
+    public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (src != null && src.equals(oldReg)) {
+            src = newReg;
+        }
+        if (offset != null && offset.equals(oldReg)) {
+            offset = newReg;
+        }
+        if (dest != null && dest.equals(oldReg)) {
+            dest = newReg;
+        }
+        super.replaceReg(oldReg, newReg);
+    }
 }

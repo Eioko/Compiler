@@ -14,4 +14,15 @@ public class MipsLi extends MipsInstruction{
     public String toString() {
         return "li " + dest.toString() + ", " + value.toString();
     }
+
+    @Override
+    public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (dest != null && dest.equals(oldReg)) {
+            dest = newReg;
+        }
+        if (value != null && value.equals(oldReg)) {
+            value = newReg;
+        }
+        super.replaceReg(oldReg, newReg);
+    }
 }

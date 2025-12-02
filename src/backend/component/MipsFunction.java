@@ -1,15 +1,19 @@
 package backend.component;
 
 import backend.MipsModule;
+import backend.operand.MipsVirReg;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class MipsFunction {
     private String name;
     private int stackSize = 0;
     private int allocaSize = 0;
 
-    public ArrayList<MipsBlock> blocks = new ArrayList<>();
+    public LinkedList<MipsBlock> blocks = new LinkedList<>();
+    private final HashSet<MipsVirReg> usedVirRegs = new HashSet<>();
 
     public MipsFunction(String name) {
         this.name = name;
@@ -26,8 +30,15 @@ public class MipsFunction {
     public void addBlock(MipsBlock block) {
         blocks.add(block);
     }
-    public ArrayList<MipsBlock> getBlocks() {
+    public LinkedList<MipsBlock> getBlocks() {
         return blocks;
+    }
+
+    public void addUsedVirReg(MipsVirReg objVirReg) {
+        usedVirRegs.add(objVirReg);
+    }
+    public HashSet<MipsVirReg> getUsedVirRegs() {
+        return usedVirRegs;
     }
 
     @Override
@@ -37,7 +48,6 @@ public class MipsFunction {
         if(this == MipsModule.getInstance().mainFunction){
             sb.append("\tmove $fp, $sp\n");
         }
-
 
         for(MipsBlock block : blocks){
             sb.append(block.toString()).append("\n");

@@ -13,4 +13,11 @@ public class MipsJr extends MipsInstruction {
     public String toString() {
         return "jr " + target.toString();
     }
+
+    @Override
+    public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (target != null && target.equals(oldReg)) {
+            target = newReg;
+        }
+    }
 }

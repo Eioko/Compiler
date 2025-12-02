@@ -15,4 +15,13 @@ public class MipsLa extends MipsInstruction {
     public String toString() {
         return "la " + dest.toString() + ", " + addr;
     }
+
+    public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (dest!= null && dest.equals(oldReg)) {
+            dest = newReg;
+        }
+        if (addr!=null && addr.equals(oldReg)) {
+            addr = newReg;
+        }
+    }
 }
