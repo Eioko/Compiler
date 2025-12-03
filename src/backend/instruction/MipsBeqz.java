@@ -5,10 +5,11 @@ import backend.operand.MipsPhyReg;
 import backend.operand.MipsOperand;
 
 public class MipsBeqz extends MipsInstruction {
-    private MipsPhyReg reg;
+    // 优化改动了这里
+    private MipsOperand reg;
     private MipsLabel target;
 
-    public MipsBeqz(backend.operand.MipsPhyReg reg, backend.operand.MipsLabel target) {
+    public MipsBeqz(MipsOperand reg, backend.operand.MipsLabel target) {
         this.reg = reg;
         this.target = target;
     }

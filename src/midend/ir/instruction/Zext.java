@@ -1,12 +1,16 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
+import backend.instruction.MipsBinary;
 import backend.instruction.MipsEmpty;
+import backend.instruction.MipsMove;
 import backend.operand.MipsOperand;
 import midend.ir.type.DataType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
+
+import static utils.Configs.optimize;
 
 public class Zext extends Instruction {
     private Value from;
@@ -30,9 +34,16 @@ public class Zext extends Instruction {
     }
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
-        loadMemToReg(from, dest, block, function);
-        saveRegToStack(this, dest, block, function);
+        if(!optimize){
+            MipsOperand dest = this.toSimpleReg(false, function, block, 2);
+            loadMemToReg(from, dest, block, function);
+            saveRegToStack(this, dest, block, function);
+        }else{
+            MipsOperand dest = this.toMipsOperand(false, function, block);
+            MipsOperand src = from.toMipsOperand(false, function, block);
+            mipsBlock.addInstruction(new MipsMove(dest, src));
+        }
+
         mipsBlock.addInstruction(new MipsEmpty());
     }
 }

@@ -1,3 +1,4 @@
+import backend.optimize.RegAllocator;
 import error.ErrorManager;
 import frontend.ast.CompUnit;
 import frontend.lexer.Lexer;
@@ -8,6 +9,7 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
+import static utils.Configs.optimize;
 import static utils.FileProcess.printTokens;
 import static utils.FileProcess.writeMipsFile;
 
@@ -27,8 +29,13 @@ public class Compiler {
         if(ErrorManager.isEmpty()){
             compUnit.buildIr();
             IrModule.getInstance().toMips();
+            if(optimize){
+                RegAllocator regAllocator = new RegAllocator();
+                regAllocator.process();
+            }
         }
 
+        //输出
         FileProcess.flushAll();
         if(ErrorManager.isEmpty()){
             FileProcess.writeIrFile();

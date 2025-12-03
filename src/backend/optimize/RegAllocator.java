@@ -109,9 +109,9 @@ public class RegAllocator {
         for (int i = blocks.size() - 1; i >= 0; i--) {
             MipsBlock block = blocks.get(i);
             HashSet<MipsReg> live = new HashSet<>(liveMap.get(block).getLiveOut());
-            ArrayList<MipsInstruction> instructions = block.getInstructions();
+            LinkedList<MipsInstruction> instructions = block.getInstructions();
             for (int j = instructions.size() - 1; j >= 0; j--) {
-                MipsInstruction instruction = instructions.get(i);
+                MipsInstruction instruction = instructions.get(j);
                 ArrayList<MipsReg> useRegs = instruction.getUseRegs();
                 ArrayList<MipsReg> defRegs = instruction.getDefRegs();
 
@@ -510,18 +510,63 @@ public class RegAllocator {
      * @param instr
      */
     private void fixOffset(MipsFunction func, MipsInstruction instr) {
-
         int offset = func.getAllocaSize();
-        MipsImm objOffset = new MipsImm(offset);
+        MipsImm mipsOffset = new MipsImm(offset);
         if (instr instanceof MipsLw) {
-            MipsLw objLw= (MipsLw) instr;
-            objLw.setOffset(objOffset);
-        }
-        else if (instr instanceof MipsSw) {
-            MipsSw objSw = (MipsSw) instr;
-            objSw.setOffset(objOffset);
+            MipsLw mipsLw= (MipsLw) instr;
+            mipsLw.setOffset(mipsOffset);
+        } else if (instr instanceof MipsSw) {
+            MipsSw mipsSw = (MipsSw) instr;
+            mipsSw.setOffset(mipsOffset);
         }
     }
+
+    private void rewriteProgram(MipsFunction func) {
+        for (MipsOperand n : spilledNodes) {
+            for (MipsBlock block : func.getBlocks()) {
+
+                vReg = null;
+                firstUseNode = null;
+                lastDefNode = null;
+                // cntInstr 是 block 中已经处理的指令的个数
+                int cntInstr = 0;
+                for (MipsInstruction instr : block.getInstructions()) {
+                    HashSet<MipsReg> defs = new HashSet<>(instr.getDefRegs());
+                    HashSet<MipsReg> uses = new HashSet<>(instr.getUseRegs());
+                    for (MipsReg use : uses) {
+                        if (use.equals(n)) {
+                            if (vReg == null) {
+                                vReg = new MipsVirReg();
+                                func.addUsedVirReg(vReg);
+                            }
+                            instr.replaceReg(use, vReg);
+
+                            if (firstUseNode == null && lastDefNode == null) {
+                                firstUseNode = instr;
+                            }
+                        }
+                    }
+                    for (MipsReg def : defs) {
+                        if (def.equals(n)) {
+                            if (vReg == null) {
+                                vReg = new MipsVirReg();
+                                func.addUsedVirReg(vReg);
+                            }
+                            instr.replaceReg(def, vReg);
+                            lastDefNode = instr;
+                        }
+                    }
+                    if (cntInstr > 30) {
+                        checkPoint(func);
+                    }
+                    cntInstr++;
+                }
+                checkPoint(func);
+            }
+            func.addAllocaSize(4);
+        }
+    }
+    
     public void process() {
         for (MipsFunction function : mipsModule.getFunctions()) {
             boolean finished = false;
@@ -547,18 +592,14 @@ public class RegAllocator {
                         freezeWorklist.isEmpty() && spillWorklist.isEmpty()));
                 assignColors(function);
 
-                // 这里看一下实际溢出的节点
                 if (spilledNodes.isEmpty()) {
                     finished = true;
-                }
-                // 存在实际溢出的点
-                else {
+                } else {
                     rewriteProgram(function);
                 }
             }
         }
         clearPhyRegState();
-
         for (MipsFunction function : mipsModule.getFunctions()) {
             function.fixStack();
         }

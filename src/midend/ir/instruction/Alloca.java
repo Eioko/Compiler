@@ -6,17 +6,18 @@ import backend.instruction.MipsBinary;
 import backend.instruction.MipsEmpty;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
-import backend.operand.MipsPhyReg;
 import midend.ir.constant.ConstArray;
-import midend.ir.constant.ConstInt;
 import midend.ir.constant.Constant;
 import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
 
 import static backend.MipsModule.allocateStackSpace;
 import static backend.MipsModule.getCurrentStackOffset;
 import static backend.operand.MipsPhyReg.FP;
+import static backend.operand.MipsPhyReg.SP;
+import static utils.Configs.optimize;
 
 public class  Alloca extends Instruction{
     // 局部常量数组初始化值
@@ -46,21 +47,31 @@ public class  Alloca extends Instruction{
     public ConstArray getInitVal(){
         return initVal;
     }
-    public void toMips(BasicBlock block, midend.ir.value.Function function) {
+
+    public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
         MipsFunction mipsFunction = function.getMipsFunction();
 
         int size = (((PointerType)this.getValueType()).getPointeeType()).getSizeInBytes();
         mipsFunction.addAllocaSize(size);
-        //单纯分配空间，减少offset
-        allocateStackSpace(size);
-        MipsOperand destAddr = this.toMipsOperand(true , function, block, 2);
-        //数据在的位置
-        MipsOperand realOffset = new MipsImm(getCurrentStackOffset());
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, destAddr, FP, realOffset));
-        //把指针值存在再下面
-        saveRegToStack(this, destAddr ,block, function);
-        mipsBlock.addInstruction(new MipsEmpty());
+        if(!optimize){
+            //单纯分配空间，减少offset
+            allocateStackSpace(size);
+            MipsOperand destAddr = this.toSimpleReg(true , function, block, 2);
+            //数据在的位置
+            MipsOperand realOffset = new MipsImm(getCurrentStackOffset());
+            mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, destAddr, FP, realOffset));
+            //把指针值存在再下面
+            saveRegToStack(this, destAddr ,block, function);
+            mipsBlock.addInstruction(new MipsEmpty());
+        }
+        else{
+            MipsOperand offset = parseConstIntOperand(mipsFunction.getAllocaSize(), true, function, block);
+            MipsOperand dst = this.toMipsOperand(true, function, block);
+            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dst, offset, SP);
+            mipsBlock.addInstruction(mipsAdd);
+            mipsBlock.addInstruction(new MipsEmpty());
+        }
     }
 }
 

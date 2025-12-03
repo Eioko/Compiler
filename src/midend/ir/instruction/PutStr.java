@@ -3,6 +3,7 @@ package midend.ir.instruction;
 import backend.component.MipsBlock;
 import backend.instruction.MipsEmpty;
 import backend.instruction.MipsLi;
+import backend.instruction.MipsMove;
 import backend.instruction.MipsSyscall;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
@@ -14,6 +15,7 @@ import midend.ir.value.Value;
 
 import static backend.operand.MipsPhyReg.A0;
 import static backend.operand.MipsPhyReg.V0;
+import static utils.Configs.optimize;
 
 public class PutStr extends Instruction {
     public PutStr(BasicBlock parent, Value strAddr) {
@@ -28,7 +30,12 @@ public class PutStr extends Instruction {
         MipsBlock mipsBlock = block.getMipsBlock();
         Value p = this.getUsedValue(0);
         MipsOperand toPrint = A0;
-        loadMemToReg(p, toPrint, block, function);
+        if(!optimize){
+            loadMemToReg(p, toPrint, block, function);
+        }else{
+            MipsOperand src = p.toMipsOperand(true, function, block);
+            mipsBlock.addInstruction(new MipsMove(toPrint, src));
+        }
 
         MipsImm imm = new MipsImm(4);
         mipsBlock.addInstruction(new MipsLi(V0, imm));

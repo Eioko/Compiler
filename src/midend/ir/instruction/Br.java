@@ -2,15 +2,19 @@ package midend.ir.instruction;
 
 import backend.component.MipsBlock;
 import backend.instruction.MipsBeqz;
+import backend.instruction.MipsEmpty;
 import backend.instruction.MipsJ;
 import backend.operand.MipsLabel;
+import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
+import midend.ir.constant.ConstInt;
 import midend.ir.type.VoidType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 import static backend.MipsModule.getValueToReg;
+import static utils.Configs.optimize;
 
 public class Br extends Instruction{
     public Br(BasicBlock parent, BasicBlock dest) {
@@ -43,17 +47,39 @@ public class Br extends Instruction{
             BasicBlock thenBB = (BasicBlock) this.getUsedValue(1);
             BasicBlock elseBB = (BasicBlock) this.getUsedValue(2);
 
-            MipsPhyReg condReg = getValueToReg(cond, function);
-            if (condReg == null) {
-                condReg = new MipsPhyReg(backend.operand.MipsPhyReg.Register.T0);
-                loadMemToReg(cond, condReg, block, function);
-            }
+            if(!optimize){
+                MipsPhyReg condReg = getValueToReg(cond, function);
+                if (condReg == null) {
+                    condReg = new MipsPhyReg(backend.operand.MipsPhyReg.Register.T0);
+                    loadMemToReg(cond, condReg, block, function);
+                }
 
-            mipsBlock.addInstruction(new MipsBeqz(condReg, new MipsLabel(elseBB.getName())));
-            mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
-            mipsBlock.setTrueSucc(thenBB.getMipsBlock());
-            mipsBlock.setFalseSucc(elseBB.getMipsBlock());
+                mipsBlock.addInstruction(new MipsBeqz(condReg, new MipsLabel(elseBB.getName())));
+                mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
+                mipsBlock.setTrueSucc(thenBB.getMipsBlock());
+                mipsBlock.setFalseSucc(elseBB.getMipsBlock());
+            }
+            else{
+                if(cond instanceof ConstInt){
+                    int num = ((ConstInt)cond).getNumber();
+                    if(num != 0){
+                        mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
+                        mipsBlock.setTrueSucc(thenBB.getMipsBlock());
+                    }
+                    else{
+                        mipsBlock.addInstruction(new MipsJ(new MipsLabel(elseBB.getName())));
+                        mipsBlock.setTrueSucc(elseBB.getMipsBlock());
+                    }
+                }
+                else{
+                    MipsOperand condOp = cond.toMipsOperand(false, function, block);
+                    mipsBlock.addInstruction(new MipsBeqz(condOp, new MipsLabel(elseBB.getName())));
+                    mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
+                    mipsBlock.setTrueSucc(thenBB.getMipsBlock());
+                    mipsBlock.setFalseSucc(elseBB.getMipsBlock());
+                }
+            }
         }
-        mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
+        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

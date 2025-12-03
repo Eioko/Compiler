@@ -22,7 +22,9 @@ public class MipsBlock{
     public void addInstruction(MipsInstruction instruction){
         instructions.add(instruction);
     }
-
+    public void addInstrHead(MipsInstruction instruction){
+        instructions.addFirst(instruction);
+    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -33,7 +35,7 @@ public class MipsBlock{
         return sb.toString();
     }
 
-    public ArrayList<MipsInstruction> getInstructions() {
+    public LinkedList<MipsInstruction> getInstructions() {
         return instructions;
     }
 

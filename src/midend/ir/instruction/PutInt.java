@@ -15,6 +15,7 @@ import midend.ir.value.Value;
 
 import static backend.operand.MipsPhyReg.A0;
 import static backend.operand.MipsPhyReg.V0;
+import static utils.Configs.optimize;
 
 public class PutInt extends Instruction{
     public PutInt(BasicBlock parent, Value intValue) {
@@ -30,7 +31,12 @@ public class PutInt extends Instruction{
 
         Value p = this.getUsedValue(0);
         MipsOperand toPrint = A0;
-        loadMemToReg(p, toPrint, block, function);
+        if(!optimize){
+            loadMemToReg(p, toPrint, block, function);
+        }else{
+            MipsOperand src = p.toMipsOperand(true, function, block);
+            mipsBlock.addInstruction(new MipsMove(toPrint, src));
+        }
 
         MipsImm imm = new MipsImm(1);
         mipsBlock.addInstruction(new MipsLi(V0, imm));

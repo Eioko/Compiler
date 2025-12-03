@@ -11,6 +11,8 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
+import static utils.Configs.optimize;
+
 public class Icmp extends Instruction {
     public enum IcmpOp {
         LT, GT, LE, GE, EQ, NE
@@ -56,27 +58,49 @@ public class Icmp extends Instruction {
 
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        MipsOperand leftOp = left.toMipsOperand(false, function, block, 0);
-        MipsOperand rightOp = right.toMipsOperand(false, function, block, 1);
-        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
+        if(!optimize){
+            MipsOperand leftOp = left.toSimpleReg(false, function, block, 0);
+            MipsOperand rightOp = right.toSimpleReg(false, function, block, 1);
+            MipsOperand dest = this.toSimpleReg(false, function, block, 2);
 
-        loadMemToReg(left, leftOp, block, function);
-        loadMemToReg(right, rightOp, block, function);
+            loadMemToReg(left, leftOp, block, function);
+            loadMemToReg(right, rightOp, block, function);
 
-        if(op == IcmpOp.EQ){
-            mipsBlock.addInstruction(new MipsSeq(dest, leftOp, rightOp));
-        } else if(op == IcmpOp.NE){
-            mipsBlock.addInstruction(new MipsSne(dest, leftOp, rightOp));
-        } else if(op == IcmpOp.LT){
-            mipsBlock.addInstruction(new MipsSlt(dest, leftOp, rightOp));
-        } else if(op == IcmpOp.LE){
-            mipsBlock.addInstruction(new MipsSle(dest, leftOp, rightOp));
-        } else if(op == IcmpOp.GT){
-            mipsBlock.addInstruction(new MipsSlt(dest, rightOp, leftOp));
-        } else if(op == IcmpOp.GE){
-            mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
+            if(op == IcmpOp.EQ){
+                mipsBlock.addInstruction(new MipsSeq(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.NE){
+                mipsBlock.addInstruction(new MipsSne(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.LT){
+                mipsBlock.addInstruction(new MipsSlt(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.LE){
+                mipsBlock.addInstruction(new MipsSle(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.GT){
+                mipsBlock.addInstruction(new MipsSlt(dest, rightOp, leftOp));
+            } else if(op == IcmpOp.GE){
+                mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
+            }
+            saveRegToStack(this, dest, block, function);
+            mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
         }
-        saveRegToStack(this, dest, block, function);
-        mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
+        else{
+            MipsOperand leftOp = left.toMipsOperand(false, function, block);
+            MipsOperand rightOp = right.toMipsOperand(false, function, block);
+            MipsOperand dest = this.toMipsOperand(false, function, block);
+
+            if(op == IcmpOp.EQ){
+                mipsBlock.addInstruction(new MipsSeq(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.NE){
+                mipsBlock.addInstruction(new MipsSne(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.LT){
+                mipsBlock.addInstruction(new MipsSlt(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.LE){
+                mipsBlock.addInstruction(new MipsSle(dest, leftOp, rightOp));
+            } else if(op == IcmpOp.GT){
+                mipsBlock.addInstruction(new MipsSlt(dest, rightOp, leftOp));
+            } else if(op == IcmpOp.GE){
+                mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
+            }
+            mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
+        }
     }
 }

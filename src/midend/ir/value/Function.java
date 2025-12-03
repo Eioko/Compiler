@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static backend.MipsModule.*;
+import static utils.Configs.optimize;
 
 public class Function extends Value {
     private final ArrayList<Argument> arguments = new ArrayList<>();
@@ -97,15 +98,16 @@ public class Function extends Value {
     }
 
     public void toMips(){
-
-        setCurrentFunction(this);
-        for (int i = 0; i < this.arguments.size(); i++) {
-            if (i < 4) {
-                recordValueRegMap(this.arguments.get(i), MipsPhyReg.getReg(MipsPhyReg.Register.A0.ordinal() + i));
+        if(!optimize){
+            setCurrentFunction(this);
+            for (int i = 0; i < this.arguments.size(); i++) {
+                if (i < 4) {
+                    recordValueRegMap(this.arguments.get(i), MipsPhyReg.getReg(MipsPhyReg.Register.A0.ordinal() + i));
+                }
+                recordStackFotValue(this.arguments.get(i));
             }
-            recordStackFotValue(this.arguments.get(i));
         }
-
+        // 这里没有办法取进行分配空间等，因为还未遍历，不能得到函数栈空间情况
         for(BasicBlock block : blocks){
             block.toMips(this);
         }

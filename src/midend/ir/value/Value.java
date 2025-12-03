@@ -1,21 +1,18 @@
 package midend.ir.value;
 
-import backend.MipsBuilder;
 import backend.MipsModule;
-import backend.instruction.MipsLa;
-import backend.instruction.MipsLi;
-import backend.instruction.MipsMove;
-import backend.operand.MipsImm;
-import backend.operand.MipsLabel;
-import backend.operand.MipsOperand;
-import backend.operand.MipsPhyReg;
+import backend.component.MipsBlock;
+import backend.component.MipsFunction;
+import backend.instruction.*;
+import backend.operand.*;
 import midend.ir.constant.ConstInt;
 import midend.ir.instruction.Instruction;
 import midend.ir.type.ValueType;
+import utils.Pair;
 
 import java.util.ArrayList;
 
-import static midend.ir.instruction.Instruction.loadMemToReg;
+import static backend.operand.MipsPhyReg.SP;
 
 public class Value {
     protected String name;
@@ -45,7 +42,7 @@ public class Value {
         return parent;
     }
 
-    public MipsOperand toMipsOperand(boolean canImm, Function irFunction, BasicBlock irBlock, int opIndex) {
+    public MipsOperand toSimpleReg(boolean canImm, Function irFunction, BasicBlock irBlock, int opIndex) {
         if(mipsModule.getOperandMapping(this) != null) {
             MipsOperand operand = mipsModule.getOperandMapping(this);
             if(!canImm && operand instanceof MipsImm) {
@@ -77,6 +74,106 @@ public class Value {
             reg = new MipsPhyReg(MipsPhyReg.Register.T2);
         }
         return reg;
+    }
+    public MipsOperand genTmpReg(Function irFunction) {
+        MipsFunction mipsFunction = irFunction.getMipsFunction();
+        MipsVirReg tmpReg = new MipsVirReg();
+        mipsFunction.addUsedVirReg(tmpReg);
+        return tmpReg;
+    }
+    public MipsOperand toMipsOperand(boolean canImm, Function irFunction, BasicBlock irBlock) {
+        if(mipsModule.getOperandMapping(this) != null) {
+            MipsOperand operand = mipsModule.getOperandMapping(this);
+            if(!canImm && operand instanceof MipsImm) {
+                if((((MipsImm) operand).getNumber()) == 0){
+                    return new MipsPhyReg(MipsPhyReg.Register.ZERO);
+                }else{
+                    MipsOperand tmp = genTmpReg(irFunction);
+                    MipsLi li = new MipsLi((MipsPhyReg) tmp, operand);
+                    irBlock.getMipsBlock().addInstruction(li);
+                    return tmp;
+                }
+            }else{
+                return operand;
+            }
+        }
+        if (this instanceof Argument && irFunction.getArguments().contains(this)) {
+            return parseArgOperand((Argument) this, irFunction);
+        }
+        else if (this instanceof GlobalVariable) {
+            return parseGlobalOperand((GlobalVariable) this, irFunction, irBlock);
+        } else if (this instanceof ConstInt) {
+            return parseConstIntOperand(((ConstInt) this).getNumber(), canImm, irFunction, irBlock);
+        } else {
+            return genDstOperand(this, irFunction);
+        }
+    }
+
+    public MipsOperand parseConstIntOperand(int imm, boolean canImm, Function irFunction, BasicBlock irBlock) {
+        MipsBlock mipsBlock = irBlock.getMipsBlock();
+        MipsFunction mipsFunction = irFunction.getMipsFunction();
+        MipsImm mipsImm = new MipsImm(imm);
+        if (inSignedShortRange(imm) && canImm) {
+            return mipsImm;
+        } else {
+            if (imm == 0) {
+                return new MipsPhyReg(MipsPhyReg.Register.ZERO);
+            } else {
+                MipsVirReg dst = new MipsVirReg();
+                mipsFunction.addUsedVirReg(dst);
+                mipsBlock.addInstruction( new MipsLi(dst, mipsImm));
+                return dst;
+            }
+        }
+    }
+
+
+    public MipsOperand parseArgOperand(Argument irArgument, Function irFunction) {
+        MipsFunction mipsFunction = irFunction.getMipsFunction();
+        int rank = irArgument.getArgId();
+        if(irFunction.getBlocks().isEmpty()){
+            throw new RuntimeException("Function has no basic block when parsing argument operand.");
+        }
+        MipsBlock firstBlock = irFunction.getBlocks().get(0).getMipsBlock();
+        MipsVirReg dstVirReg = new MipsVirReg();
+        mipsModule.operandMap.put(irArgument, dstVirReg);
+        mipsFunction.addUsedVirReg(dstVirReg);
+
+        if (rank < 4) {
+            MipsPhyReg srcReg = switch (rank) {
+                case 0 -> new MipsPhyReg(MipsPhyReg.Register.A0);
+                case 1 -> new MipsPhyReg(MipsPhyReg.Register.A1);
+                case 2 -> new MipsPhyReg(MipsPhyReg.Register.A2);
+                default -> new MipsPhyReg(MipsPhyReg.Register.A3);
+            };
+            MipsMove mipsMove = new MipsMove(dstVirReg, srcReg);
+            firstBlock.addInstruction(mipsMove);
+        } else {
+            int stackPos = rank - 4;
+            MipsImm mipsOffset = new MipsImm(stackPos * 4);
+            mipsFunction.addArgOffset(mipsOffset);
+            MipsLw mipsLw = new MipsLw(dstVirReg, mipsOffset, SP);
+            firstBlock.addInstrHead(mipsLw);
+        }
+        return dstVirReg;
+    }
+
+    public MipsOperand parseGlobalOperand(GlobalVariable irGlobal, Function irFunction, BasicBlock irBlock) {
+        MipsBlock mipsBlock = irBlock.getMipsBlock();
+
+        MipsOperand dst = genTmpReg(irFunction);
+        MipsLa mipsLa = new MipsLa(dst, new MipsLabel(irGlobal.getName().substring(1)));
+        mipsBlock.addInstruction(mipsLa);
+        return dst;
+    }
+
+    public MipsOperand genDstOperand(Value irValue, Function irFunction) {
+        MipsFunction mipsFunction = irFunction.getMipsFunction();
+        assert irValue instanceof Instruction : "Wrong Operand of instruction!";
+        MipsVirReg dstReg = new MipsVirReg();
+        mipsFunction.addUsedVirReg(dstReg);
+        mipsModule.operandMap.put(irValue, dstReg);
+        return dstReg;
     }
 
     public boolean inSignedShortRange(int num){

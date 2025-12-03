@@ -5,14 +5,18 @@ import backend.component.MipsBlock;
 import backend.instruction.*;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
+import backend.operand.MipsPhyReg;
 import midend.ir.type.DataType;
 import midend.ir.type.VoidType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static backend.operand.MipsPhyReg.RA;
-import static backend.operand.MipsPhyReg.V0;
+import java.util.HashSet;
+import java.util.TreeSet;
+
+import static backend.operand.MipsPhyReg.*;
+import static utils.Configs.optimize;
 
 public class Ret extends Instruction {
     public Ret(BasicBlock parent) {
@@ -38,20 +42,45 @@ public class Ret extends Instruction {
 
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        if(this.getValueType() instanceof VoidType) {
-            mipsBlock.addInstruction(new MipsJr(RA));
-        }else{
+        if(!optimize){
+            if(this.getValueType() instanceof VoidType) {
+                mipsBlock.addInstruction(new MipsJr(RA));
+            }else{
+                if(function.getMipsFunction() == MipsModule.getInstance().mainFunction){
+                    // exit syscall
+                    mipsBlock.addInstruction(new MipsLi(V0, new MipsImm(10))); // syscall code 10 for exit
+                    mipsBlock.addInstruction(new MipsSyscall());
+                    return;
+                }
+                MipsOperand retVal = this.getUsedValue(0).toSimpleReg(false, function, block, 0);
+                loadMemToReg(this.getUsedValue(0), retVal, block, function);
+                mipsBlock.addInstruction(new MipsMove(V0, retVal));
+                mipsBlock.addInstruction(new MipsJr(RA));
+            }
+            mipsBlock.addInstruction(new MipsEmpty());
+        }
+        else{
             if(function.getMipsFunction() == MipsModule.getInstance().mainFunction){
                 // exit syscall
                 mipsBlock.addInstruction(new MipsLi(V0, new MipsImm(10))); // syscall code 10 for exit
                 mipsBlock.addInstruction(new MipsSyscall());
                 return;
             }
-            MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block, 0);
-            loadMemToReg(this.getUsedValue(0), retVal, block, function);
-            mipsBlock.addInstruction(new MipsMove(V0, retVal));
-            mipsBlock.addInstruction(new MipsJr(RA));
+            if(! (this.getValueType() instanceof VoidType)) {
+                MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block);
+                MipsMove mipsMove = new MipsMove(V0, retVal);
+                mipsBlock.addInstruction(mipsMove);
+            }
+            int stackSize = function.getMipsFunction().getTotalStackSize();
+            HashSet<Integer> calleeSavedRegIndexes = function.getMipsFunction().getCalleeSavedRegIndexes();
+            int stackOffset = 0;
+            for(Integer savedRegIndex : calleeSavedRegIndexes) {
+                stackOffset -= 4;
+                mipsBlock.addInstruction(new MipsLw(MipsPhyReg.getReg(savedRegIndex), new MipsImm(stackOffset), SP));
+            }
+            MipsJr mipsJr = new MipsJr(RA);
+            mipsJr.addUseReg(null, V0);
+            mipsBlock.addInstruction(mipsJr);
         }
-        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

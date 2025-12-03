@@ -1,6 +1,7 @@
 package backend.operand;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MipsPhyReg extends MipsReg {
     public enum Register {
@@ -47,10 +48,14 @@ public class MipsPhyReg extends MipsReg {
     public static MipsPhyReg RA = new MipsPhyReg(Register.RA);
     public static MipsPhyReg V0 = new MipsPhyReg(Register.V0);
     public static MipsPhyReg A0 = new MipsPhyReg(Register.A0);
+    public static MipsPhyReg A1 = new MipsPhyReg(Register.A1);
+    public static MipsPhyReg A2 = new MipsPhyReg(Register.A2);
+    public static MipsPhyReg A3 = new MipsPhyReg(Register.A3);
     public static MipsPhyReg FP = new MipsPhyReg(Register.FP);
 
     public static final ArrayList <MipsPhyReg> allocatableRegs = new ArrayList<>();
     public static final ArrayList<Integer> allocatableRegIds = new ArrayList<>();
+    public final static HashSet<Integer> calleeSavedRegIndex = new HashSet<>();
     static {
         allocatableRegs.add(new MipsPhyReg(Register.T0));
         allocatableRegs.add(new MipsPhyReg(Register.T1));
@@ -76,6 +81,14 @@ public class MipsPhyReg extends MipsReg {
         for (MipsPhyReg reg : allocatableRegs) {
             allocatableRegIds.add(reg.reg.ordinal());
         }
+
+        calleeSavedRegIndex.add(3);
+        for (int i = 8; i <= 28; i++)
+        {
+            calleeSavedRegIndex.add(i);
+        }
+        calleeSavedRegIndex.add(30);
+        calleeSavedRegIndex.add(31);
     }
 
     private final Register reg;

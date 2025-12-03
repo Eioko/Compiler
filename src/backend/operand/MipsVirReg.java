@@ -1,14 +1,15 @@
 package backend.operand;
 
 public class MipsVirReg extends MipsReg {
-    private final int regId;
-
-    public MipsVirReg(int regId) {
-        this.regId = regId;
+    private static int regId = 0;
+    private final int id;
+    public MipsVirReg() {
+        this.id = regId;
+        regId++;
     }
 
     public int getRegId() {
-        return regId;
+        return id;
     }
 
     @Override

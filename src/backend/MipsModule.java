@@ -8,7 +8,10 @@ import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
 import midend.ir.value.Function;
+import midend.ir.value.GlobalVariable;
 import midend.ir.value.Value;
+import utils.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

@@ -5,13 +5,14 @@ import backend.instruction.MipsBinary;
 import backend.instruction.MipsEmpty;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
-import midend.ir.type.ArrayType;
 import midend.ir.type.IntegerType;
 import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
+
+import static utils.Configs.optimize;
 
 public class GEP extends Instruction {
     private final ValueType baseType;
@@ -50,24 +51,45 @@ public class GEP extends Instruction {
     public void toMips(BasicBlock block, Function function){
         MipsBlock mipsBlock = block.getMipsBlock();
         Value baseValue = this.getUsedValue(0);
-        MipsOperand base = baseValue.toMipsOperand(false, function, block, 0);
-        MipsOperand dest = this.toMipsOperand(false, function, block, 2);
-        loadMemToReg(baseValue, base, block, function);
-        Value indexValue;
-        if(getNumOfOperands() == 2){
-            indexValue = this.getUsedValue(1);
+        if(!optimize){
+            MipsOperand base = baseValue.toSimpleReg(false, function, block, 0);
+            MipsOperand dest = this.toSimpleReg(false, function, block, 2);
+            loadMemToReg(baseValue, base, block, function);
+            Value indexValue;
+            if(getNumOfOperands() == 2){
+                indexValue = this.getUsedValue(1);
+            }else{
+                //其实我的二维寻址好像都是0，0，这里无所谓
+                saveRegToStack(this, base, block, function);
+                mipsBlock.addInstruction(new MipsEmpty());
+                return;
+            }
+            MipsOperand index = indexValue.toSimpleReg(false, function, block, 1);
+            loadMemToReg(indexValue, index, block, function);
+            MipsImm imm = new MipsImm(2);
+            mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm));
+            mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, index));
+            saveRegToStack(this, dest ,block, function);
         }else{
-            //其实我的二维寻址好像都是0，0，这里无所谓
-            saveRegToStack(this, base, block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
-            return;
+            MipsOperand base = baseValue.toMipsOperand(false, function, block);
+            MipsOperand dest = this.toMipsOperand(false, function, block);
+            Value indexValue;
+            if(getNumOfOperands() == 2){
+                indexValue = this.getUsedValue(1);
+            }else{
+                //其实我的二维寻址好像都是0，0，这里无所谓
+                MipsBinary mipsMove = new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, new MipsImm(0));
+                mipsBlock.addInstruction(mipsMove);
+                mipsBlock.addInstruction(new MipsEmpty());
+                return;
+            }
+            MipsOperand index = indexValue.toMipsOperand(false, function, block);
+            MipsImm imm = new MipsImm(2);
+            MipsBinary mipsSll = new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm);
+            mipsBlock.addInstruction(mipsSll);
+            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU,  dest, base, index);
+            mipsBlock.addInstruction(mipsAdd);
         }
-        MipsOperand index = indexValue.toMipsOperand(false, function, block, 1);
-        loadMemToReg(indexValue, index, block, function);
-        MipsImm imm = new MipsImm(2);
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm));
-        mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, index));
-        saveRegToStack(this, dest ,block, function);
         mipsBlock.addInstruction(new MipsEmpty());
     }
 }

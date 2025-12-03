@@ -1,7 +1,7 @@
 package backend.operand;
 
 public class MipsImm extends MipsOperand {
-    private final int num;
+    private int num;
 
     public MipsImm(int num) {
         this.num = num;
@@ -11,6 +11,9 @@ public class MipsImm extends MipsOperand {
         return num;
     }
 
+    public void setNum(int num) {
+        this.num = num;
+    }
     @Override
     public String toString() {
         return Integer.toString(num);
