@@ -162,7 +162,7 @@ public class Value {
         MipsBlock mipsBlock = irBlock.getMipsBlock();
 
         MipsOperand dst = genTmpReg(irFunction);
-        MipsLa mipsLa = new MipsLa(dst, new MipsLabel(irGlobal.getName().substring(1)));
+        MipsLa mipsLa = new MipsLa(dst, new MipsLabel(irGlobal.getName()));
         mipsBlock.addInstruction(mipsLa);
         return dst;
     }

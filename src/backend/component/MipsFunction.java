@@ -66,6 +66,7 @@ public class MipsFunction {
         for (MipsBlock mipsBlock : blocks) {
             for (MipsInstruction instr : mipsBlock.getInstructions()) {
                 for (MipsReg defReg : instr.getDefRegs()) {
+                    if(!(defReg instanceof MipsPhyReg)) continue;
                     int index = ((MipsPhyReg) defReg).getIndex();
                     if (MipsPhyReg.calleeSavedRegIndex.contains(index)) {
                         calleeSavedRegIndexes.add(index);

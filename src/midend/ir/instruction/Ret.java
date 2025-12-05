@@ -71,7 +71,6 @@ public class Ret extends Instruction {
                 MipsMove mipsMove = new MipsMove(V0, retVal);
                 mipsBlock.addInstruction(mipsMove);
             }
-            int stackSize = function.getMipsFunction().getTotalStackSize();
             HashSet<Integer> calleeSavedRegIndexes = function.getMipsFunction().getCalleeSavedRegIndexes();
             int stackOffset = 0;
             for(Integer savedRegIndex : calleeSavedRegIndexes) {

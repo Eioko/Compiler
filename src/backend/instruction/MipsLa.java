@@ -7,10 +7,19 @@ public class MipsLa extends MipsInstruction {
     private MipsOperand dest;
 
     public MipsLa(MipsOperand dest, MipsOperand addr) {
-        this.dest = dest;
-        this.addr = addr;
+        setDst(dest);
+        setSrc(addr);
     }
 
+    public void setDst(MipsOperand dst) {
+        addDefReg(this.dest, dst);
+        this.dest = dst;
+    }
+
+    public void setSrc(MipsOperand src) {
+        addUseReg(this.addr, src);
+        this.addr = src;
+    }
     @Override
     public String toString() {
         return "la " + dest.toString() + ", " + addr;

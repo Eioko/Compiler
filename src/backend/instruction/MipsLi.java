@@ -6,10 +6,19 @@ public class MipsLi extends MipsInstruction{
     private MipsOperand dest;
     private MipsOperand value;
     public MipsLi(MipsOperand dest, MipsOperand value) {
-        this.dest = dest;
-        this.value = value;
+        setDst(dest);
+        setSrc(value);
     }
 
+    public void setDst(MipsOperand dst) {
+        addDefReg(this.dest, dst);
+        this.dest = dst;
+    }
+
+    public void setSrc(MipsOperand src) {
+        addUseReg(this.value, src);
+        this.value = src;
+    }
     @Override
     public String toString() {
         return "li " + dest.toString() + ", " + value.toString();
@@ -23,6 +32,5 @@ public class MipsLi extends MipsInstruction{
         if (value != null && value.equals(oldReg)) {
             value = newReg;
         }
-        super.replaceReg(oldReg, newReg);
     }
 }

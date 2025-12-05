@@ -8,19 +8,31 @@ public class MipsLw extends MipsInstruction {
     private MipsOperand base;
 
     public MipsLw(MipsOperand dest, MipsOperand offset, MipsOperand base) {
-        this.dest = dest;
-        this.offset = offset;
-        this.base = base;
+        setDst(dest);
+        setAddr(base);
+        setOffset(offset);
     }
 
-    public String toString() {
-        return "lw " + dest.toString() + ", " + offset.toString() + "(" + base.toString() + ")";
+    public void setDst(MipsOperand dst) {
+        addDefReg(this.dest, dst);
+        this.dest = dst;
+    }
+
+    public void setAddr(MipsOperand addr) {
+        addUseReg(this.base, addr);
+        this.base = addr;
     }
 
     public void setOffset(MipsOperand offset) {
         addUseReg(this.offset, offset);
         this.offset = offset;
     }
+
+    public String toString() {
+        return "lw " + dest.toString() + ", " + offset.toString() + "(" + base.toString() + ")";
+    }
+
+
 
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
@@ -33,6 +45,5 @@ public class MipsLw extends MipsInstruction {
         if (base != null && base.equals(oldReg)) {
             base = newReg;
         }
-        super.replaceReg(oldReg, newReg);
     }
 }

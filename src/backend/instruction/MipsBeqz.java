@@ -10,8 +10,13 @@ public class MipsBeqz extends MipsInstruction {
     private MipsLabel target;
 
     public MipsBeqz(MipsOperand reg, backend.operand.MipsLabel target) {
-        this.reg = reg;
+        setSrc(reg);
         this.target = target;
+    }
+
+    public void setSrc(MipsOperand reg) {
+        addUseReg(this.reg, reg);
+        this.reg = reg;
     }
 
     @Override

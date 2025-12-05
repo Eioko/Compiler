@@ -44,9 +44,14 @@ public class BlockActive {
             for(MipsBlock block : function.getBlocks()){
                 BlockActive analyze = analyzeMap.get(block);
                 HashSet<MipsReg> newLiveOut = new HashSet<>();
-                for(MipsBlock succ : block.getSuccessors()){
-                    BlockActive succAnalyze = analyzeMap.get(succ);
-                    analyze.liveOut.addAll(succAnalyze.liveIn);
+                if (block.getTrueSucc() != null) {
+                    BlockActive succBlockInfo = analyzeMap.get(block.getTrueSucc());
+                    newLiveOut.addAll(succBlockInfo.liveIn);
+                }
+
+                if (block.getFalseSucc() != null) {
+                    BlockActive succBlockInfo = analyzeMap.get(block.getFalseSucc());
+                    newLiveOut.addAll(succBlockInfo.liveIn);
                 }
                 //计算in
                 if (!newLiveOut.equals(analyze.liveOut)) {

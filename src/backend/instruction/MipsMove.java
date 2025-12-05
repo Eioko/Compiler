@@ -7,7 +7,17 @@ public class MipsMove extends MipsInstruction {
     private MipsOperand src;
 
     public MipsMove(MipsOperand dest, MipsOperand src) {
-        this.dest = dest;
+        setDst(dest);
+        setSrc(src);
+    }
+
+    public void setDst(MipsOperand dst) {
+        addDefReg(this.dest, dst);
+        this.dest = dst;
+    }
+
+    public void setSrc(MipsOperand src) {
+        addUseReg(this.src, src);
         this.src = src;
     }
 
@@ -29,6 +39,5 @@ public class MipsMove extends MipsInstruction {
         if (src != null && src.equals(oldReg)) {
             src = newReg;
         }
-        super.replaceReg(oldReg, newReg);
     }
 }

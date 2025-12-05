@@ -68,7 +68,7 @@ public class  Alloca extends Instruction{
         else{
             MipsOperand offset = parseConstIntOperand(mipsFunction.getAllocaSize(), true, function, block);
             MipsOperand dst = this.toMipsOperand(true, function, block);
-            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dst, offset, SP);
+            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dst,  SP, offset);
             mipsBlock.addInstruction(mipsAdd);
             mipsBlock.addInstruction(new MipsEmpty());
         }

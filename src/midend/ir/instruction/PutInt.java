@@ -34,7 +34,7 @@ public class PutInt extends Instruction{
         if(!optimize){
             loadMemToReg(p, toPrint, block, function);
         }else{
-            MipsOperand src = p.toMipsOperand(true, function, block);
+            MipsOperand src = p.toMipsOperand(false, function, block);
             mipsBlock.addInstruction(new MipsMove(toPrint, src));
         }
 

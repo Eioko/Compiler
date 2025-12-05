@@ -8,7 +8,6 @@ import backend.instruction.MipsLw;
 import backend.instruction.MipsMove;
 import backend.instruction.MipsSw;
 import backend.operand.*;
-import midend.ir.instruction.Instruction;
 import utils.Pair;
 
 import java.util.*;
@@ -20,7 +19,7 @@ import static backend.operand.MipsPhyReg.SP;
 
 public class RegAllocator {
     private final MipsModule mipsModule = MipsModule.getInstance();
-    private final int REG_NUM = MipsPhyReg.allocatableRegs.size();
+    private final int REG_NUM = MipsPhyReg.allocatableRegIds.size();
     private HashMap<MipsBlock , BlockActive> liveMap;
     private HashMap<MipsOperand, HashSet<MipsOperand>> adjList;
 
@@ -143,6 +142,7 @@ public class RegAllocator {
                         }
                     }
                 }
+                /*
                 // 启发式算法的依据, 出现次数
                 for (MipsReg mipsReg : defRegs) {
                     if (mipsReg.needColor()) {
@@ -154,6 +154,7 @@ public class RegAllocator {
                         occCounts.compute(mipsReg, (k, v) -> v == null ? 1 : v + 1);
                     }
                 }
+                */
                 /**
                  * live = live − def
                  * live = live ∪ use
@@ -385,7 +386,7 @@ public class RegAllocator {
             return;
         }
         MipsOperand victim = null;
-        double bestCost = Double.MAX_VALUE;
+        /*double bestCost = Double.MAX_VALUE;
         for (MipsOperand u : spillWorklist) {
             int occ = occCounts.getOrDefault(u, 1);          // 使用频率
             int deg = Math.max(1, degree.getOrDefault(u, 1)); // 干涉度，避免除零
@@ -394,7 +395,9 @@ public class RegAllocator {
                 bestCost = cost;
                 victim = u;
             }
-        }
+        }*/
+        // 直接选第一个
+        victim = spillWorklist.iterator().next();
         simplifyWorklist.add(victim);
         freezeMoves(victim);
         spillWorklist.remove(victim);
@@ -431,8 +434,6 @@ public class RegAllocator {
         if (!spilledNodes.isEmpty()) {
             return;
         }
-        // 当处理完 stack 后如果还没有问题，那么就可以处理合并节点了
-        // 这里的原理相当于在一开始 stack 中只压入部分点（另一些点由栈中的点代表）
         for (MipsOperand coalescedNode : coalescedNodes) {
             MipsOperand alias = getAlias(coalescedNode);
             if (alias.isPreColored()) {
@@ -443,7 +444,7 @@ public class RegAllocator {
         }
 
         // 这里完成了替换
-        for (MipsBlock block : func.getBlocks()) { // 完成替换
+        for (MipsBlock block : func.getBlocks()) {
             List<MipsInstruction> instructions = new CopyOnWriteArrayList<>(block.getInstructions());
             for (MipsInstruction instr : instructions) {
                 ArrayList<MipsReg> defs = new ArrayList<>(instr.getDefRegs());
@@ -481,6 +482,25 @@ public class RegAllocator {
         }
     }
 
+
+
+    /**
+     * 与栈帧有关
+     * @param func
+     * @param instr
+     */
+    private void fixOffset(MipsFunction func, MipsInstruction instr) {
+        int offset = func.getAllocaSize();
+        MipsImm mipsOffset = new MipsImm(offset);
+        if (instr instanceof MipsLw) {
+            MipsLw mipsLw= (MipsLw) instr;
+            mipsLw.setOffset(mipsOffset);
+        } else if (instr instanceof MipsSw) {
+            MipsSw mipsSw = (MipsSw) instr;
+            mipsSw.setOffset(mipsOffset);
+        }
+    }
+
     /**
      * 用于完成将新的，处理溢出的临时变量插入到基本块中的功能
      * @param func 函数
@@ -504,23 +524,6 @@ public class RegAllocator {
         vReg = null;
     }
 
-    /**
-     * 与栈帧有关
-     * @param func
-     * @param instr
-     */
-    private void fixOffset(MipsFunction func, MipsInstruction instr) {
-        int offset = func.getAllocaSize();
-        MipsImm mipsOffset = new MipsImm(offset);
-        if (instr instanceof MipsLw) {
-            MipsLw mipsLw= (MipsLw) instr;
-            mipsLw.setOffset(mipsOffset);
-        } else if (instr instanceof MipsSw) {
-            MipsSw mipsSw = (MipsSw) instr;
-            mipsSw.setOffset(mipsOffset);
-        }
-    }
-
     private void rewriteProgram(MipsFunction func) {
         for (MipsOperand n : spilledNodes) {
             for (MipsBlock block : func.getBlocks()) {
@@ -530,7 +533,8 @@ public class RegAllocator {
                 lastDefNode = null;
                 // cntInstr 是 block 中已经处理的指令的个数
                 int cntInstr = 0;
-                for (MipsInstruction instr : block.getInstructions()) {
+                List<MipsInstruction> instructions = new CopyOnWriteArrayList<>(block.getInstructions());
+                for (MipsInstruction instr : instructions) {
                     HashSet<MipsReg> defs = new HashSet<>(instr.getDefRegs());
                     HashSet<MipsReg> uses = new HashSet<>(instr.getUseRegs());
                     for (MipsReg use : uses) {
@@ -543,6 +547,7 @@ public class RegAllocator {
 
                             if (firstUseNode == null && lastDefNode == null) {
                                 firstUseNode = instr;
+                                firstUseBlock = block;
                             }
                         }
                     }
@@ -554,6 +559,7 @@ public class RegAllocator {
                             }
                             instr.replaceReg(def, vReg);
                             lastDefNode = instr;
+                            lastDefBlock = block;
                         }
                     }
                     if (cntInstr > 30) {
@@ -570,11 +576,11 @@ public class RegAllocator {
     public void process() {
         for (MipsFunction function : mipsModule.getFunctions()) {
             boolean finished = false;
+
             while (!finished) {
                 init(function);
                 build(function);
                 makeWorklist(function);
-
                 do {
                     if (!simplifyWorklist.isEmpty()) {
                         simplify();

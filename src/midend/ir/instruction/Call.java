@@ -127,7 +127,7 @@ public class Call extends Instruction {
                 Value arg = args.get(i);
                 MipsOperand mipsSrc;
                 if (i < 4) {
-                    mipsSrc = arg.toMipsOperand(true, function, block);
+                    mipsSrc = arg.toMipsOperand(false, function, block);
                     MipsPhyReg srcReg = switch (i) {
                         case 0 -> new MipsPhyReg(Register.A0);
                         case 1 -> new MipsPhyReg(Register.A1);
@@ -135,7 +135,7 @@ public class Call extends Instruction {
                         default -> new MipsPhyReg(Register.A3);
                     };
                     // 这里move会有覆盖吗？
-                    MipsMove mipsMove = new MipsMove(mipsSrc, srcReg);
+                    MipsMove mipsMove = new MipsMove(srcReg, mipsSrc);
                     mipsBlock.addInstruction(mipsMove);
                     mipsJal.addUseReg(null, mipsMove.getDst());
                 } else {

@@ -2,6 +2,7 @@ package backend.operand;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class MipsPhyReg extends MipsReg {
     public enum Register {
@@ -57,31 +58,11 @@ public class MipsPhyReg extends MipsReg {
     public static final ArrayList<Integer> allocatableRegIds = new ArrayList<>();
     public final static HashSet<Integer> calleeSavedRegIndex = new HashSet<>();
     static {
-        allocatableRegs.add(new MipsPhyReg(Register.T0));
-        allocatableRegs.add(new MipsPhyReg(Register.T1));
-        allocatableRegs.add(new MipsPhyReg(Register.T2));
-        allocatableRegs.add(new MipsPhyReg(Register.T3));
-        allocatableRegs.add(new MipsPhyReg(Register.T4));
-        allocatableRegs.add(new MipsPhyReg(Register.T5));
-        allocatableRegs.add(new MipsPhyReg(Register.T6));
-        allocatableRegs.add(new MipsPhyReg(Register.T7));
-        allocatableRegs.add(new MipsPhyReg(Register.S0));
-        allocatableRegs.add(new MipsPhyReg(Register.S1));
-        allocatableRegs.add(new MipsPhyReg(Register.S2));
-        allocatableRegs.add(new MipsPhyReg(Register.S3));
-        allocatableRegs.add(new MipsPhyReg(Register.S4));
-        allocatableRegs.add(new MipsPhyReg(Register.S5));
-        allocatableRegs.add(new MipsPhyReg(Register.S6));
-        allocatableRegs.add(new MipsPhyReg(Register.S7));
-        allocatableRegs.add(new MipsPhyReg(Register.T8));
-        allocatableRegs.add(new MipsPhyReg(Register.T9));
-        allocatableRegs.add(new MipsPhyReg(Register.K0));
-        allocatableRegs.add(new MipsPhyReg(Register.K1));
-
-        for (MipsPhyReg reg : allocatableRegs) {
-            allocatableRegIds.add(reg.reg.ordinal());
+        for (int i = 0; i < 32; i++) {
+            if (i != 0 && i != 1 && i != 29) {
+                allocatableRegIds.add(i);
+            }
         }
-
         calleeSavedRegIndex.add(3);
         for (int i = 8; i <= 28; i++)
         {
@@ -98,20 +79,18 @@ public class MipsPhyReg extends MipsReg {
         return !isAllocated;
     }
 
-
-    public int getIndex() {
-        return reg.ordinal();
-    }
-
     public boolean isAllocated() {
         return isAllocated;
     }
 
     @Override
     public boolean needColor() {
-        return !isAllocated;
+        return true;
     }
 
+    public int getIndex() {
+        return reg.ordinal();
+    }
     public void setAllocated(boolean allocated) {
         isAllocated = allocated;
     }
@@ -120,6 +99,7 @@ public class MipsPhyReg extends MipsReg {
     }
     public MipsPhyReg(Register reg) {
         this.reg = reg;
+        this.isAllocated = false;
     }
 
     public MipsPhyReg(int idx, boolean isAllocated) {
@@ -130,5 +110,23 @@ public class MipsPhyReg extends MipsReg {
     @Override
     public String toString() {
         return "$" + reg.name;
+    }
+
+    /**
+     * 优化用
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MipsPhyReg mipsPhyReg = (MipsPhyReg) o;
+        return reg.ordinal() == mipsPhyReg.reg.ordinal() && isAllocated == mipsPhyReg.isAllocated;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(reg.ordinal(), isAllocated);
     }
 }
