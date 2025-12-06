@@ -53,8 +53,9 @@ public class  Alloca extends Instruction{
         MipsFunction mipsFunction = function.getMipsFunction();
 
         int size = (((PointerType)this.getValueType()).getPointeeType()).getSizeInBytes();
-        mipsFunction.addAllocaSize(size);
+
         if(!optimize){
+            mipsFunction.addAllocaSize(size);
             //单纯分配空间，减少offset
             allocateStackSpace(size);
             MipsOperand destAddr = this.toSimpleReg(true , function, block, 2);
@@ -67,6 +68,7 @@ public class  Alloca extends Instruction{
         }
         else{
             MipsOperand offset = parseConstIntOperand(mipsFunction.getAllocaSize(), true, function, block);
+            mipsFunction.addAllocaSize(size);
             MipsOperand dst = this.toMipsOperand(true, function, block);
             MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dst,  SP, offset);
             mipsBlock.addInstruction(mipsAdd);

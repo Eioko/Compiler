@@ -60,26 +60,14 @@ public class Ret extends Instruction {
             mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
-            if(function.getMipsFunction() == MipsModule.getInstance().mainFunction){
-                // exit syscall
-                mipsBlock.addInstruction(new MipsLi(V0, new MipsImm(10))); // syscall code 10 for exit
-                mipsBlock.addInstruction(new MipsSyscall());
-                return;
-            }
             if(! (this.getValueType() instanceof VoidType)) {
                 MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block);
                 MipsMove mipsMove = new MipsMove(V0, retVal);
                 mipsBlock.addInstruction(mipsMove);
             }
-            HashSet<Integer> calleeSavedRegIndexes = function.getMipsFunction().getCalleeSavedRegIndexes();
-            int stackOffset = 0;
-            for(Integer savedRegIndex : calleeSavedRegIndexes) {
-                stackOffset -= 4;
-                mipsBlock.addInstruction(new MipsLw(MipsPhyReg.getReg(savedRegIndex), new MipsImm(stackOffset), SP));
-            }
-            MipsJr mipsJr = new MipsJr(RA);
-            mipsJr.addUseReg(null, V0);
-            mipsBlock.addInstruction(mipsJr);
+            MipsRet mipsRet = new MipsRet(function.getMipsFunction());
+            mipsRet.addUseReg(null, V0);
+            mipsBlock.addInstruction(mipsRet);
         }
     }
 }

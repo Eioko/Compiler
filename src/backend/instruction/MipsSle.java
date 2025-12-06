@@ -33,13 +33,13 @@ public class MipsSle extends MipsInstruction {
 
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (dest!=null && dest.equals(oldReg)) {
-            dest = newReg;
+            setDst(newReg);
         }
         if (src1!=null && src1.equals(oldReg)) {
-            src1 = newReg;
+            setSrc1(newReg);
         }
         if (src2!=null && src2.equals(oldReg)) {
-            src2 = newReg;
+            setSrc2(newReg);
         }
     }
 }

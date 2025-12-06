@@ -6,7 +6,7 @@ public class MipsJr extends MipsInstruction {
     private MipsOperand target;
 
     public MipsJr(MipsOperand target) {
-        this.target = target;
+        setTarget(target);
     }
 
     @Override
@@ -14,10 +14,14 @@ public class MipsJr extends MipsInstruction {
         return "jr " + target.toString();
     }
 
+    public void setTarget(MipsOperand target){
+        addUseReg(this.target, target);
+        this.target = target;
+    }
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (target != null && target.equals(oldReg)) {
-            target = newReg;
+            setTarget(newReg);
         }
     }
 }

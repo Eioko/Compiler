@@ -34,13 +34,13 @@ public class MipsSw extends MipsInstruction {
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (src != null && src.equals(oldReg)) {
-            src = newReg;
+            setAddr(newReg);
         }
         if (offset != null && offset.equals(oldReg)) {
-            offset = newReg;
+            setOffset(newReg);
         }
         if (dest != null && dest.equals(oldReg)) {
-            dest = newReg;
+            setDst(newReg);
         }
     }
 }

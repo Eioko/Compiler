@@ -34,10 +34,10 @@ public class MipsMove extends MipsInstruction {
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (dest != null && dest.equals(oldReg)) {
-            dest = newReg;
+            setDst(newReg);
         }
         if (src != null && src.equals(oldReg)) {
-            src = newReg;
+            setSrc(newReg);
         }
     }
 }

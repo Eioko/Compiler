@@ -3,10 +3,7 @@ package backend.optimize;
 import backend.MipsModule;
 import backend.component.MipsBlock;
 import backend.component.MipsFunction;
-import backend.instruction.MipsInstruction;
-import backend.instruction.MipsLw;
-import backend.instruction.MipsMove;
-import backend.instruction.MipsSw;
+import backend.instruction.*;
 import backend.operand.*;
 import utils.Pair;
 
@@ -82,7 +79,7 @@ public class RegAllocator {
      * @param v
      */
     private void addEdge(MipsOperand u, MipsOperand v) {
-        if (u.equals(v) || adjSet.contains(new Pair<>(u, v)) || adjSet.contains(new Pair<>(v, u))) {
+        if (u.equals(v) || adjSet.contains(new Pair<>(u, v)) ) {
             return;
         }
         adjSet.add(new Pair<>(u, v));
@@ -142,7 +139,7 @@ public class RegAllocator {
                         }
                     }
                 }
-                /*
+
                 // 启发式算法的依据, 出现次数
                 for (MipsReg mipsReg : defRegs) {
                     if (mipsReg.needColor()) {
@@ -154,7 +151,7 @@ public class RegAllocator {
                         occCounts.compute(mipsReg, (k, v) -> v == null ? 1 : v + 1);
                     }
                 }
-                */
+
                 /**
                  * live = live − def
                  * live = live ∪ use
@@ -386,7 +383,7 @@ public class RegAllocator {
             return;
         }
         MipsOperand victim = null;
-        /*double bestCost = Double.MAX_VALUE;
+        double bestCost = Double.MAX_VALUE;
         for (MipsOperand u : spillWorklist) {
             int occ = occCounts.getOrDefault(u, 1);          // 使用频率
             int deg = Math.max(1, degree.getOrDefault(u, 1)); // 干涉度，避免除零
@@ -395,9 +392,7 @@ public class RegAllocator {
                 bestCost = cost;
                 victim = u;
             }
-        }*/
-        // 直接选第一个
-        victim = spillWorklist.iterator().next();
+        }
         simplifyWorklist.add(victim);
         freezeMoves(victim);
         spillWorklist.remove(victim);
@@ -481,8 +476,6 @@ public class RegAllocator {
             }
         }
     }
-
-
 
     /**
      * 与栈帧有关

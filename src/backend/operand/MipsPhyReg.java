@@ -58,11 +58,10 @@ public class MipsPhyReg extends MipsReg {
     public static final ArrayList<Integer> allocatableRegIds = new ArrayList<>();
     public final static HashSet<Integer> calleeSavedRegIndex = new HashSet<>();
     static {
-        for (int i = 0; i < 32; i++) {
-            if (i != 0 && i != 1 && i != 29) {
-                allocatableRegIds.add(i);
-            }
+        for (int i = 8; i < 26; i++) {
+            allocatableRegIds.add(i);
         }
+
         calleeSavedRegIndex.add(3);
         for (int i = 8; i <= 28; i++)
         {
@@ -85,7 +84,7 @@ public class MipsPhyReg extends MipsReg {
 
     @Override
     public boolean needColor() {
-        return true;
+        return !isAllocated;
     }
 
     public int getIndex() {

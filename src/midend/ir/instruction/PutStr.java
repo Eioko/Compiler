@@ -32,14 +32,21 @@ public class PutStr extends Instruction {
         MipsOperand toPrint = A0;
         if(!optimize){
             loadMemToReg(p, toPrint, block, function);
+            MipsImm imm = new MipsImm(4);
+            mipsBlock.addInstruction(new MipsLi(V0, imm));
+            mipsBlock.addInstruction(new MipsSyscall());
+            mipsBlock.addInstruction(new MipsEmpty());
         }else{
             MipsOperand src = p.toMipsOperand(true, function, block);
-            mipsBlock.addInstruction(new MipsMove(toPrint, src));
+            MipsMove mipsMove = new MipsMove(toPrint, src);
+            mipsBlock.addInstruction(mipsMove);
+            MipsImm imm = new MipsImm(4);
+            MipsLi li = new MipsLi(V0, imm);
+            mipsBlock.addInstruction(li);
+            mipsBlock.addInstruction(new MipsSyscall());
+            mipsBlock.addInstruction(new MipsEmpty());
+            // 防止寄存器分配消除掉这些move
+            li.addUseReg(null, mipsMove.getDst());
         }
-
-        MipsImm imm = new MipsImm(4);
-        mipsBlock.addInstruction(new MipsLi(V0, imm));
-        mipsBlock.addInstruction(new MipsSyscall());
-        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

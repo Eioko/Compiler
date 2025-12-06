@@ -1,7 +1,6 @@
 package backend.instruction;
 
 import backend.operand.MipsLabel;
-import backend.operand.MipsPhyReg;
 import backend.operand.MipsOperand;
 
 public class MipsBeqz extends MipsInstruction {
@@ -27,7 +26,7 @@ public class MipsBeqz extends MipsInstruction {
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (reg != null && reg.equals(oldReg)) {
-            reg = (MipsPhyReg) newReg;
+            setSrc(newReg);
         }
     }
 }

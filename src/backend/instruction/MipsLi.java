@@ -27,10 +27,10 @@ public class MipsLi extends MipsInstruction{
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {
         if (dest != null && dest.equals(oldReg)) {
-            dest = newReg;
+            setDst(newReg);
         }
         if (value != null && value.equals(oldReg)) {
-            value = newReg;
+            setSrc(oldReg);
         }
     }
 }
