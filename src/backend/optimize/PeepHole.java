@@ -19,7 +19,7 @@ public class PeepHole {
         boolean finished = false;
         while (!finished) {
             finished = peephole();
-            //finished &= dataFlowPeephole();
+            finished &= dataFlowPeephole();
         }
     }
     private boolean peephole() {
@@ -61,6 +61,9 @@ public class PeepHole {
                 if (isSrc2Zero) {
                     boolean isDstSrc1Same = instr.getDst().equals(instr.getSrc1());
                     if (isDstSrc1Same) {
+                        if (instr.toString().contains("$v")) {
+                            System.out.println("Deleting instruction (addSubSrc2Zero): " + instr);
+                        }
                         iter.remove(); // 安全删除当前元素
                     } else {
                         MipsMove mipsMove = new MipsMove(instr.getDst(), instr.getSrc1());
@@ -83,6 +86,9 @@ public class PeepHole {
             MipsMove mipsMove = (MipsMove) curInstr;
             // 相等且没有移位
             if (mipsMove.getDst().equals(mipsMove.getSrc())) {
+                if (curInstr.toString().contains("$v")) {
+                    System.out.println("Deleting instruction (movSameDstSrc): " + curInstr);
+                }
                 iter.remove();
                 finished = false;
             }
@@ -112,7 +118,11 @@ public class PeepHole {
                     boolean nextInstrDifferent = !((MipsMove) nextInstr).getSrc().equals(((MipsMove) nextInstr).getDst());
 
                     if (isSameDst && nextInstrDifferent) {
+                        iter.previous();
                         iter.previous(); // Move back to the current instruction
+                        if (curInstr.toString().contains("$v")) {
+                            System.out.println("Deleting instruction (movOverlap): " + curInstr);
+                        }
                         iter.remove();   // Remove the current instruction
                         finished = false;
                     } else {
@@ -127,11 +137,6 @@ public class PeepHole {
         return finished;
     }
 
-    /**
-     * 判断的是
-     * j block_label => null
-     * block_label:
-     */
     private boolean branchUselessDelete(MipsInstruction curInstr, ListIterator<MipsInstruction> iter,
                                         ListIterator<MipsBlock> blockIter) {
         boolean finished = true;
@@ -163,20 +168,6 @@ public class PeepHole {
         for (MipsInstruction instr : mipsBlock.getInstructions()) {
             ArrayList<MipsReg> writeRegs = instr.getWriteRegs();
             ArrayList<MipsReg> readRegs = instr.getReadRegs();
-            // --- 调试代码开始 ---
-            if (instr instanceof MipsSyscall) {
-                System.out.println("DEBUG: Found Syscall. Reading regs: " + readRegs);
-                for (MipsReg r : readRegs) {
-                    if (lastWriter.containsKey(r)) {
-                        System.out.println("DEBUG: Connection found! Writer is " + lastWriter.get(r));
-                    } else {
-                        System.out.println("DEBUG: No writer found for " + r + " (Check equals method!)");
-                        // 打印当前 lastWriter 里的所有 key 看看有没有长得像 v0 的
-                        System.out.println("DEBUG: Current lastWriter keys: " + lastWriter.keySet());
-                    }
-                }
-            }
-            // --- 调试代码结束 ---
 
             for (MipsReg readReg : readRegs) {
                 if (lastWriter.containsKey(readReg)) {
@@ -192,7 +183,8 @@ public class PeepHole {
                     instr instanceof MipsJr ||
                     instr instanceof MipsSw ||
                     instr instanceof MipsRet ||
-                    instr instanceof MipsJal;
+                    instr instanceof MipsJal ||
+                    instr instanceof MipsSyscall;
             writerToReader.put(instr, hasSideEffect ? instr : null);
         }
 
@@ -250,13 +242,6 @@ public class PeepHole {
         return finished;
     }
 
-    /**
-     * 这个用于删除没有用的写指令
-     * some instruction contains a
-     * live out doesn't contain a
-     * 当一个指令写的寄存器没有被读，那么就是没用的
-     * 除此之外还要看是否会改变 sp 指针，这种深远影响是不行的
-     */
     private boolean deleteUselessLastWriter(ListIterator<MipsInstruction> instrIterator, MipsInstruction curInstr) {
         boolean changed = false;
         if (lastReader == null && notWriteSp) {
@@ -287,8 +272,9 @@ public class PeepHole {
                 boolean nextHasSideEffect =
                         nextInstr instanceof MipsJ ||
                                 nextInstr instanceof MipsJal ||
-                                nextInstr instanceof MipsJr ||
-                                nextInstr instanceof MipsRet;
+                                nextInstr instanceof MipsJr  ||
+                                nextInstr instanceof MipsRet ||
+                                nextInstr instanceof MipsSyscall;
 
                 if (!Objects.equals(lastReader, nextInstr) || nextHasSideEffect) {
                     instrIterator.previous(); // 恢复迭代器位置
@@ -299,7 +285,11 @@ public class PeepHole {
                 nextInstr.replaceUseReg(mipsDst, mipsSrc);
 
                 // 删去当前指令
+                instrIterator.previous();
                 instrIterator.previous(); // 恢复迭代器位置
+                if (curInstr.toString().contains("$v")) {
+                    System.out.println("Deleting instruction (movDeleteReplace): " + curInstr);
+                }
                 instrIterator.remove();   // 删除当前指令
                 return true;
             }

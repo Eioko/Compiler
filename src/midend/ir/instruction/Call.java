@@ -128,10 +128,10 @@ public class Call extends Instruction {
                 if (i < 4) {
                     mipsSrc = arg.toMipsOperand(false, function, block);
                     MipsPhyReg srcReg = switch (i) {
-                        case 0 -> new MipsPhyReg(Register.A0);
-                        case 1 -> new MipsPhyReg(Register.A1);
-                        case 2 -> new MipsPhyReg(Register.A2);
-                        default -> new MipsPhyReg(Register.A3);
+                        case 0 -> MipsPhyReg.A0;
+                        case 1 -> MipsPhyReg.A1;
+                        case 2 -> MipsPhyReg.A2;
+                        default -> MipsPhyReg.A3;
                     };
                     // 这里move会有覆盖吗？
                     MipsMove mipsMove = new MipsMove(srcReg, mipsSrc);
@@ -157,6 +157,10 @@ public class Call extends Instruction {
                 MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU ,SP, SP, mipsOffset);
                 mipsBlock.addInstruction(mipsAdd);
             }
+            mipsJal.addDefReg(null, A0);
+            mipsJal.addDefReg(null, A1);
+            mipsJal.addDefReg(null, A2);
+            mipsJal.addDefReg(null, A3);
             mipsJal.addDefReg(null, RA);
             DataType returnType = (DataType) this.getValueType();
             mipsJal.addDefReg(null, V0);
@@ -165,7 +169,6 @@ public class Call extends Instruction {
                 mipsBlock.addInstruction(mipsMove);
             }
         }
-
     }
 
     public MipsPhyReg doRealPara(Value arg, int i, int beforeOffset, BasicBlock block, Function function,

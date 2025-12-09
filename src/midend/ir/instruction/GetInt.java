@@ -1,11 +1,7 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
-import backend.instruction.MipsEmpty;
-import backend.instruction.MipsLi;
-import backend.instruction.MipsMove;
-import backend.instruction.MipsSyscall;
-import backend.operand.MipsImm;
+import backend.instruction.*;
 import backend.operand.MipsOperand;
 import midend.ir.type.IntegerType;
 import midend.ir.value.BasicBlock;
@@ -26,13 +22,11 @@ public class GetInt extends Instruction{
     public void toMips(BasicBlock bb, Function function) {
         MipsBlock mipsBlock = bb.getMipsBlock();
 
-        MipsImm imm = new MipsImm(5); // syscall code for read integer
-        mipsBlock.addInstruction(new MipsLi(V0, imm));
-        mipsBlock.addInstruction(new MipsSyscall());
-
         if(!regAlloca){
+            mipsBlock.addInstruction(new MipsSyscall(5));
             saveRegToStack(this, V0, bb, function);
         }else{
+            mipsBlock.addInstruction(new MipsSyscall(5));
             MipsOperand dest = this.toMipsOperand(false, function, bb);
             //这里会有错误吗？
             mipsBlock.addInstruction(new MipsMove(dest, V0));

@@ -8,8 +8,7 @@ import java.util.TreeSet;
 
 public class MipsRet extends MipsInstruction{
     private MipsFunction belongFunc;
-    public MipsRet(MipsFunction belongFunc)
-    {
+    public MipsRet(MipsFunction belongFunc) {
         this.belongFunc = belongFunc;
     }
 

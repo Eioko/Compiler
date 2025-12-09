@@ -3,7 +3,6 @@ package midend.ir.instruction;
 import backend.MipsModule;
 import backend.component.MipsBlock;
 import backend.instruction.*;
-import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import midend.ir.type.DataType;
 import midend.ir.type.VoidType;
@@ -44,8 +43,7 @@ public class Ret extends Instruction {
             }else{
                 if(function.getMipsFunction() == MipsModule.getInstance().mainFunction){
                     // exit syscall
-                    mipsBlock.addInstruction(new MipsLi(V0, new MipsImm(10))); // syscall code 10 for exit
-                    mipsBlock.addInstruction(new MipsSyscall());
+                    mipsBlock.addInstruction(new MipsSyscall(10));
                     return;
                 }
                 MipsOperand retVal = this.getUsedValue(0).toSimpleReg(false, function, block, 0);
@@ -54,8 +52,7 @@ public class Ret extends Instruction {
                 mipsBlock.addInstruction(new MipsJr(RA));
             }
             mipsBlock.addInstruction(new MipsEmpty());
-        }
-        else{
+        } else{
             if(! (this.getValueType() instanceof VoidType)) {
                 MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block);
                 MipsMove mipsMove = new MipsMove(V0, retVal);

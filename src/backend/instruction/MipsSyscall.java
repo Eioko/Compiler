@@ -1,24 +1,21 @@
 package backend.instruction;
 
-import backend.operand.MipsReg;
-
-import java.util.ArrayList;
-
+import static backend.operand.MipsPhyReg.A0;
 import static backend.operand.MipsPhyReg.V0;
 
 public class MipsSyscall extends MipsInstruction {
-
-    public MipsSyscall(){
+    private int num;
+    public MipsSyscall(int num){
+        this.num = num;
         addDefReg(null, V0);
+        addUseReg(null, A0);
     }
+
     @Override
     public String toString() {
-        return "syscall ";
-    }
-    @Override
-    public ArrayList<MipsReg> getReadRegs() {
-        ArrayList<MipsReg> a = new ArrayList<>();
-        a.add(V0);
-        return a;
+        StringBuilder sb = new StringBuilder();
+        sb.append("li $v0, ").append(num).append("\n");
+        sb.append("\tsyscall");;
+        return sb.toString();
     }
 }
