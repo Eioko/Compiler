@@ -10,7 +10,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Load extends Instruction {
     /**
@@ -37,7 +37,7 @@ public class Load extends Instruction {
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
         Value pointerValue = getUsedValue(0);
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand src = pointerValue.toSimpleReg(false, function, block, 0);
             loadMemToReg(pointerValue, src, block, function);
             MipsOperand dest = this.toSimpleReg(false, function, block, 1);

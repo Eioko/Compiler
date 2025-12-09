@@ -40,4 +40,13 @@ public class MipsSne extends MipsInstruction {
             setSrc2(newReg);
         }
     }
+    @Override
+    public void replaceUseReg(backend.operand.MipsOperand oldReg, backend.operand.MipsOperand newReg) {
+        if (src1!= null && src1.equals(oldReg)) {
+            setSrc1(newReg);
+        }
+        if (src2!= null && src2.equals(oldReg)) {
+            setSrc2(newReg);
+        }
+    }
 }

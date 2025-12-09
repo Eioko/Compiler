@@ -12,7 +12,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class GEP extends Instruction {
     private final ValueType baseType;
@@ -51,7 +51,7 @@ public class GEP extends Instruction {
     public void toMips(BasicBlock block, Function function){
         MipsBlock mipsBlock = block.getMipsBlock();
         Value baseValue = this.getUsedValue(0);
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand base = baseValue.toSimpleReg(false, function, block, 0);
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);
             loadMemToReg(baseValue, base, block, function);

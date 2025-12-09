@@ -32,6 +32,18 @@ public class MipsBinary extends MipsInstruction{
         addUseReg(this.src2, src2);
         this.src2 = src2;
     }
+    public BinaryOp getOp() {
+        return op;
+    }
+    public MipsOperand getDst() {
+        return dest;
+    }
+    public MipsOperand getSrc1() {
+        return src1;
+    }
+    public MipsOperand getSrc2() {
+        return src2;
+    }
     public String toString() {
         if(src2 instanceof MipsImm){
             if(op == BinaryOp.ADDU){
@@ -72,6 +84,16 @@ public class MipsBinary extends MipsInstruction{
         if (dest != null && dest.equals(oldReg)) {
             setDst(newReg);
         }
+        if (src1 != null && src1.equals(oldReg)) {
+            setSrc1(newReg);
+        }
+        if (src2 != null && src2.equals(oldReg)) {
+            setSrc2(newReg);
+        }
+    }
+
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
         if (src1 != null && src1.equals(oldReg)) {
             setSrc1(newReg);
         }

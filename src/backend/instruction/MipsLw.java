@@ -46,4 +46,13 @@ public class MipsLw extends MipsInstruction {
             setAddr(newReg);
         }
     }
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (offset != null && offset.equals(oldReg)) {
+            setOffset(newReg);
+        }
+        if (base != null && base.equals(oldReg)) {
+            setAddr(newReg);
+        }
+    }
 }

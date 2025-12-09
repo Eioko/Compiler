@@ -24,4 +24,10 @@ public class MipsJr extends MipsInstruction {
             setTarget(newReg);
         }
     }
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (target != null && target.equals(oldReg)) {
+            setTarget(newReg);
+        }
+    }
 }

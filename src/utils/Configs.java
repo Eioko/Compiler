@@ -1,5 +1,6 @@
 package utils;
 
 public class Configs {
-   public static boolean optimize = true;
+   public static boolean regAlloca = true;
+   public static boolean peepHole = true;
 }

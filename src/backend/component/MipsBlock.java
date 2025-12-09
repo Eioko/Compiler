@@ -18,7 +18,9 @@ public class MipsBlock{
         this.name = name;
         this.instructions = new LinkedList<>();
     }
-
+    public String getName() {
+        return name;
+    }
     public void addInstruction(MipsInstruction instruction){
         instructions.add(instruction);
     }

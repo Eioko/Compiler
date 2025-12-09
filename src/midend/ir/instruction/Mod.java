@@ -8,7 +8,7 @@ import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 import static backend.instruction.MipsBinary.BinaryOp.MOD;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Mod extends BinInstruction {
     public Mod(int nameNum, BasicBlock parent, Value op1, Value op2) {
@@ -33,7 +33,7 @@ public class Mod extends BinInstruction {
 
         Value val1 = this.getUsedValue(0);
         Value val2 = this.getUsedValue(1);
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);
             MipsOperand src1 = val1.toSimpleReg(false, function, block, 0);
             MipsOperand src2 = val2.toSimpleReg(false, function, block, 1);

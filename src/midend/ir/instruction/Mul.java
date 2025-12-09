@@ -11,7 +11,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Mul extends BinInstruction {
     public Mul(int nameNum, BasicBlock parent, Value op1, Value op2) {
@@ -34,7 +34,7 @@ public class Mul extends BinInstruction {
 
         Value val1 = getUsedValue(0);
         Value val2 = getUsedValue(1);
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);
             if(val1 instanceof ConstInt && val2 instanceof ConstInt){
                 int num1 = ((ConstInt)val1).getNumber();

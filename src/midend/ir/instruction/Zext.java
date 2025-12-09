@@ -1,7 +1,6 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
-import backend.instruction.MipsBinary;
 import backend.instruction.MipsEmpty;
 import backend.instruction.MipsMove;
 import backend.operand.MipsOperand;
@@ -10,7 +9,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Zext extends Instruction {
     private Value from;
@@ -34,7 +33,7 @@ public class Zext extends Instruction {
     }
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);
             loadMemToReg(from, dest, block, function);
             saveRegToStack(this, dest, block, function);

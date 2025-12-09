@@ -1,6 +1,7 @@
 package backend.instruction;
 
 import backend.operand.MipsOperand;
+import backend.operand.MipsPhyReg;
 import backend.operand.MipsReg;
 
 import java.util.ArrayList;
@@ -47,4 +48,15 @@ public class MipsInstruction {
         }
     }
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {}
+    public ArrayList<MipsReg> getWriteRegs()
+    {
+        return new ArrayList<>(defRegs);
+    }
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg)
+    {}
+
+    public ArrayList<MipsReg> getReadRegs() {
+        ArrayList<MipsReg> readRegs = useRegs;
+        return readRegs;
+    }
 }

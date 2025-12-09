@@ -33,4 +33,10 @@ public class MipsLa extends MipsInstruction {
             setSrc(newReg);
         }
     }
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (addr!=null && addr.equals(oldReg)) {
+            setSrc(newReg);
+        }
+    }
 }

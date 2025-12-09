@@ -29,4 +29,11 @@ public class MipsBeqz extends MipsInstruction {
             setSrc(newReg);
         }
     }
+
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (reg != null && reg.equals(oldReg)) {
+            setSrc(newReg);
+        }
+    }
 }

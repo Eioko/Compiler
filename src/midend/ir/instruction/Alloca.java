@@ -17,7 +17,7 @@ import static backend.MipsModule.allocateStackSpace;
 import static backend.MipsModule.getCurrentStackOffset;
 import static backend.operand.MipsPhyReg.FP;
 import static backend.operand.MipsPhyReg.SP;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class  Alloca extends Instruction{
     // 局部常量数组初始化值
@@ -54,7 +54,7 @@ public class  Alloca extends Instruction{
 
         int size = (((PointerType)this.getValueType()).getPointeeType()).getSizeInBytes();
 
-        if(!optimize){
+        if(!regAlloca){
             mipsFunction.addAllocaSize(size);
             //单纯分配空间，减少offset
             allocateStackSpace(size);

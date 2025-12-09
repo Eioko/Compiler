@@ -11,7 +11,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Icmp extends Instruction {
     public enum IcmpOp {
@@ -58,7 +58,7 @@ public class Icmp extends Instruction {
 
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand leftOp = left.toSimpleReg(false, function, block, 0);
             MipsOperand rightOp = right.toSimpleReg(false, function, block, 1);
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);

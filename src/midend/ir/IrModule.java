@@ -1,6 +1,5 @@
 package midend.ir;
 
-import backend.MipsModule;
 import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import midend.ir.value.*;

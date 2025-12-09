@@ -7,11 +7,10 @@ import backend.operand.MipsPhyReg;
 import backend.operand.MipsReg;
 import backend.operand.MipsVirReg;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class MipsFunction {
     private String name;
@@ -91,7 +90,7 @@ public class MipsFunction {
         if(this == MipsModule.getInstance().mainFunction){
             sb.append("\tmove $fp, $sp\n");
         }else{
-            if(optimize){
+            if(regAlloca){
                 int stackOffset = -4;
                 for (Integer savedRegIndex : calleeSavedRegIndexes)
                 {
@@ -101,7 +100,7 @@ public class MipsFunction {
                 }
             }
         }
-        if(optimize){
+        if(regAlloca){
             if (totalStackSize != 0) {
                 sb.append("\tadd $sp,\t$sp,\t").append(-totalStackSize).append("\n");
             }

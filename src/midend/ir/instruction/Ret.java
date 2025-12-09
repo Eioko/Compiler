@@ -5,18 +5,14 @@ import backend.component.MipsBlock;
 import backend.instruction.*;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
-import backend.operand.MipsPhyReg;
 import midend.ir.type.DataType;
 import midend.ir.type.VoidType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import java.util.HashSet;
-import java.util.TreeSet;
-
 import static backend.operand.MipsPhyReg.*;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Ret extends Instruction {
     public Ret(BasicBlock parent) {
@@ -42,7 +38,7 @@ public class Ret extends Instruction {
 
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
-        if(!optimize){
+        if(!regAlloca){
             if(this.getValueType() instanceof VoidType) {
                 mipsBlock.addInstruction(new MipsJr(RA));
             }else{

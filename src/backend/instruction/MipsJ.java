@@ -9,6 +9,9 @@ public class MipsJ extends MipsInstruction {
         this.target = target;
     }
 
+    public MipsLabel getTarget() {
+        return target;
+    }
     @Override
     public String toString() {
         return "j " + target.toString();

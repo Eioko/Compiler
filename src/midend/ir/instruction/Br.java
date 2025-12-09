@@ -14,7 +14,7 @@ import midend.ir.value.Function;
 import midend.ir.value.Value;
 
 import static backend.MipsModule.getValueToReg;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Br extends Instruction{
     public Br(BasicBlock parent, BasicBlock dest) {
@@ -47,7 +47,7 @@ public class Br extends Instruction{
             BasicBlock thenBB = (BasicBlock) this.getUsedValue(1);
             BasicBlock elseBB = (BasicBlock) this.getUsedValue(2);
 
-            if(!optimize){
+            if(!regAlloca){
                 MipsPhyReg condReg = getValueToReg(cond, function);
                 if (condReg == null) {
                     condReg = new MipsPhyReg(backend.operand.MipsPhyReg.Register.T0);

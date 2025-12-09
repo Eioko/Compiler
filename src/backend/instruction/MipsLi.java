@@ -33,4 +33,10 @@ public class MipsLi extends MipsInstruction{
             setSrc(oldReg);
         }
     }
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (value != null && value.equals(oldReg)) {
+            setSrc(newReg);
+        }
+    }
 }

@@ -42,4 +42,13 @@ public class MipsSle extends MipsInstruction {
             setSrc2(newReg);
         }
     }
+    @Override
+    public void replaceUseReg(MipsOperand oldReg, MipsOperand newReg) {
+        if (src1!=null && src1.equals(oldReg)) {
+            setSrc1(newReg);
+        }
+        if (src2!=null && src2.equals(oldReg)) {
+            setSrc2(newReg);
+        }
+    }
 }

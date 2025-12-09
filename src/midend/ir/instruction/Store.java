@@ -10,7 +10,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Store extends Instruction {
     public Store(BasicBlock parent, Value value, Value addr) {
@@ -26,7 +26,7 @@ public class Store extends Instruction {
         Value value = getUsedValue(0);
         Value addr = getUsedValue(1);
 
-        if(!optimize){
+        if(!regAlloca){
             MipsOperand src = value.toSimpleReg(false, function, block, 0);
             MipsOperand destAddr = addr.toSimpleReg(false, function, block, 1);
 

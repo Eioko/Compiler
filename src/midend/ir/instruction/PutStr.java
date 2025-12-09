@@ -7,7 +7,6 @@ import backend.instruction.MipsMove;
 import backend.instruction.MipsSyscall;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
-import backend.operand.MipsPhyReg;
 import midend.ir.type.VoidType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
@@ -15,7 +14,7 @@ import midend.ir.value.Value;
 
 import static backend.operand.MipsPhyReg.A0;
 import static backend.operand.MipsPhyReg.V0;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class PutStr extends Instruction {
     public PutStr(BasicBlock parent, Value strAddr) {
@@ -30,7 +29,7 @@ public class PutStr extends Instruction {
         MipsBlock mipsBlock = block.getMipsBlock();
         Value p = this.getUsedValue(0);
         MipsOperand toPrint = A0;
-        if(!optimize){
+        if(!regAlloca){
             loadMemToReg(p, toPrint, block, function);
             MipsImm imm = new MipsImm(4);
             mipsBlock.addInstruction(new MipsLi(V0, imm));

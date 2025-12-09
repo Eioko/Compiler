@@ -1,3 +1,4 @@
+import backend.optimize.PeepHole;
 import backend.optimize.RegAllocator;
 import error.ErrorManager;
 import frontend.ast.CompUnit;
@@ -9,7 +10,8 @@ import utils.FileProcess;
 
 import java.util.ArrayList;
 
-import static utils.Configs.optimize;
+import static utils.Configs.peepHole;
+import static utils.Configs.regAlloca;
 import static utils.FileProcess.printTokens;
 import static utils.FileProcess.writeMipsFile;
 
@@ -29,9 +31,13 @@ public class Compiler {
         if(ErrorManager.isEmpty()){
             compUnit.buildIr();
             IrModule.getInstance().toMips();
-            if(optimize){
+            if(regAlloca){
                 RegAllocator regAllocator = new RegAllocator();
                 regAllocator.process();
+            }
+            if(peepHole){
+                PeepHole peepHoleOptimizer = new PeepHole();
+                peepHoleOptimizer.process();
             }
         }
 

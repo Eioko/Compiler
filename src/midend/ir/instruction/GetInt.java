@@ -12,7 +12,7 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 
 import static backend.operand.MipsPhyReg.V0;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class GetInt extends Instruction{
     public GetInt(int nameNum, BasicBlock parent) {
@@ -30,7 +30,7 @@ public class GetInt extends Instruction{
         mipsBlock.addInstruction(new MipsLi(V0, imm));
         mipsBlock.addInstruction(new MipsSyscall());
 
-        if(!optimize){
+        if(!regAlloca){
             saveRegToStack(this, V0, bb, function);
         }else{
             MipsOperand dest = this.toMipsOperand(false, function, bb);

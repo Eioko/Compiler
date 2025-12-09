@@ -12,12 +12,11 @@ import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
 import midend.ir.value.Value;
 
-import javax.xml.parsers.SAXParser;
 import java.util.ArrayList;
 
 import static backend.MipsModule.*;
 import static backend.operand.MipsPhyReg.*;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Call extends Instruction {
     /**
@@ -72,7 +71,7 @@ public class Call extends Instruction {
         Function calleeFunction = (Function) this.getUsedValue(0);
         MipsBlock mipsBlock = block.getMipsBlock();
 
-        if(!optimize){
+        if(!regAlloca){
             int currentOffset = getCurrentStackOffset();
             ArrayList<MipsPhyReg> allocatedRegisterList = getAllocatedRegs();
 

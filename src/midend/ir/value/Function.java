@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static backend.MipsModule.*;
-import static utils.Configs.optimize;
+import static utils.Configs.regAlloca;
 
 public class Function extends Value {
     private final ArrayList<Argument> arguments = new ArrayList<>();
@@ -98,7 +98,7 @@ public class Function extends Value {
     }
 
     public void toMips(){
-        if(!optimize){
+        if(!regAlloca){
             setCurrentFunction(this);
             for (int i = 0; i < this.arguments.size(); i++) {
                 if (i < 4) {
