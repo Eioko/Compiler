@@ -6,12 +6,14 @@ import frontend.lexer.Lexer;
 import frontend.lexer.Token;
 import frontend.parser.Parser;
 import midend.ir.IrModule;
+import optimize.BuildCFG;
+import optimize.DomAnalyzer;
+import optimize.Mem2Reg;
 import utils.FileProcess;
 
 import java.util.ArrayList;
 
-import static utils.Configs.peepHole;
-import static utils.Configs.regAlloca;
+import static utils.Configs.*;
 import static utils.FileProcess.printTokens;
 import static utils.FileProcess.writeMipsFile;
 
@@ -30,6 +32,14 @@ public class Compiler {
         compUnit.check();
         if(ErrorManager.isEmpty()){
             compUnit.buildIr();
+            if(mem2reg){
+                BuildCFG buildCFG = new BuildCFG();
+                buildCFG.process();
+                DomAnalyzer domAnalyzer = new DomAnalyzer();
+                domAnalyzer.process();
+                Mem2Reg mem2Reg = new Mem2Reg();
+                mem2Reg.start();
+            }
             IrModule.getInstance().toMips();
             if(regAlloca){
                 RegAllocator regAllocator = new RegAllocator();

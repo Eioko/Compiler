@@ -17,11 +17,14 @@ import static backend.MipsModule.getValueToReg;
 import static utils.Configs.regAlloca;
 
 public class Br extends Instruction{
+    public boolean hasCond;
     public Br(BasicBlock parent, BasicBlock dest) {
         super("", new VoidType(), parent, dest);
+        this.hasCond = false;
     }
     public Br(BasicBlock parent, Value cond, BasicBlock thenBB, BasicBlock elseBB) {
         super("", new VoidType(), parent, cond, thenBB, elseBB);
+        this.hasCond = true;
     }
     @Override
     public String toString() {

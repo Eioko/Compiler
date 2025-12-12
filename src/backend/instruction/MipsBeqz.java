@@ -17,6 +17,9 @@ public class MipsBeqz extends MipsInstruction {
         addUseReg(this.reg, reg);
         this.reg = reg;
     }
+    public void setTarget(MipsLabel target) {
+        this.target = target;
+    }
 
     @Override
     public String toString() {

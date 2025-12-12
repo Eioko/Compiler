@@ -12,6 +12,7 @@ import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
+import midend.ir.value.User;
 
 import static backend.MipsModule.allocateStackSpace;
 import static backend.MipsModule.getCurrentStackOffset;
@@ -75,5 +76,28 @@ public class  Alloca extends Instruction{
             mipsBlock.addInstruction(new MipsEmpty());
         }
     }
+
+    public boolean canPromotable() {
+        // 没有使用
+        if (getUsers().isEmpty()) {
+            return true;
+        }
+        // 使用者中有 GEP ，则与数组有关，否则一般使用者都是 load，store 之类的
+        for (User user : getUsers()) {
+            if (user instanceof GEP) {
+                GEP getElementPtr = (GEP) user;
+                // promotable alloca must be a single data
+                if (getElementPtr.getUsedValue(0) == this) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public ValueType getAllocatedType(){
+        return ((PointerType)this.getValueType()).getPointeeType();
+    }
+
 }
 

@@ -19,14 +19,10 @@ public class Icmp extends Instruction {
     }
 
     private IcmpOp op;
-    private Value left;
-    private Value right;
 
     public Icmp(int nameNum, IcmpOp op, Value left, Value right, BasicBlock parent) {
         super("%v"+nameNum, new IntegerType(1), parent, left, right);
         this.op = op;
-        this.left = left;
-        this.right = right;
     }
 
     public IcmpOp getOp() {
@@ -34,11 +30,11 @@ public class Icmp extends Instruction {
     }
 
     public Value getLeft() {
-        return left;
+        return getUsedValue(0);
     }
 
     public Value getRight() {
-        return right;
+        return getUsedValue(1);
     }
 
     @Override
@@ -52,19 +48,19 @@ public class Icmp extends Instruction {
             case NE -> "icmp ne";
         };
         return  getName() + " = " + opStr + " " +
-                left.getValueType().toString() + " " + left.getName() + ", " +
-                right.getName();
+                getLeft().getValueType().toString() + " " + getLeft().getName() + ", " +
+                getRight().getName();
     }
 
     public void toMips(BasicBlock block, Function function) {
         MipsBlock mipsBlock = block.getMipsBlock();
         if(!regAlloca){
-            MipsOperand leftOp = left.toSimpleReg(false, function, block, 0);
-            MipsOperand rightOp = right.toSimpleReg(false, function, block, 1);
+            MipsOperand leftOp = getLeft().toSimpleReg(false, function, block, 0);
+            MipsOperand rightOp = getRight().toSimpleReg(false, function, block, 1);
             MipsOperand dest = this.toSimpleReg(false, function, block, 2);
 
-            loadMemToReg(left, leftOp, block, function);
-            loadMemToReg(right, rightOp, block, function);
+            loadMemToReg(getLeft(), leftOp, block, function);
+            loadMemToReg(getRight(), rightOp, block, function);
 
             if(op == IcmpOp.EQ){
                 mipsBlock.addInstruction(new MipsSeq(dest, leftOp, rightOp));
@@ -83,8 +79,8 @@ public class Icmp extends Instruction {
             mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
         }
         else{
-            MipsOperand leftOp = left.toMipsOperand(false, function, block);
-            MipsOperand rightOp = right.toMipsOperand(false, function, block);
+            MipsOperand leftOp = getLeft().toMipsOperand(false, function, block);
+            MipsOperand rightOp = getRight().toMipsOperand(false, function, block);
             MipsOperand dest = this.toMipsOperand(false, function, block);
 
             if(op == IcmpOp.EQ){

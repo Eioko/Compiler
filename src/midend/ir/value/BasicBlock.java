@@ -4,6 +4,8 @@ import backend.component.MipsBlock;
 import midend.ir.instruction.Instruction;
 import midend.ir.type.LabelType;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class  BasicBlock extends Value{
@@ -61,5 +63,57 @@ public class  BasicBlock extends Value{
             instruction.toMips(this, function);
         }
     }
+    //-----------------------------------Mem2Reg---------------------------------------
 
+    private final HashSet<BasicBlock> predecessors = new HashSet<>();
+    private final HashSet<BasicBlock> successors = new HashSet<>();
+    private final ArrayList<BasicBlock> domers = new ArrayList<>();
+    private final ArrayList<BasicBlock> idomees = new ArrayList<>();
+    private BasicBlock Idomer;
+    private int domLevel;
+    private final HashSet<BasicBlock> dominanceFrontier = new HashSet<>();
+
+    public HashSet<BasicBlock> getPredecessors() {
+        return predecessors;
+    }
+    public HashSet<BasicBlock> getSuccessors() {
+        return successors;
+    }
+    public ArrayList<BasicBlock> getDomers() {
+        return domers;
+    }
+    public ArrayList<BasicBlock> getIdomees() {
+        return idomees;
+    }
+    public BasicBlock getIdomer() {
+        return Idomer;
+    }
+    public void setIdomer(BasicBlock idomer) {
+        Idomer = idomer;
+    }
+    public int getDomLevel() {
+        return domLevel;
+    }
+    public void setDomLevel(int domLevel) {
+        this.domLevel = domLevel;
+    }
+    public HashSet<BasicBlock> getDominanceFrontier() {
+        return dominanceFrontier;
+    }
+    public void addPredecessor(BasicBlock pred) {
+        predecessors.add(pred);
+    }
+    public void addSuccessor(BasicBlock succ) {
+        successors.add(succ);
+    }
+    public LinkedList<Instruction> getInstList() {
+        return instList;
+    }
+    public void eraseInstruction(Instruction instruction) {
+        instList.remove(instruction);
+    }
+    public boolean isDominate(BasicBlock other) {
+        return other.domers.contains(this);
+    }
 }
+

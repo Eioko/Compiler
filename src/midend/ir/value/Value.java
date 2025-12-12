@@ -41,7 +41,9 @@ public class Value {
     public Value getParent() {
         return parent;
     }
-
+    public ArrayList<User> getUsers() {
+        return users;
+    }
     public MipsOperand toSimpleReg(boolean canImm, Function irFunction, BasicBlock irBlock, int opIndex) {
         if(mipsModule.getOperandMapping(this) != null) {
             MipsOperand operand = mipsModule.getOperandMapping(this);
@@ -180,7 +182,23 @@ public class Value {
         return num >= -32768 && num <= 32767;
     }
 
-    public boolean inUnsignedShortRange(int num){
-        return num >= 0 && num <= 65535;
+    //--------------------------------------Mem2Reg--------------------------------
+    public void dropUser(User user) {
+        if (!users.contains(user)) {
+            throw new AssertionError("User not found in users list.");
+        }
+        users.remove(user);
     }
+    public void replaceAllUsesWith(Value replacement) {
+        ArrayList<User> usersClone = new ArrayList<>(users);
+        for (User user : usersClone) {
+            for (int i = 0; i < user.getNumOps(); i++) {
+                if (user.getUsedValue(i) == this) {
+                    user.setUsedValue(i, replacement);
+                }
+            }
+        }
+        users.clear();
+    }
+
 }

@@ -4,6 +4,7 @@ import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import backend.component.MipsGlobalVariable;
 import backend.instruction.MipsBinary;
+import backend.instruction.MipsInstruction;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import backend.operand.MipsPhyReg;
@@ -37,6 +38,8 @@ public class MipsModule {
     public static int stackOffset = 0;
 
     public static HashMap<Value, Integer> valueStackOffsetMap = new HashMap<>();
+
+    public final HashMap<Pair<MipsBlock, MipsBlock>, ArrayList<MipsInstruction>> phiCopysList = new HashMap<>();
 
     private static final MipsModule mipsModule = new MipsModule();
     private MipsModule() {}

@@ -27,6 +27,8 @@ public class IrBuilder {
 
     private static int strNumCount = 0;
 
+    public static int phiNameNum = 0;
+
     public GlobalVariable buildGlobalVariable(String name, Constant initVal, boolean isConst) {
         GlobalVariable globalVariable = new GlobalVariable(name, initVal, isConst);
         irModule.addGlobalVariable(globalVariable);
@@ -245,5 +247,16 @@ public class IrBuilder {
         Zext zext = new Zext(nameNum, from, toType, parent);
         parent.insertTail(zext);
         return zext;
+    }
+    public Phi buildPhi(DataType type, BasicBlock parent) {
+        Phi phi = new Phi(phiNameNum++, type, parent, parent.getPredecessors().size());
+        parent.insertHead(phi);
+        return phi;
+    }
+
+    public Phi buildPhi(DataType type, BasicBlock parent, int predNum) {
+        Phi phi = new Phi(phiNameNum++, type, parent, predNum);
+        parent.insertHead(phi);
+        return phi;
     }
 }

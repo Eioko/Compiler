@@ -1,0 +1,148 @@
+package midend.ir.instruction;
+import backend.MipsModule;
+import backend.component.MipsBlock;
+import backend.component.MipsFunction;
+import backend.instruction.MipsInstruction;
+import backend.instruction.MipsMove;
+import backend.operand.MipsOperand;
+import backend.operand.MipsVirReg;
+import midend.ir.type.DataType;
+import midend.ir.value.BasicBlock;
+import midend.ir.value.Function;
+import midend.ir.value.Value;
+import utils.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Stack;
+
+public class Phi extends Instruction {
+    private int predecessorNum;
+
+    public Phi(int nameNum, DataType dataType, BasicBlock parent, int predecessorNum) {
+        super("%p" + nameNum, dataType, parent, new Value[predecessorNum * 2]);
+        this.predecessorNum = predecessorNum;
+    }
+    public void addIncoming(Value value, BasicBlock block) {
+        int i = 0;
+        while (i < predecessorNum && getUsedValue(i) != null) {
+            i++;
+        }
+        if (i < predecessorNum) {
+            setUsedValue(i, value);
+            setUsedValue(i + predecessorNum, block);
+        } else {
+            getUsedValues().add(predecessorNum, value);
+            predecessorNum++;
+            getUsedValues().add(block);
+        }
+        value.addUser(this);
+        block.addUser(this);
+    }
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder(getName() + " = phi ").append(getValueType());
+        for (int i = 0; i < predecessorNum; i++) {
+            if (getUsedValue(i) == null) break;
+            s.append(" [ ").append(getUsedValue(i).getName()).append(", ").append("%")
+                    .append(getUsedValue(i + predecessorNum).getName()).append(" ], ");
+        }
+        s.delete(s.length() - 2, s.length());
+        return s.toString();
+    }
+
+    public static void doMips(Function function) {
+        for(BasicBlock block: function.getBlocks()){
+            HashSet<BasicBlock> predecessors = block.getPredecessors();
+            int num = predecessors.size();
+            if(num <= 1) {
+                continue;
+            }
+            ArrayList<Phi> phis = new ArrayList<>();
+            for(Instruction instr: block.getInstList()){
+                if(instr instanceof Phi){
+                    phis.add((Phi) instr);
+                }else{
+                    break;
+                }
+            }
+            for(BasicBlock pred : predecessors){
+                Pair<MipsBlock, MipsBlock> splitBlocks = new Pair<>(pred.getMipsBlock(), block.getMipsBlock());
+                MipsModule.getInstance().phiCopysList.put(splitBlocks, genPhiCopys(phis, pred, function, block));
+            }
+        }
+    }
+
+    public Value getInputValForBlock(BasicBlock block) {
+        for (int i = 0; i < predecessorNum; i++) {
+            if (getUsedValue(i + predecessorNum) == block) {
+                return getUsedValue(i);
+            }
+        }
+        throw new AssertionError("block not found for phi!");
+    }
+    private static void handleCyclePath(MipsFunction mipsFunction, Stack<MipsOperand> path,
+                                 MipsOperand begin, ArrayList<MipsInstruction> copys, HashMap<MipsOperand, MipsOperand> graph) {
+        MipsVirReg tmp = new MipsVirReg();
+        mipsFunction.addUsedVirReg(tmp);
+
+        MipsMove mipsMove = new MipsMove(null, null);
+        mipsMove.setDst(tmp);
+        while (path.contains(begin)) {
+            MipsOperand r = path.pop();
+            mipsMove.setSrc(r);
+            copys.add(mipsMove);
+            mipsMove = new MipsMove(null, null);
+            mipsMove.setDst(r);
+            graph.remove(r);
+        }
+        mipsMove.setSrc(tmp);
+    }
+    private static void handleNoCyclePath(Stack<MipsOperand> path, MipsOperand begin,
+                                   ArrayList<MipsInstruction> copys, HashMap<MipsOperand, MipsOperand> graph) {
+        MipsOperand phiSrc = begin;
+        while (!path.isEmpty()) {
+            MipsOperand phiTarget = path.pop();
+            MipsInstruction mipsMove = new MipsMove(phiTarget, phiSrc);
+            copys.add(0, mipsMove);
+            phiSrc = phiTarget;
+            graph.remove(phiTarget);
+        }
+    }
+    public static ArrayList<MipsInstruction> genPhiCopys(ArrayList<Phi> phis, BasicBlock pred, Function function, BasicBlock block){
+        ArrayList<MipsInstruction> copyInstrs = new ArrayList<>();
+        HashMap<MipsOperand, MipsOperand> graph = new HashMap<>();
+        MipsFunction mipsFunction = function.getMipsFunction();
+        for(Phi phi: phis){
+            MipsOperand phiDest = phi.toMipsOperand(false, function, block);
+            Value inputValue = phi.getInputValForBlock(pred);
+            MipsOperand phiSrc = inputValue.toMipsOperand(true, function, pred);
+            graph.put(phiDest, phiSrc);
+        }
+        while(!graph.isEmpty()){
+            Stack<MipsOperand> path = new Stack<>();
+            MipsOperand cur;
+            for (cur = graph.entrySet().iterator().next().getKey(); graph.containsKey(cur); cur = graph.get(cur)) {
+                if (path.contains(cur)) {
+                    break;
+                } else {
+                    path.push(cur);
+                }
+            }
+
+            if (!graph.containsKey(cur)) {
+                handleNoCyclePath(path, cur, copyInstrs, graph);
+            }
+            else {
+                handleCyclePath(mipsFunction, path, cur, copyInstrs, graph);
+                handleNoCyclePath(path, cur, copyInstrs, graph);
+            }
+        }
+        return copyInstrs;
+    }
+
+    public void toMips(){
+        throw new AssertionError("Phi toMips should not be called!");
+    }
+}

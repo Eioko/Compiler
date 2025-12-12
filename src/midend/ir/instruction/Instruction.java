@@ -58,4 +58,10 @@ public class Instruction extends User {
             mipsBlock.addInstruction(new MipsLw(dest,new MipsImm(offset), FP));
         }
     }
+    public BasicBlock getParent(){
+        return (BasicBlock) super.getParent();
+    }
+    public void eraseFromParent() {
+        getParent().eraseInstruction(this);
+    }
 }

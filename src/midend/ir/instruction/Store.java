@@ -45,4 +45,10 @@ public class Store extends Instruction {
             mipsBlock.addInstruction(new MipsEmpty());
         }
     }
+    public Value getValue(){
+        return getUsedValue(0);
+    }
+    public Value getAddr(){
+        return getUsedValue(1);
+    }
 }

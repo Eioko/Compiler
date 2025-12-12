@@ -22,6 +22,9 @@ public class Load extends Instruction {
     public Load(int nameNum, Value pointerValue, BasicBlock parent) {
         super("%v"+nameNum, ((PointerType)pointerValue.getValueType()).getPointeeType(), parent, pointerValue);
     }
+    public Value getAddr(){
+        return this.getUsedValue(0);
+    }
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getName());

@@ -46,4 +46,25 @@ public class User extends Value {
     public ArrayList<Value> getOperands() {
         return operands;
     }
+
+    public void dropAllOperands() {
+        for (Value operand : operands) {
+            operand.dropUser(this);
+        }
+    }
+    public int getNumOps() {
+        return operands.size();
+    }
+    public void setUsedValue(int index, Value newValue) {
+        Value oldValue = operands.get(index);
+        if (oldValue != null) {
+            oldValue.dropUser(this);
+        }
+        operands.set(index, newValue);
+        newValue.addUser(this);
+    }
+    public ArrayList<Value> getUsedValues() {
+        return operands;
+    }
+
 }

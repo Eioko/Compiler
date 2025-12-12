@@ -13,9 +13,16 @@ public class MipsBlock{
     private MipsBlock falseSucc = null;
     private MipsBlock trueSucc = null;
 
+    private final ArrayList<MipsBlock> preds = new ArrayList<>();
+
     public MipsBlock(String name) {
         index++;
         this.name = name;
+        this.instructions = new LinkedList<>();
+    }
+    public MipsBlock() {
+        index++;
+        this.name = "transfer_" + index;
         this.instructions = new LinkedList<>();
     }
     public String getName() {
@@ -56,6 +63,16 @@ public class MipsBlock{
     public MipsBlock getTrueSucc() {
         return trueSucc;
     }
+    public ArrayList<MipsBlock> getPreds() {
+        return preds;
+    }
+    public void addPred(MipsBlock pred) {
+        this.preds.add(pred);
+    }
+
+    public void removePred(MipsBlock pred) {
+        this.preds.remove(pred);
+    }
     public ArrayList<MipsBlock> getSuccessors(){
         ArrayList<MipsBlock> successors = new ArrayList<>();
         if(trueSucc != null){
@@ -75,7 +92,11 @@ public class MipsBlock{
             }
         }
     }
-
+    public void insertPhiCopysHead(ArrayList<MipsInstruction> phiMoves) {
+        for (int i = phiMoves.size() - 1; i >= 0; i--) {
+            instructions.addFirst(phiMoves.get(i));
+        }
+    }
     public void insertAfter(MipsInstruction after, MipsInstruction instruction){
         for(MipsInstruction t : instructions){
             if(t.equals(after) ){
@@ -84,5 +105,16 @@ public class MipsBlock{
                 return;
             }
         }
+    }
+    public void insertPhiMovesTail(ArrayList<MipsInstruction> phiMoves) {
+        for (MipsInstruction phiMove : phiMoves) {
+            instructions.add(instructions.size()-1,phiMove);
+        }
+    }
+    public void removeTailInstr() {
+        instructions.removeLast();
+    }
+    public MipsInstruction getLastInstruction() {
+        return instructions.getLast();
     }
 }

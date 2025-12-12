@@ -1,10 +1,14 @@
 package midend.ir;
 
+import backend.MipsModule;
 import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import midend.ir.value.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import static midend.ir.instruction.Phi.doMips;
 
 public class IrModule extends Value {
     private static final IrModule IR_MODULE = new IrModule();
@@ -76,11 +80,17 @@ public class IrModule extends Value {
             function.setMipsFunction(mipsFunction);
             mipsModule.addFunction(mipsFunction);
 
-            ArrayList<BasicBlock> blocks = function.getBlocks();
+            LinkedList<BasicBlock> blocks = function.getBlocks();
             for(BasicBlock block : blocks){
                 MipsBlock mipsBlock = new MipsBlock(block.getName());
                 block.setMipsBlock(mipsBlock);
                 mipsFunction.addBlock(mipsBlock);
+            }
+            for (BasicBlock irBlock : blocks) {
+                MipsBlock objBlock = irBlock.getMipsBlock();
+                for (BasicBlock predecessor : irBlock.getPredecessors()) {
+                    objBlock.addPred(predecessor.getMipsBlock());
+                }
             }
         }
     }
@@ -93,6 +103,9 @@ public class IrModule extends Value {
         irMap();
         for(Function function : functions){
             function.toMips();
+            doMips(function);
+            MipsFunction mipsFunction = function.getMipsFunction();
+            mipsFunction.blockSerial(function.getMipsFunction().getBlocks().getFirst(), MipsModule.getInstance().phiCopysList);
         }
     }
 }

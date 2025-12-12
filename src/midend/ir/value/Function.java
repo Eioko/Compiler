@@ -8,6 +8,7 @@ import midend.ir.type.FunctionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import static backend.MipsModule.*;
 import static utils.Configs.regAlloca;
@@ -15,7 +16,7 @@ import static utils.Configs.regAlloca;
 public class Function extends Value {
     private final ArrayList<Argument> arguments = new ArrayList<>();
     //基本块
-    private final ArrayList<BasicBlock> blocks = new ArrayList<>();
+    private final LinkedList<BasicBlock> blocks = new LinkedList<>();
 
     private final DataType returnType;
 
@@ -57,8 +58,12 @@ public class Function extends Value {
     public ArrayList<Argument> getArguments() {
         return arguments;
     }
-    public ArrayList<BasicBlock> getBlocks() {
+    public LinkedList<BasicBlock> getBlocks() {
         return blocks;
+    }
+
+    public void removeBlock(BasicBlock block){
+        blocks.remove(block);
     }
 
     @Override
