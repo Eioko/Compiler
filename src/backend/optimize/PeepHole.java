@@ -61,9 +61,6 @@ public class PeepHole {
                 if (isSrc2Zero) {
                     boolean isDstSrc1Same = instr.getDst().equals(instr.getSrc1());
                     if (isDstSrc1Same) {
-                        if (instr.toString().contains("$v")) {
-                            System.out.println("Deleting instruction (addSubSrc2Zero): " + instr);
-                        }
                         iter.remove(); // 安全删除当前元素
                     } else {
                         MipsMove mipsMove = new MipsMove(instr.getDst(), instr.getSrc1());
@@ -86,9 +83,6 @@ public class PeepHole {
             MipsMove mipsMove = (MipsMove) curInstr;
             // 相等且没有移位
             if (mipsMove.getDst().equals(mipsMove.getSrc())) {
-                if (curInstr.toString().contains("$v")) {
-                    System.out.println("Deleting instruction (movSameDstSrc): " + curInstr);
-                }
                 iter.remove();
                 finished = false;
             }
@@ -120,9 +114,6 @@ public class PeepHole {
                     if (isSameDst && nextInstrDifferent) {
                         iter.previous();
                         iter.previous(); // Move back to the current instruction
-                        if (curInstr.toString().contains("$v")) {
-                            System.out.println("Deleting instruction (movOverlap): " + curInstr);
-                        }
                         iter.remove();   // Remove the current instruction
                         finished = false;
                     } else {
@@ -287,9 +278,6 @@ public class PeepHole {
                 // 删去当前指令
                 instrIterator.previous();
                 instrIterator.previous(); // 恢复迭代器位置
-                if (curInstr.toString().contains("$v")) {
-                    System.out.println("Deleting instruction (movDeleteReplace): " + curInstr);
-                }
                 instrIterator.remove();   // 删除当前指令
                 return true;
             }

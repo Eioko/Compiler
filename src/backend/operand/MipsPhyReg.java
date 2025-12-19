@@ -58,7 +58,7 @@ public class MipsPhyReg extends MipsReg {
     public static final ArrayList<Integer> allocatableRegIds = new ArrayList<>();
     public final static HashSet<Integer> calleeSavedRegIndex = new HashSet<>();
     static {
-        for (int i = 8; i < 26; i++) {
+        for (int i = 8; i <= 27; i++) {
             allocatableRegIds.add(i);
         }
 

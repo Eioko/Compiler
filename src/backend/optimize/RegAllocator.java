@@ -574,7 +574,8 @@ public class RegAllocator {
                 init(function);
                 build(function);
                 makeWorklist(function);
-                do {
+                while (!(simplifyWorklist.isEmpty() && worklistMoves.isEmpty() &&
+                        freezeWorklist.isEmpty() && spillWorklist.isEmpty())){
                     if (!simplifyWorklist.isEmpty()) {
                         simplify();
                     }
@@ -587,8 +588,8 @@ public class RegAllocator {
                     if (!spillWorklist.isEmpty()) {
                         selectSpill();
                     }
-                } while (!(simplifyWorklist.isEmpty() && worklistMoves.isEmpty() &&
-                        freezeWorklist.isEmpty() && spillWorklist.isEmpty()));
+                }
+
                 assignColors(function);
 
                 if (spilledNodes.isEmpty()) {

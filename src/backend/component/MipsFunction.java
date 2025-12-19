@@ -19,6 +19,7 @@ public class MipsFunction {
 
     public LinkedList<MipsBlock> blocks = new LinkedList<>();
     private final HashSet<MipsVirReg> usedVirRegs = new HashSet<>();
+    public LinkedList<MipsBlock> recordBlocks = new LinkedList<>();
 
     public MipsFunction(String name) {
         this.name = name;
@@ -114,9 +115,20 @@ public class MipsFunction {
         return sb.toString();
     }
     private final HashSet<MipsBlock> hasSerial = new HashSet<>();
-    
     private void handleTrueCopys(MipsBlock curBlock, MipsBlock succBlock, ArrayList<MipsInstruction> phiCopys) {
-        // 如果没有 copy 的话，就不用费事了
+        if (! curBlock.getInstructions().isEmpty() && curBlock.getInstructions().getLast() instanceof MipsJ) {
+            for(MipsInstruction phiCopy : phiCopys) {
+                // 在跳转指令前插入 phiMove 指令
+                curBlock.getInstructions().add(curBlock.getInstructions().size() - 1, phiCopy);
+            }
+        } else {
+            for (MipsInstruction phiCopy : phiCopys) {
+                curBlock.addInstruction(phiCopy);
+            }
+        }
+    }
+
+    private void handleFalseCopys(MipsBlock curBlock, MipsBlock succBlock, ArrayList<MipsInstruction> phiCopys) {
         if (!phiCopys.isEmpty()) {
             // 如果后继块前只有一个前驱块（当前块），那么就可以直接插入到后继块的最开始
             if (succBlock.getPreds().size() == 1) {
@@ -125,7 +137,7 @@ public class MipsFunction {
             // 如果后继块前有多个前驱块（无法确定从哪个块来），那么就应该新形成一个块
             else {
                 // 新做出一个中转块
-                MipsBlock transferBlock = new MipsBlock();
+                MipsBlock transferBlock = new MipsBlock(curBlock.getName() + "_false_trampoline");
 
                 // 把 phiMov 指令放到这里
                 transferBlock.insertPhiCopysHead(phiCopys);
@@ -143,21 +155,25 @@ public class MipsFunction {
                 succBlock.addPred(transferBlock);
 
                 // cur 登记前驱后继
-                curBlock.setTrueSucc(transferBlock);
-                // 修改 cur 的最后一条指令
-                MipsBeqz tailInstr = (MipsBeqz) curBlock.getLastInstruction();
-                tailInstr.setTarget(new MipsLabel(transferBlock.getName()));
+                curBlock.setFalseSucc(transferBlock);
+
+                // 关键修复：寻找并更新跳转指令
+                // 因为 Br 生成的是 Beqz + J，所以 Beqz 不是最后一条指令
+                boolean found = false;
+                for (int i = curBlock.getInstructions().size() - 1; i >= 0; i--) {
+                    MipsInstruction instr = curBlock.getInstructions().get(i);
+                    if (instr instanceof MipsBeqz) {
+                        MipsBeqz beqz = (MipsBeqz) instr;
+                        // 检查这个 Beqz 是否是跳往原来的 succBlock
+                        if (beqz.getTarget().getName().equals(succBlock.getName())) {
+                            beqz.setTarget(new MipsLabel(transferBlock.getName()));
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                // 如果没找到 Beqz，可能是其他类型的分支或者逻辑有误，这里可以加个断言或日志
             }
-        }
-    }
-    private void handleFalseCopys(MipsBlock curBlock, MipsBlock succBlock, ArrayList<MipsInstruction> phiCopys) {
-        for (MipsInstruction phiCopy : phiCopys) {
-            curBlock.addInstruction(phiCopy);
-        }
-        // 如果已经序列化了，那么还需要增加一条 branch 指令，跳转到已经序列化的后继块上
-        if (hasSerial.contains(succBlock)) {
-            MipsJ objBranch = new MipsJ(new MipsLabel(succBlock.getName()));
-            curBlock.addInstruction(objBranch);
         }
     }
 
@@ -184,7 +200,7 @@ public class MipsFunction {
                 curBlock.removeTailInstr();
                 blockSerial(succBlock, phiWaitLists);
             }
-            // 但是不一定能够被合并成功，因为又可以后继块已经被先序列化了，那么就啥都不需要干了
+            // 但是不一定能够被合并成功，因为后继块已经被先序列化了，那么就啥都不需要干了
         }else {
             MipsBlock trueSuccBlock = curBlock.getTrueSucc();
             MipsBlock falseSuccBlock = curBlock.getFalseSucc();
@@ -203,6 +219,4 @@ public class MipsFunction {
             }
         }
     }
-
-
 }

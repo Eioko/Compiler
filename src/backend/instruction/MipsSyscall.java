@@ -8,14 +8,17 @@ public class MipsSyscall extends MipsInstruction {
     public MipsSyscall(int num){
         this.num = num;
         addDefReg(null, V0);
-        addUseReg(null, A0);
+        if(num == 1 || num== 4){
+            addUseReg(null, A0);
+            addDefReg(null, A0);
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("li $v0, ").append(num).append("\n");
-        sb.append("\tsyscall");;
+        sb.append("\tsyscall");
         return sb.toString();
     }
 }

@@ -149,7 +149,7 @@ public class Value {
                 default -> new MipsPhyReg(MipsPhyReg.Register.A3);
             };
             MipsMove mipsMove = new MipsMove(dstVirReg, srcReg);
-            firstBlock.addInstruction(mipsMove);
+            firstBlock.addInstrHead(mipsMove);
         } else {
             int stackPos = rank - 4;
             MipsImm mipsOffset = new MipsImm(stackPos * 4);

@@ -1,5 +1,7 @@
 package backend.instruction;
 
+import backend.operand.MipsImm;
+import backend.operand.MipsLabel;
 import backend.operand.MipsOperand;
 
 public class MipsMove extends MipsInstruction {
@@ -29,7 +31,13 @@ public class MipsMove extends MipsInstruction {
     }
     @Override
     public String toString() {
-        return "move " + dest.toString() + ", " + src.toString();
+        if(src instanceof MipsImm){
+            return "li " + dest.toString() + ", " + ((MipsImm) src).getNumber();
+        }else if(src instanceof MipsLabel){
+            return "la " + dest.toString() + ", " + src.toString();
+        }else{
+            return "move " + dest.toString() + ", " + src.toString();
+        }
     }
     @Override
     public void replaceReg(MipsOperand oldReg, MipsOperand newReg) {

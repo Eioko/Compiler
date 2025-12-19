@@ -1,6 +1,7 @@
 package backend.component;
 
 import backend.instruction.MipsInstruction;
+import backend.instruction.MipsJ;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,6 +30,11 @@ public class MipsBlock{
         return name;
     }
     public void addInstruction(MipsInstruction instruction){
+        /*if (this.name.equals("b78")) {
+            System.out.println("DEBUG: Adding instruction to b78: " + instruction);
+            // 打印调用栈，查看是谁调用的
+            new Exception("Stack Trace").printStackTrace(System.out);
+        }*/
         instructions.add(instruction);
     }
     public void addInstrHead(MipsInstruction instruction){
@@ -107,8 +113,13 @@ public class MipsBlock{
         }
     }
     public void insertPhiMovesTail(ArrayList<MipsInstruction> phiMoves) {
+        /*if(this.name.equals("b78")){
+            System.out.println("debug");
+            System.out.println(this);
+            System.out.println("Inserting phi move at tail: " + phiMoves);
+        }*/
         for (MipsInstruction phiMove : phiMoves) {
-            instructions.add(instructions.size()-1,phiMove);
+            instructions.add(instructions.size()-1, phiMove);
         }
     }
     public void removeTailInstr() {

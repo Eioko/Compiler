@@ -20,7 +20,9 @@ public class MipsBeqz extends MipsInstruction {
     public void setTarget(MipsLabel target) {
         this.target = target;
     }
-
+    public MipsLabel getTarget() {
+        return target;
+    }
     @Override
     public String toString() {
         return "beqz " + reg.toString() + ", " + target.toString();

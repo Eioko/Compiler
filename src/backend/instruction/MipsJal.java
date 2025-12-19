@@ -11,11 +11,6 @@ public class MipsJal extends MipsInstruction{
 
     public MipsJal(MipsFunction func) {
         this.func = func;
-        addDefReg(null, MipsPhyReg.RA);
-        addUseReg(null, MipsPhyReg.A0);
-        addUseReg(null, MipsPhyReg.A1);
-        addUseReg(null, MipsPhyReg.A2);
-        addUseReg(null, MipsPhyReg.A3);
     }
 
     @Override

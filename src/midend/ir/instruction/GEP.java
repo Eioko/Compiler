@@ -5,6 +5,7 @@ import backend.instruction.MipsBinary;
 import backend.instruction.MipsEmpty;
 import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
+import backend.operand.MipsVirReg;
 import midend.ir.type.IntegerType;
 import midend.ir.type.PointerType;
 import midend.ir.type.ValueType;
@@ -84,10 +85,11 @@ public class GEP extends Instruction {
                 return;
             }
             MipsOperand index = indexValue.toMipsOperand(false, function, block);
+            MipsOperand newIndex = genTmpReg(function);
             MipsImm imm = new MipsImm(2);
-            MipsBinary mipsSll = new MipsBinary(MipsBinary.BinaryOp.SLL, index, index, imm);
+            MipsBinary mipsSll = new MipsBinary(MipsBinary.BinaryOp.SLL, newIndex, index, imm);
             mipsBlock.addInstruction(mipsSll);
-            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU,  dest, base, index);
+            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU,  dest, base, newIndex);
             mipsBlock.addInstruction(mipsAdd);
         }
         mipsBlock.addInstruction(new MipsEmpty());

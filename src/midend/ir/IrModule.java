@@ -84,7 +84,8 @@ public class IrModule extends Value {
             for(BasicBlock block : blocks){
                 MipsBlock mipsBlock = new MipsBlock(block.getName());
                 block.setMipsBlock(mipsBlock);
-                mipsFunction.addBlock(mipsBlock);
+                mipsFunction.recordBlocks.add(mipsBlock);
+                //mipsFunction.addBlock(mipsBlock);
             }
             for (BasicBlock irBlock : blocks) {
                 MipsBlock objBlock = irBlock.getMipsBlock();
@@ -105,7 +106,7 @@ public class IrModule extends Value {
             function.toMips();
             doMips(function);
             MipsFunction mipsFunction = function.getMipsFunction();
-            mipsFunction.blockSerial(function.getMipsFunction().getBlocks().getFirst(), MipsModule.getInstance().phiCopysList);
+            mipsFunction.blockSerial(function.getMipsFunction().recordBlocks.getFirst(), MipsModule.getInstance().phiCopysList);
         }
     }
 }
