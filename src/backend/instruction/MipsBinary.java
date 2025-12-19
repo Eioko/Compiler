@@ -47,10 +47,10 @@ public class MipsBinary extends MipsInstruction{
     public String toString() {
         if(src2 instanceof MipsImm){
             if(op == BinaryOp.ADDU){
-                return "addi\t" + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
+                return "addiu\t" + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
             } else if(op == BinaryOp.SUBU){
                 MipsImm negImm = new MipsImm(-((MipsImm) src2).getNumber());
-                return "addi\t" + dest.toString() + ", " + src1.toString() + ", " + negImm.toString();
+                return "addiu\t" + dest.toString() + ", " + src1.toString() + ", " + negImm.toString();
             } else if(op == BinaryOp.SLL){
                 return "sll\t" + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
             } else {

@@ -85,11 +85,10 @@ public class GEP extends Instruction {
                 return;
             }
             MipsOperand index = indexValue.toMipsOperand(false, function, block);
-            MipsOperand newIndex = genTmpReg(function);
             MipsImm imm = new MipsImm(2);
-            MipsBinary mipsSll = new MipsBinary(MipsBinary.BinaryOp.SLL, newIndex, index, imm);
+            MipsBinary mipsSll = new MipsBinary(MipsBinary.BinaryOp.SLL, dest, index, imm);
             mipsBlock.addInstruction(mipsSll);
-            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU,  dest, base, newIndex);
+            MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, dest, base);
             mipsBlock.addInstruction(mipsAdd);
         }
         mipsBlock.addInstruction(new MipsEmpty());

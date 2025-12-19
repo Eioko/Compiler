@@ -557,6 +557,7 @@ public class RegAllocator {
                     }
                     if (cntInstr > 30) {
                         checkPoint(func);
+                        cntInstr = 0;
                     }
                     cntInstr++;
                 }

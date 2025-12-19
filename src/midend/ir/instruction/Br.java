@@ -72,8 +72,7 @@ public class Br extends Instruction{
                         mipsBlock.addInstruction(new MipsJ(new MipsLabel(elseBB.getName())));
                         mipsBlock.setTrueSucc(elseBB.getMipsBlock());
                     }
-                }
-                else{
+                } else{
                     MipsOperand condOp = cond.toMipsOperand(false, function, block);
                     mipsBlock.addInstruction(new MipsBeqz(condOp, new MipsLabel(elseBB.getName())));
                     mipsBlock.addInstruction(new MipsJ(new MipsLabel(thenBB.getName())));
