@@ -91,7 +91,9 @@ public class MipsFunction {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(":").append("\n");
         if(this == MipsModule.getInstance().mainFunction){
-            sb.append("\tmove $fp, $sp\n");
+            if(!regAlloca){
+                sb.append("\tmove $fp, $sp\n");
+            }
         }else{
             if(regAlloca){
                 int stackOffset = -4;
