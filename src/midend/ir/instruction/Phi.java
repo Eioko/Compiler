@@ -4,8 +4,10 @@ import backend.component.MipsBlock;
 import backend.component.MipsFunction;
 import backend.instruction.MipsInstruction;
 import backend.instruction.MipsMove;
+import backend.operand.MipsImm;
 import backend.operand.MipsOperand;
 import backend.operand.MipsVirReg;
+import midend.ir.constant.ConstInt;
 import midend.ir.type.DataType;
 import midend.ir.value.BasicBlock;
 import midend.ir.value.Function;
@@ -117,7 +119,13 @@ public class Phi extends Instruction {
         for(Phi phi: phis){
             MipsOperand phiDest = phi.toMipsOperand(false, function, block);
             Value inputValue = phi.getInputValForBlock(pred);
-            MipsOperand phiSrc = inputValue.toMipsOperand(true, function, pred);
+            MipsOperand phiSrc;
+            if (inputValue instanceof ConstInt) {
+                phiSrc = new MipsImm(((ConstInt) inputValue).getNumber());
+            }
+            else {
+                phiSrc = inputValue.toMipsOperand(true, function, block);
+            }
             graph.put(phiDest, phiSrc);
         }
         while(!graph.isEmpty()){

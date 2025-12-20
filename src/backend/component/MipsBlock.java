@@ -126,7 +126,6 @@ public class MipsBlock{
 
         MipsInstruction last = instructions.getLast();
         // 只有当最后一条指令是跳转指令时，才插在它前面
-        // 否则（Fallthrough 情况），应该插在整个块的最后
         if (last instanceof MipsJ || last instanceof MipsEmpty) {
             int index = instructions.size() - 1;
             for (MipsInstruction phiMove : phiMoves) {

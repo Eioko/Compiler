@@ -157,7 +157,6 @@ public class MipsFunction {
                 // cur 登记前驱后继
                 curBlock.setFalseSucc(transferBlock);
 
-                // 关键修复：寻找并更新跳转指令
                 // 因为 Br 生成的是 Beqz + J，所以 Beqz 不是最后一条指令
                 boolean found = false;
                 for (int i = curBlock.getInstructions().size() - 1; i >= 0; i--) {
