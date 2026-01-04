@@ -2,7 +2,6 @@ package midend.ir.instruction;
 
 import backend.component.MipsBlock;
 import backend.instruction.MipsBeqz;
-import backend.instruction.MipsEmpty;
 import backend.instruction.MipsJ;
 import backend.operand.MipsLabel;
 import backend.operand.MipsOperand;

@@ -1,6 +1,5 @@
 package backend.component;
 
-import backend.instruction.MipsEmpty;
 import backend.instruction.MipsInstruction;
 import backend.instruction.MipsJ;
 
@@ -126,7 +125,7 @@ public class MipsBlock{
 
         MipsInstruction last = instructions.getLast();
         // 只有当最后一条指令是跳转指令时，才插在它前面
-        if (last instanceof MipsJ || last instanceof MipsEmpty) {
+        if (last instanceof MipsJ ) {
             int index = instructions.size() - 1;
             for (MipsInstruction phiMove : phiMoves) {
                 instructions.add(index, phiMove);

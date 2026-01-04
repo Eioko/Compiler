@@ -1,7 +1,6 @@
 package midend.ir.instruction;
 
 import backend.component.MipsBlock;
-import backend.instruction.MipsEmpty;
 import backend.instruction.MipsMove;
 import backend.operand.MipsOperand;
 import midend.ir.type.DataType;
