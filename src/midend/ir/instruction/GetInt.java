@@ -31,6 +31,5 @@ public class GetInt extends Instruction{
             //这里会有错误吗？
             mipsBlock.addInstruction(new MipsMove(dest, V0));
         }
-        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

@@ -51,7 +51,6 @@ public class Ret extends Instruction {
                 mipsBlock.addInstruction(new MipsMove(V0, retVal));
                 mipsBlock.addInstruction(new MipsJr(RA));
             }
-            mipsBlock.addInstruction(new MipsEmpty());
         } else{
             if(! (this.getValueType() instanceof VoidType)) {
                 MipsOperand retVal = this.getUsedValue(0).toMipsOperand(false, function, block);

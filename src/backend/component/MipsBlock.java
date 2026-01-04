@@ -46,7 +46,7 @@ public class MipsBlock{
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(":\n");
         for(MipsInstruction instruction : instructions){
-            sb.append("\t").append(instruction.toString()).append("\n");
+            sb.append("\t").append(instruction.toString()).append("\n\n");
         }
         return sb.toString();
     }

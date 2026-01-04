@@ -76,7 +76,6 @@ public class Icmp extends Instruction {
                 mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
             }
             saveRegToStack(this, dest, block, function);
-            mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
         }
         else{
             MipsOperand leftOp = getLeft().toMipsOperand(false, function, block);
@@ -96,7 +95,6 @@ public class Icmp extends Instruction {
             } else if(op == IcmpOp.GE){
                 mipsBlock.addInstruction(new MipsSle(dest, rightOp, leftOp));
             }
-            mipsBlock.addInstruction(new backend.instruction.MipsEmpty());
         }
     }
 }

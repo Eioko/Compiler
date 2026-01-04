@@ -65,7 +65,6 @@ public class  Alloca extends Instruction{
             mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.ADDU, destAddr, FP, realOffset));
             //把指针值存在再下面
             saveRegToStack(this, destAddr ,block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand offset = parseConstIntOperand(mipsFunction.getAllocaSize(), true, function, block);
@@ -73,7 +72,6 @@ public class  Alloca extends Instruction{
             MipsOperand dst = this.toMipsOperand(true, function, block);
             MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dst,  SP, offset);
             mipsBlock.addInstruction(mipsAdd);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 

@@ -28,13 +28,11 @@ public class PutInt extends Instruction{
         if(!regAlloca){
             loadMemToReg(p, toPrint, block, function);
             mipsBlock.addInstruction(new MipsSyscall(1));
-            mipsBlock.addInstruction(new MipsEmpty());
         }else{
             MipsOperand src = p.toMipsOperand(false, function, block);
             MipsMove mipsMove = new MipsMove(toPrint, src);
             mipsBlock.addInstruction(mipsMove);
             mipsBlock.addInstruction(new MipsSyscall(1));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }

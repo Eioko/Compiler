@@ -57,7 +57,6 @@ public class Sub extends BinInstruction {
                 mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.SUBU, dest, src1, src2));
             }
             saveRegToStack(this, dest ,block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand dest = this.toMipsOperand(false, function, block);
@@ -80,7 +79,6 @@ public class Sub extends BinInstruction {
                 MipsBinary mipsSub = new MipsBinary(MipsBinary.BinaryOp.SUBU, dest, src1, src2);
                 mipsBlock.addInstruction(mipsSub);
             }
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }

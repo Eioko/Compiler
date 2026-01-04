@@ -36,14 +36,12 @@ public class Div extends BinInstruction {
             // 这里把除法和后面的move from HI/LO合并了, 不再加mflo指令
             mipsBlock.addInstruction(new MipsBinary(DIV, dest, src1, src2));
             saveRegToStack(this, dest ,block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand dest = this.toMipsOperand(false, function, block);
             MipsOperand src1 = val1.toMipsOperand(false, function, block);
             MipsOperand src2 = val2.toMipsOperand(false, function, block);
             mipsBlock.addInstruction(new MipsBinary(DIV, dest, src1, src2));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }

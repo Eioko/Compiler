@@ -84,6 +84,23 @@ public class Phi extends Instruction {
         }
         throw new AssertionError("block not found for phi!");
     }
+
+    public void removeIncoming(BasicBlock block) {
+        for (int i = 0; i < predecessorNum; i++) {
+            if (getUsedValue(i + predecessorNum) == block) {
+                Value val = getUsedValue(i);
+                val.dropUser(this);
+                block.dropUser(this);
+
+                getUsedValues().remove(i + predecessorNum);
+                getUsedValues().remove(i);
+
+                predecessorNum--;
+                return;
+            }
+        }
+    }
+
     private static void handleCyclePath(MipsFunction mipsFunction, Stack<MipsOperand> path,
                                  MipsOperand begin, ArrayList<MipsInstruction> copys, HashMap<MipsOperand, MipsOperand> graph) {
         MipsVirReg tmp = new MipsVirReg();

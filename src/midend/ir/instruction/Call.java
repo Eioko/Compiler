@@ -115,7 +115,6 @@ public class Call extends Instruction {
             }
 
             saveRegToStack(this, new MipsPhyReg(MipsPhyReg.Register.V0), block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         // 优化情况下
         else{

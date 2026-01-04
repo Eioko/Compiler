@@ -62,7 +62,6 @@ public class GEP extends Instruction {
             }else{
                 //其实我的二维寻址好像都是0，0，这里无所谓
                 saveRegToStack(this, base, block, function);
-                mipsBlock.addInstruction(new MipsEmpty());
                 return;
             }
             MipsOperand index = indexValue.toSimpleReg(false, function, block, 1);
@@ -81,7 +80,6 @@ public class GEP extends Instruction {
                 //其实我的二维寻址好像都是0，0，这里无所谓
                 MipsBinary mipsMove = new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, base, new MipsImm(0));
                 mipsBlock.addInstruction(mipsMove);
-                mipsBlock.addInstruction(new MipsEmpty());
                 return;
             }
             MipsOperand index = indexValue.toMipsOperand(false, function, block);
@@ -91,6 +89,5 @@ public class GEP extends Instruction {
             MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, dest, base);
             mipsBlock.addInstruction(mipsAdd);
         }
-        mipsBlock.addInstruction(new MipsEmpty());
     }
 }

@@ -35,14 +35,12 @@ public class Store extends Instruction {
 
             MipsOperand offset = new backend.operand.MipsImm(0);
             mipsBlock.addInstruction(new MipsSw(src, offset, destAddr));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand src = value.toMipsOperand(false, function, block);
             MipsOperand destAddr = addr.toMipsOperand(false, function, block);
             MipsOperand offset = new MipsImm(0);
             mipsBlock.addInstruction(new MipsSw(src, offset, destAddr));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
     public Value getValue(){

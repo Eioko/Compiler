@@ -43,7 +43,6 @@ public class Zext extends Instruction {
             mipsBlock.addInstruction(new MipsMove(dest, src));
         }
 
-        mipsBlock.addInstruction(new MipsEmpty());
     }
 }
 

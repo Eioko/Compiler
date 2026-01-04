@@ -50,14 +50,12 @@ public class Mul extends BinInstruction {
                 mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.MUL, dest, src1, src2));
             }
             saveRegToStack(this, dest ,block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand dest = this.toMipsOperand(false, function, block);
             MipsOperand src1 = val1.toMipsOperand(false, function, block);
             MipsOperand src2 = val2.toMipsOperand(false, function, block);
             mipsBlock.addInstruction(new MipsBinary(MipsBinary.BinaryOp.MUL, dest, src1, src2));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }

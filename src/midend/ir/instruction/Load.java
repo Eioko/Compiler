@@ -47,14 +47,12 @@ public class Load extends Instruction {
             MipsImm offset = new MipsImm(0);
             mipsBlock.addInstruction(new MipsLw(dest, offset, src));
             saveRegToStack(this, dest, block, function);
-            mipsBlock.addInstruction(new MipsEmpty());
         }
         else{
             MipsOperand src = pointerValue.toMipsOperand(false, function, block);
             MipsOperand dest = this.toMipsOperand(false, function, block);
             MipsImm offset = new MipsImm(0);
             mipsBlock.addInstruction(new MipsLw(dest, offset, src));
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }

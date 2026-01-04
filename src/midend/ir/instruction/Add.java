@@ -48,7 +48,6 @@ public class Add extends BinInstruction {
                 loadMemToReg(val2, src2, block, function);
                 mipsBlock.addInstruction(new backend.instruction.MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2));
             }
-            mipsBlock.addInstruction(new MipsEmpty());
             saveRegToStack(this, dest ,block, function);
         }
         else{
@@ -69,7 +68,6 @@ public class Add extends BinInstruction {
                 MipsBinary mipsAdd = new MipsBinary(MipsBinary.BinaryOp.ADDU, dest, src1, src2);
                 mipsBlock.addInstruction(mipsAdd);
             }
-            mipsBlock.addInstruction(new MipsEmpty());
         }
     }
 }
