@@ -128,6 +128,9 @@ public class UnaryExp extends ComptueExp {
             if(funcSymbol != null){
                 return funcSymbol.getSymbolType();
             }else{
+                if(name.equals("getint")){
+                    return SymbolType.INT;
+                }
                 return null;
             }
         }else{

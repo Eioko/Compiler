@@ -117,6 +117,7 @@ public class Phi extends Instruction {
             graph.remove(r);
         }
         mipsMove.setSrc(tmp);
+        copys.add(mipsMove);
     }
     private static void handleNoCyclePath(Stack<MipsOperand> path, MipsOperand begin,
                                    ArrayList<MipsInstruction> copys, HashMap<MipsOperand, MipsOperand> graph) {

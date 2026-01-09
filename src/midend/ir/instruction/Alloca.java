@@ -21,7 +21,7 @@ import static utils.Configs.regAlloca;
 
 public class  Alloca extends Instruction{
     // 局部常量数组初始化值
-    private ConstArray initVal = null;
+    private Constant initVal = null;
     public Alloca(int numNum, ValueType allocatedType, BasicBlock parent) {
         super("%p"+numNum, new PointerType(allocatedType), parent);
     }
@@ -33,8 +33,7 @@ public class  Alloca extends Instruction{
     public Alloca(int nameNum, ValueType allocatedType, BasicBlock parent, Constant initVal) {
         // 指针
         super("%p" + nameNum, new PointerType(allocatedType), parent);
-        this.initVal = null;
-        //??这里还没有实现
+        this.initVal = initVal;
     }
 
     public String toString() {
@@ -44,7 +43,7 @@ public class  Alloca extends Instruction{
         sb.append(((PointerType)this.getValueType()).getPointeeType().toString());
         return sb.toString();
     }
-    public ConstArray getInitVal(){
+    public Constant getInitVal(){
         return initVal;
     }
 

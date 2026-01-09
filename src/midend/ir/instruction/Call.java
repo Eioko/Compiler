@@ -173,7 +173,12 @@ public class Call extends Instruction {
     public MipsPhyReg doRealPara(Value arg, int i, int beforeOffset, BasicBlock block, Function function,
                            ArrayList<MipsPhyReg> allocatedRegisterList){
         MipsBlock mipsBlock = block.getMipsBlock();
-        MipsPhyReg argReg = new MipsPhyReg(MipsPhyReg.Register.values()[MipsPhyReg.Register.A0.ordinal() + i]);
+        MipsPhyReg argReg;
+        if (i < 4) {
+            argReg = new MipsPhyReg(MipsPhyReg.Register.values()[MipsPhyReg.Register.A0.ordinal() + i]);
+        } else {
+            argReg = new MipsPhyReg(MipsPhyReg.Register.V1);
+        }
         if(arg instanceof Argument){
             MipsPhyReg reg = getValueToReg(arg, function);
             if(reg != null){

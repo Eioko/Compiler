@@ -189,13 +189,20 @@ public class VarDef extends Node {
                     initVal.buildIr();
                     GEP basePtr = irBuilder.buildGEP(curBlock, alloc, ConstInt.ZERO, ConstInt.ZERO);
                     // 利用 store 往内存中存值
-                    for (int i = 0; i < valueArrayUp.size(); i++) {
+                    for (int i = 0; i < size; i++) {
+                        Value val;
+                        if (i < valueArrayUp.size()) {
+                            val = valueArrayUp.get(i);
+                        } else {
+                            val = ConstInt.ZERO;
+                        }
+
                         if (i == 0) {
-                            irBuilder.buildStore(curBlock, valueArrayUp.get(i), basePtr);
+                            irBuilder.buildStore(curBlock, val, basePtr);
                         } else {
                             // 这里利用的是一维的 GEP，此时的返回值依然是 int*
                             GEP curPtr = irBuilder.buildGEP(curBlock, basePtr, new ConstInt(i));
-                            irBuilder.buildStore(curBlock, valueArrayUp.get(i), curPtr);
+                            irBuilder.buildStore(curBlock, val, curPtr);
                         }
                     }
                 }

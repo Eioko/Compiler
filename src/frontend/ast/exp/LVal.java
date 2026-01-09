@@ -108,6 +108,11 @@ public class LVal extends ComptueExp{
                     ConstInt init = (ConstInt) ((GlobalVariable)value).getInitValue();
                     valueIntUp = init.getNumber();
                     valueUp = new ConstInt(valueIntUp);
+                }else if(global && value instanceof Alloca){
+                    // 局部常量
+                    ConstInt init = (ConstInt) ((Alloca)value).getInitVal();
+                    valueIntUp = init.getNumber();
+                    valueUp = new ConstInt(valueIntUp);
                 }else{
                     valueUp = value;
                 }
@@ -136,7 +141,7 @@ public class LVal extends ComptueExp{
                     valueIntUp = ((ConstInt)valueUp).getNumber();
                 }else if (global && value instanceof Alloca) {
                     //局部常量数组变量，直接取初值
-                    ConstArray initVal = ((Alloca) value).getInitVal();
+                    ConstArray initVal = (ConstArray) ((Alloca) value).getInitVal();
                     indexExp.buildIr();
                     int index = valueIntUp;
                     valueUp = initVal.getElementAt(index);

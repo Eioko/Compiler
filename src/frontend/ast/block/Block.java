@@ -4,6 +4,9 @@ import error.SysyError;
 import frontend.ast.Node;
 import frontend.ast.stmt.Stmt;
 import frontend.lexer.Token;
+import midend.ir.instruction.Br;
+import midend.ir.instruction.Instruction;
+import midend.ir.instruction.Ret;
 
 import java.util.ArrayList;
 
@@ -71,6 +74,12 @@ public class Block extends Node {
     public void buildIr(){
         for(BlockItem n : items){
             n.buildIr();
+            if(curBlock != null){
+                Instruction lastInst = curBlock.getLastInst();
+                if(lastInst != null && (lastInst instanceof Br || lastInst instanceof Ret)){
+                    break;
+                }
+            }
         }
     }
 }

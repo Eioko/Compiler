@@ -33,10 +33,22 @@ public class PeepHole {
                 ListIterator<MipsInstruction> iter = insList.listIterator();
                 while (iter.hasNext()) {
                     MipsInstruction curInstr = iter.next();
-                    finished &= addSubSrc2Zero(curInstr, iter);
-                    finished &= movSameDstSrc(curInstr, iter);
-                    finished &= movOverlap(curInstr, iter);
-                    finished &= branchUselessDelete(curInstr, iter, blockIter);
+                    if (!addSubSrc2Zero(curInstr, iter)) {
+                        finished = false;
+                        continue;
+                    }
+                    if (!movSameDstSrc(curInstr, iter)) {
+                        finished = false;
+                        continue;
+                    }
+                    if (!movOverlap(curInstr, iter)) {
+                        finished = false;
+                        continue;
+                    }
+                    if (!branchUselessDelete(curInstr, iter, blockIter)) {
+                        finished = false;
+                        // continue;
+                    }
                 }
             }
         }

@@ -9,3 +9,4 @@ parser.txt
 symbol.txt
 llvm_ir.txt
 mips.txt
+bin/
