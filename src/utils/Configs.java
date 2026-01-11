@@ -1,7 +1,7 @@
 package utils;
 
 public class Configs {
-   public static boolean regAlloca = false;
-   public static boolean peepHole = false;
-   public static boolean mem2reg = false;
+   public static boolean regAlloca = true;
+   public static boolean peepHole = true;
+   public static boolean mem2reg = true;
 }
