@@ -10,3 +10,4 @@ symbol.txt
 llvm_ir.txt
 mips.txt
 bin/
+.VSCodeCounter/
