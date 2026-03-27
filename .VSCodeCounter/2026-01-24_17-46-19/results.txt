@@ -1,0 +1,185 @@
+Date : 2026-01-24 17:46:19
+Directory : e:\编译\Compiler\src
+Total : 132 files,  8867 codes, 784 comments, 1206 blanks, all 10857 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Java     |        131 |      8,863 |        784 |      1,206 |     10,853 |
+| JSON     |          1 |          4 |          0 |          0 |          4 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                         | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                            |        132 |      8,867 |        784 |      1,206 |     10,857 |
+| . (Files)                                                    |          2 |         60 |          1 |          6 |         67 |
+| backend                                                      |         32 |      2,167 |        157 |        330 |      2,654 |
+| backend (Files)                                              |          2 |        123 |          8 |         24 |        155 |
+| backend\component                                            |          3 |        350 |         34 |         48 |        432 |
+| backend\instruction                                          |         18 |        724 |          1 |        121 |        846 |
+| backend\operand                                              |          6 |        193 |          5 |         39 |        237 |
+| backend\optimize                                             |          3 |        777 |        109 |         98 |        984 |
+| error                                                        |          3 |         63 |          0 |         11 |         74 |
+| frontend                                                     |         40 |      3,290 |        341 |        355 |      3,986 |
+| frontend\ast                                                 |         35 |      2,331 |        233 |        288 |      2,852 |
+| frontend\ast (Files)                                         |          2 |         82 |         28 |         14 |        124 |
+| frontend\ast\block                                           |          2 |        112 |          7 |         14 |        133 |
+| frontend\ast\decl                                            |          8 |        536 |         57 |         53 |        646 |
+| frontend\ast\exp                                             |         15 |        841 |         65 |        107 |      1,013 |
+| frontend\ast\func                                            |          6 |        327 |         26 |         51 |        404 |
+| frontend\ast\stmt                                            |          2 |        433 |         50 |         49 |        532 |
+| frontend\lexer                                               |          4 |        308 |          1 |         22 |        331 |
+| frontend\parser                                              |          1 |        651 |        107 |         45 |        803 |
+| midend                                                       |         49 |      2,553 |        123 |        394 |      3,070 |
+| midend\ir                                                    |         43 |      2,338 |        120 |        357 |      2,815 |
+| midend\ir (Files)                                            |          2 |        319 |         12 |         45 |        376 |
+| midend\ir\constant                                           |          5 |        122 |          5 |         28 |        155 |
+| midend\ir\instruction                                        |         20 |      1,235 |         60 |        178 |      1,473 |
+| midend\ir\type                                               |          9 |        126 |          6 |         31 |        163 |
+| midend\ir\value                                              |          7 |        536 |         37 |         75 |        648 |
+| midend\symbol                                                |          6 |        215 |          3 |         37 |        255 |
+| optimize                                                     |          3 |        493 |        150 |         78 |        721 |
+| utils                                                        |          3 |        241 |         12 |         32 |        285 |
++--------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                     | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------+----------+------------+------------+------------+------------+
+| e:\编译\Compiler\src\Compiler.java                             | Java     |         56 |          1 |          6 |         63 |
+| e:\编译\Compiler\src\backend\MipsBuilder.java                  | Java     |          8 |          0 |          2 |         10 |
+| e:\编译\Compiler\src\backend\MipsModule.java                   | Java     |        115 |          8 |         22 |        145 |
+| e:\编译\Compiler\src\backend\component\MipsBlock.java          | Java     |        120 |         11 |         14 |        145 |
+| e:\编译\Compiler\src\backend\component\MipsFunction.java       | Java     |        174 |         23 |         27 |        224 |
+| e:\编译\Compiler\src\backend\component\MipsGlobalVariable.java | Java     |         56 |          0 |          7 |         63 |
+| e:\编译\Compiler\src\backend\instruction\MipsBeqz.java         | Java     |         37 |          1 |          7 |         45 |
+| e:\编译\Compiler\src\backend\instruction\MipsBinary.java       | Java     |         97 |          0 |          8 |        105 |
+| e:\编译\Compiler\src\backend\instruction\MipsEmpty.java        | Java     |          7 |          0 |          2 |          9 |
+| e:\编译\Compiler\src\backend\instruction\MipsInstruction.java  | Java     |         54 |          0 |          9 |         63 |
+| e:\编译\Compiler\src\backend\instruction\MipsJ.java            | Java     |         15 |          0 |          5 |         20 |
+| e:\编译\Compiler\src\backend\instruction\MipsJal.java          | Java     |         15 |          0 |          8 |         23 |
+| e:\编译\Compiler\src\backend\instruction\MipsJr.java           | Java     |         28 |          0 |          6 |         34 |
+| e:\编译\Compiler\src\backend\instruction\MipsLa.java           | Java     |         36 |          0 |          7 |         43 |
+| e:\编译\Compiler\src\backend\instruction\MipsLi.java           | Java     |         37 |          0 |          6 |         43 |
+| e:\编译\Compiler\src\backend\instruction\MipsLw.java           | Java     |         48 |          0 |         11 |         59 |
+| e:\编译\Compiler\src\backend\instruction\MipsMove.java         | Java     |         51 |          0 |          7 |         58 |
+| e:\编译\Compiler\src\backend\instruction\MipsRet.java          | Java     |         34 |          0 |          7 |         41 |
+| e:\编译\Compiler\src\backend\instruction\MipsSeq.java          | Java     |         49 |          0 |          8 |         57 |
+| e:\编译\Compiler\src\backend\instruction\MipsSle.java          | Java     |         48 |          0 |          7 |         55 |
+| e:\编译\Compiler\src\backend\instruction\MipsSlt.java          | Java     |         48 |          0 |          6 |         54 |
+| e:\编译\Compiler\src\backend\instruction\MipsSne.java          | Java     |         48 |          0 |          5 |         53 |
+| e:\编译\Compiler\src\backend\instruction\MipsSw.java           | Java     |         51 |          0 |          8 |         59 |
+| e:\编译\Compiler\src\backend\instruction\MipsSyscall.java      | Java     |         21 |          0 |          4 |         25 |
+| e:\编译\Compiler\src\backend\operand\MipsImm.java              | Java     |         17 |          0 |          5 |         22 |
+| e:\编译\Compiler\src\backend\operand\MipsLabel.java            | Java     |         18 |          0 |          5 |         23 |
+| e:\编译\Compiler\src\backend\operand\MipsOperand.java          | Java     |         12 |          0 |          4 |         16 |
+| e:\编译\Compiler\src\backend\operand\MipsPhyReg.java           | Java     |        112 |          5 |         15 |        132 |
+| e:\编译\Compiler\src\backend\operand\MipsReg.java              | Java     |          3 |          0 |          3 |          6 |
+| e:\编译\Compiler\src\backend\operand\MipsVirReg.java           | Java     |         31 |          0 |          7 |         38 |
+| e:\编译\Compiler\src\backend\optimize\BlockActive.java         | Java     |         63 |          3 |          9 |         75 |
+| e:\编译\Compiler\src\backend\optimize\PeepHole.java            | Java     |        223 |         38 |         39 |        300 |
+| e:\编译\Compiler\src\backend\optimize\RegAllocator.java        | Java     |        491 |         68 |         50 |        609 |
+| e:\编译\Compiler\src\config.json                               | JSON     |          4 |          0 |          0 |          4 |
+| e:\编译\Compiler\src\error\ErrorManager.java                   | Java     |         20 |          0 |          3 |         23 |
+| e:\编译\Compiler\src\error\ErrorType.java                      | Java     |         24 |          0 |          4 |         28 |
+| e:\编译\Compiler\src\error\SysyError.java                      | Java     |         19 |          0 |          4 |         23 |
+| e:\编译\Compiler\src\frontend\ast\CompUnit.java                | Java     |         58 |          3 |          7 |         68 |
+| e:\编译\Compiler\src\frontend\ast\Node.java                    | Java     |         24 |         25 |          7 |         56 |
+| e:\编译\Compiler\src\frontend\ast\block\Block.java             | Java     |         71 |          4 |         10 |         85 |
+| e:\编译\Compiler\src\frontend\ast\block\BlockItem.java         | Java     |         41 |          3 |          4 |         48 |
+| e:\编译\Compiler\src\frontend\ast\decl\BType.java              | Java     |          9 |          3 |          3 |         15 |
+| e:\编译\Compiler\src\frontend\ast\decl\ConstDecl.java          | Java     |         37 |          3 |          5 |         45 |
+| e:\编译\Compiler\src\frontend\ast\decl\ConstDef.java           | Java     |         89 |         11 |          6 |        106 |
+| e:\编译\Compiler\src\frontend\ast\decl\ConstInitVal.java       | Java     |         80 |          5 |          9 |         94 |
+| e:\编译\Compiler\src\frontend\ast\decl\Decl.java               | Java     |         29 |          3 |          5 |         37 |
+| e:\编译\Compiler\src\frontend\ast\decl\InitVal.java            | Java     |         76 |          4 |          7 |         87 |
+| e:\编译\Compiler\src\frontend\ast\decl\VarDecl.java            | Java     |         43 |          3 |          3 |         49 |
+| e:\编译\Compiler\src\frontend\ast\decl\VarDef.java             | Java     |        173 |         25 |         15 |        213 |
+| e:\编译\Compiler\src\frontend\ast\exp\AddExp.java              | Java     |         70 |          3 |          7 |         80 |
+| e:\编译\Compiler\src\frontend\ast\exp\ComptueExp.java          | Java     |          4 |          0 |          4 |          8 |
+| e:\编译\Compiler\src\frontend\ast\exp\Cond.java                | Java     |         17 |          3 |          4 |         24 |
+| e:\编译\Compiler\src\frontend\ast\exp\ConstExp.java            | Java     |         18 |          4 |          3 |         25 |
+| e:\编译\Compiler\src\frontend\ast\exp\EqExp.java               | Java     |         54 |          5 |          6 |         65 |
+| e:\编译\Compiler\src\frontend\ast\exp\Exp.java                 | Java     |         21 |          3 |          4 |         28 |
+| e:\编译\Compiler\src\frontend\ast\exp\LAndExp.java             | Java     |         47 |          4 |          6 |         57 |
+| e:\编译\Compiler\src\frontend\ast\exp\LOrExp.java              | Java     |         48 |          4 |          5 |         57 |
+| e:\编译\Compiler\src\frontend\ast\exp\LVal.java                | Java     |        138 |         14 |         13 |        165 |
+| e:\编译\Compiler\src\frontend\ast\exp\MulExp.java              | Java     |         65 |          3 |          7 |         75 |
+| e:\编译\Compiler\src\frontend\ast\exp\Number.java              | Java     |         22 |          3 |          5 |         30 |
+| e:\编译\Compiler\src\frontend\ast\exp\PrimaryExp.java          | Java     |         89 |          4 |         12 |        105 |
+| e:\编译\Compiler\src\frontend\ast\exp\RelExp.java              | Java     |         46 |          3 |          7 |         56 |
+| e:\编译\Compiler\src\frontend\ast\exp\UnaryExp.java            | Java     |        179 |          9 |         21 |        209 |
+| e:\编译\Compiler\src\frontend\ast\exp\UnaryOp.java             | Java     |         23 |          3 |          3 |         29 |
+| e:\编译\Compiler\src\frontend\ast\func\FuncDef.java            | Java     |        103 |          8 |         11 |        122 |
+| e:\编译\Compiler\src\frontend\ast\func\FuncFParam.java         | Java     |         42 |          3 |          7 |         52 |
+| e:\编译\Compiler\src\frontend\ast\func\FuncFParams.java        | Java     |         56 |          5 |         10 |         71 |
+| e:\编译\Compiler\src\frontend\ast\func\FuncRParams.java        | Java     |         43 |          3 |          8 |         54 |
+| e:\编译\Compiler\src\frontend\ast\func\FuncType.java           | Java     |         13 |          3 |          4 |         20 |
+| e:\编译\Compiler\src\frontend\ast\func\MainFuncDef.java        | Java     |         70 |          4 |         11 |         85 |
+| e:\编译\Compiler\src\frontend\ast\stmt\ForStmt.java            | Java     |         72 |          4 |          8 |         84 |
+| e:\编译\Compiler\src\frontend\ast\stmt\Stmt.java               | Java     |        361 |         46 |         41 |        448 |
+| e:\编译\Compiler\src\frontend\lexer\Lexer.java                 | Java     |        195 |          0 |          9 |        204 |
+| e:\编译\Compiler\src\frontend\lexer\Token.java                 | Java     |         20 |          0 |          3 |         23 |
+| e:\编译\Compiler\src\frontend\lexer\TokenStream.java           | Java     |         52 |          1 |          8 |         61 |
+| e:\编译\Compiler\src\frontend\lexer\TokenType.java             | Java     |         41 |          0 |          2 |         43 |
+| e:\编译\Compiler\src\frontend\parser\Parser.java               | Java     |        651 |        107 |         45 |        803 |
+| e:\编译\Compiler\src\midend\ir\IrBuilder.java                  | Java     |        219 |         11 |         33 |        263 |
+| e:\编译\Compiler\src\midend\ir\IrModule.java                   | Java     |        100 |          1 |         12 |        113 |
+| e:\编译\Compiler\src\midend\ir\constant\ConstArray.java        | Java     |         50 |          5 |          8 |         63 |
+| e:\编译\Compiler\src\midend\ir\constant\ConstInt.java          | Java     |         20 |          0 |          3 |         23 |
+| e:\编译\Compiler\src\midend\ir\constant\ConstString.java       | Java     |         23 |          0 |          8 |         31 |
+| e:\编译\Compiler\src\midend\ir\constant\Constant.java          | Java     |         13 |          0 |          3 |         16 |
+| e:\编译\Compiler\src\midend\ir\constant\ZeroInitializer.java   | Java     |         16 |          0 |          6 |         22 |
+| e:\编译\Compiler\src\midend\ir\instruction\Add.java            | Java     |         66 |          0 |          7 |         73 |
+| e:\编译\Compiler\src\midend\ir\instruction\Alloca.java         | Java     |         79 |          9 |         12 |        100 |
+| e:\编译\Compiler\src\midend\ir\instruction\BinInstruction.java | Java     |         11 |          0 |          4 |         15 |
+| e:\编译\Compiler\src\midend\ir\instruction\Br.java             | Java     |         76 |          1 |          8 |         85 |
+| e:\编译\Compiler\src\midend\ir\instruction\Call.java           | Java     |        165 |         23 |         25 |        213 |
+| e:\编译\Compiler\src\midend\ir\instruction\Div.java            | Java     |         39 |          1 |          7 |         47 |
+| e:\编译\Compiler\src\midend\ir\instruction\GEP.java            | Java     |         77 |          9 |          7 |         93 |
+| e:\编译\Compiler\src\midend\ir\instruction\GetInt.java         | Java     |         28 |          1 |          7 |         36 |
+| e:\编译\Compiler\src\midend\ir\instruction\Icmp.java           | Java     |         87 |          0 |         14 |        101 |
+| e:\编译\Compiler\src\midend\ir\instruction\Instruction.java    | Java     |         52 |          6 |         10 |         68 |
+| e:\编译\Compiler\src\midend\ir\instruction\Load.java           | Java     |         47 |          6 |          5 |         58 |
+| e:\编译\Compiler\src\midend\ir\instruction\Mod.java            | Java     |         46 |          1 |          7 |         54 |
+| e:\编译\Compiler\src\midend\ir\instruction\Mul.java            | Java     |         54 |          1 |          6 |         61 |
+| e:\编译\Compiler\src\midend\ir\instruction\Phi.java            | Java     |        123 |          1 |         18 |        142 |
+| e:\编译\Compiler\src\midend\ir\instruction\PutInt.java         | Java     |         32 |          0 |          7 |         39 |
+| e:\编译\Compiler\src\midend\ir\instruction\PutStr.java         | Java     |         32 |          0 |          6 |         38 |
+| e:\编译\Compiler\src\midend\ir\instruction\Ret.java            | Java     |         58 |          1 |          7 |         66 |
+| e:\编译\Compiler\src\midend\ir\instruction\Store.java          | Java     |         44 |          0 |          8 |         52 |
+| e:\编译\Compiler\src\midend\ir\instruction\Sub.java            | Java     |         77 |          0 |          7 |         84 |
+| e:\编译\Compiler\src\midend\ir\instruction\Zext.java           | Java     |         42 |          0 |          6 |         48 |
+| e:\编译\Compiler\src\midend\ir\type\ArrayType.java             | Java     |         18 |          0 |          4 |         22 |
+| e:\编译\Compiler\src\midend\ir\type\DataType.java              | Java     |         10 |          3 |          2 |         15 |
+| e:\编译\Compiler\src\midend\ir\type\FunctionType.java          | Java     |         16 |          0 |          4 |         20 |
+| e:\编译\Compiler\src\midend\ir\type\IntegerType.java           | Java     |         23 |          0 |          5 |         28 |
+| e:\编译\Compiler\src\midend\ir\type\LabelType.java             | Java     |          3 |          0 |          3 |          6 |
+| e:\编译\Compiler\src\midend\ir\type\PointerType.java           | Java     |         18 |          0 |          3 |         21 |
+| e:\编译\Compiler\src\midend\ir\type\StringType.java            | Java     |         22 |          3 |          5 |         30 |
+| e:\编译\Compiler\src\midend\ir\type\ValueType.java             | Java     |          3 |          0 |          2 |          5 |
+| e:\编译\Compiler\src\midend\ir\type\VoidType.java              | Java     |         13 |          0 |          3 |         16 |
+| e:\编译\Compiler\src\midend\ir\value\Argument.java             | Java     |         12 |          0 |          3 |         15 |
+| e:\编译\Compiler\src\midend\ir\value\BasicBlock.java           | Java     |        108 |          2 |         10 |        120 |
+| e:\编译\Compiler\src\midend\ir\value\Declare.java              | Java     |         23 |          6 |          6 |         35 |
+| e:\编译\Compiler\src\midend\ir\value\Function.java             | Java     |         95 |         11 |         15 |        121 |
+| e:\编译\Compiler\src\midend\ir\value\GlobalVariable.java       | Java     |         62 |          8 |         11 |         81 |
+| e:\编译\Compiler\src\midend\ir\value\User.java                 | Java     |         50 |          9 |         12 |         71 |
+| e:\编译\Compiler\src\midend\ir\value\Value.java                | Java     |        186 |          1 |         18 |        205 |
+| e:\编译\Compiler\src\midend\symbol\FuncSymbol.java             | Java     |         12 |          0 |          3 |         15 |
+| e:\编译\Compiler\src\midend\symbol\Symbol.java                 | Java     |         40 |          0 |          6 |         46 |
+| e:\编译\Compiler\src\midend\symbol\SymbolTable.java            | Java     |         85 |          2 |         16 |        103 |
+| e:\编译\Compiler\src\midend\symbol\SymbolTableManager.java     | Java     |         49 |          0 |          5 |         54 |
+| e:\编译\Compiler\src\midend\symbol\SymbolType.java             | Java     |         18 |          0 |          5 |         23 |
+| e:\编译\Compiler\src\midend\symbol\ValSymbol.java              | Java     |         11 |          1 |          2 |         14 |
+| e:\编译\Compiler\src\optimize\BuildCFG.java                    | Java     |         85 |          9 |         14 |        108 |
+| e:\编译\Compiler\src\optimize\DomAnalyzer.java                 | Java     |        112 |         32 |         19 |        163 |
+| e:\编译\Compiler\src\optimize\Mem2Reg.java                     | Java     |        296 |        109 |         45 |        450 |
+| e:\编译\Compiler\src\utils\Configs.java                        | Java     |          6 |          0 |          2 |          8 |
+| e:\编译\Compiler\src\utils\FileProcess.java                    | Java     |        199 |          7 |         20 |        226 |
+| e:\编译\Compiler\src\utils\Pair.java                           | Java     |         36 |          5 |         10 |         51 |
+| Total                                                        |          |      8,867 |        784 |      1,206 |     10,857 |
++--------------------------------------------------------------+----------+------------+------------+------------+------------+
